@@ -1,0 +1,30 @@
+{
+  "app": {
+    "name": "Alain",
+    "description": "Ng-zorro admin panel front-end framework"
+  },
+  "user": {
+    "name": "Admin",
+    "avatar": "./assets/tmp/img/avatar.jpg",
+    "email": "cipchk@qq.com"
+  },
+  "menu": [
+    {
+      "text": "项目",
+      "group": true,
+      "hideInBreadcrumb": true,
+      "children": [
+        {
+          "text": "项目立项",
+          "icon": "anticon-file-add",
+          "link": "/dashboard"
+        },
+        {
+          "text": "项目总览",         
+          "icon": "anticon-project",            
+          "link": "/dashboard"
+        }
+      ]
+    }
+  ]
+}
