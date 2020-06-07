@@ -1,0 +1,275 @@
+项目目录
+├─A01ContactsNumberEmailAddressMap emp
+    甲方业主项目部工程技术联系人电话邮件等，公司、场站阀室地图电子定位，
+    电子地图收藏点无法导出，在电子地图上收藏点范围选择：“大、中、小”三种
+    范围，截图存档，并附详细准确的文字描述，方便后续工程技术人员寻址进站
+│  ├─A01TenderAgent 招标代理公司 emp
+│  ├─A02ProjectDepartmentPartyA 甲方项目部 emp
+│  ├─A03Owner 项目业主、业主上级管理单位 emp
+│  ├─A04ProjectSite 工程实施现场，中心、分控、分公司、站场、阀室等等 emp
+│  ├─A05Manufactor 设备、材料制造商 emp
+│  └─A99Other  emp
+├─A02Bidding 招投标相关资料 emp
+│  ├─A01TenderingFile 业主项目部发来招标文件、邮件、传真、询证函等等 emp
+│  ├─A02BusinessDoc 公司自己编制的商务标文件及相关资料 m
+│  ├─A03TechDoc 公司自己编制的技术标文件及相关资料 e
+│  ├─A04Manufactor 投标过程中需要的设备材料厂家资料 em
+│  └─A99Other 其他 emp 
+├─A03Business 商务 emp
+│  ├─A01TechProtocol 技术协议，包括电子档文件、签字盖章后扫描后存档文件 em
+│  ├─A02Contract 合同，电子档文件、签字盖章后扫描后存档文件 emp
+│  ├─A03SupplementaryContract 补充合同，业主追加的合同内容 emp
+│  ├─A04PartyAchange 甲方变更 em
+│  ├─A05DesignChange 设计变更 em
+│  ├─A06ConstructionChange 施工变更 em
+│  ├─A07AdvancePayment 预付款 em
+│  ├─A08ProgressPayment 进度款 em
+│  ├─A09Settlement 结算资料 m
+│  ├─A20SubContract 分包合同，公司把部分内容分包给其他公司的相关内容 emp
+│  ├─A21SubContractPayment  分包合同付款 emp
+│  └─A99Other 其他 emp
+├─A04HdMaterialManage 惠东负责供货的物资管理 em
+│  ├─A01PurchaseApplication 采购申请 em
+│  ├─A02PurchaseContract 惠东公司负责供货设备材料的采购合同 m
+│  ├─A03DeliveryConfirmation 发货确认 em
+│  ├─A04ArrivalInspection 到货检验 em
+│  ├─A05InWarehouse 入库 em
+│  ├─A06ExWarehouse 出库 em
+│  └─A99Other 其他 em
+├─A05Design 设计 e
+│  ├─A01DesignIns 设计院，图纸、点表、技术规格书、操作原理等等
+│  ├─A02Manufactor 项目实施过程中，需要的设备材料厂家资料，
+│  │               投标过程中的可能不全、不细
+│  ├─A03HDdesign 项目实施过程中，惠东设计的相关图纸、方案
+│  └─A99Other 其他
+├─A06Network 网络 e
+│  ├─A01ChannelLeasing 信道租赁，ddn、vpn、光纤、gprs/3g/4g/5g等等
+│  │  └─A01ImportInformation
+            本目录存放的是相关设备的信息，包括但不限于：
+                设备型号、S/N、硬件配置、软件配置、硬件版本号、软件版本号
+                安装注册激活号码、超级用户、普通用户名及密码、加密密码、
+                服务代码、快速服务代码等等
+            这些信息非常重要！非常重要！非常重要！，涉及后续的升级、维护
+            改造、远程支持、软件硬件售后等等。请各位一定要注意收集整理
+            存档，一般能提供照片的，尽量提供清晰的照片，有些信息需要在设备
+            开机运行后才能导出。 
+                后续同名目录含义相同
+│  ├─A02OpticalCommunication 光通信，管道自建的光传输设备相关资料及配置
+│  │  └─A01ImportInformation
+│  ├─A03GAP 安全隔离网闸，工业安全防护、加密设备，及相关资料
+│  │  └─A01ImportInformation
+│  ├─A04FireWall 防火墙
+│  │  └─A01ImportInformation
+│  ├─A05Router 路由器
+│  │  └─A01ImportInformation
+│  ├─A06Switch 交换机
+│  │  └─A01ImportInformation
+│  ├─A07NetworkTopologyIPdesign 网络结构拓扑图，IP地址规划或者中心分配，
+│  │  └─A01ImportInformation
+│  └─A99Other 其他
+├─A07ClassifiedProtection e
+│  │          等级保护，计算机网络信息安全等级保护，国家有相关文件
+│  ├─A01ImportInformation
+│  ├─A02ClassifiedProtectionEvaluation 等保评测
+│  ├─A03ClassifiedProtectionDeployment 等级保护部署
+│  └─A99Other 其他
+├─A08Server 服务器 e
+│  ├─A01SCADAsvr scada服务器，citect、oasys、pcs等等的专用服务器设备及资料
+│  │  └─A01ImportInformation
+│  ├─A02CommunicationSvr 通信服务器，通信网关，包括站场安装的设备和中心安
+│  │                     装的设备及资料
+│  │  └─A01ImportInformation
+│  ├─A03RemoteMantenanceSvr 远程维护服务器，站场安装及中心安装的设备及资料
+│  │  └─A01ImportInformation
+│  └─A99Other 其他
+├─A09HMI e
+│  ├─A01ImportInformation
+│  ├─A02PointSheetFromPLC 点表
+│  ├─A03DrawingGraph 自己编制的上位界面
+│  ├─A04ExportedPointListFromDatabase 从数据库导出的点表
+│  ├─A05ExportedProjectBackup scada软件导出的工程备份
+│  ├─A06CopyProjectFoldersBackup 直接拷贝的备份
+│  ├─A07GhostBackup ghost，acronist等软件提供的分区备份、全盘备份等等
+│  └─A99Other 其他
+├─A10PlcRtu e
+│  ├─A01ImportInformation
+│  ├─A02PlcRtuHardwareConfig plc/rtu硬件配置说明
+│  ├─A03PlcRtuNetworkConfig plc/rtu网络配置说明
+│  ├─A04PointSheet 点表，包括自己使用的点表、上报给中心的点表、与第三方通
+│  │               信的点表等等
+│  ├─A05Program 程序
+│  └─A99Other 其他
+├─A11ThirdPartyDevice e
+│  ├─A01FlowMeter 流量计
+│  │  └─A01ImportInformation
+│  ├─A02FlowComputer 流量计算机
+│  │  └─A01ImportInformation
+│  ├─A03FlowController 流量控制器
+│  │  └─A01ImportInformation
+│  ├─A04LevelMeter 物位计
+│  │  └─A01ImportInformation
+│  ├─A05Furnace 加热炉
+│  │  └─A01ImportInformation
+│  ├─A06Boiler 锅炉
+│  │  └─A01ImportInformation
+│  ├─A07Substation 变电所
+│  │  └─A01ImportInformation
+│  ├─A08FrequencyConverter 变频器
+│  │  └─A01ImportInformation
+│  ├─A09UPS 不间断电源
+│  │  └─A01ImportInformation
+│  ├─A10CathodicProtection 阴极保护
+│  │  └─A01ImportInformation
+│  ├─A11SolarPower 太阳能
+│  │  └─A01ImportInformation
+│  ├─A12WindPower 风能
+│  │  └─A01ImportInformation
+│  ├─A13CombustibleGasAlarm 可燃气体检测
+│  │  └─A01ImportInformation
+│  ├─A14FireAlarm 火灾报警、感温感烟
+│  │  └─A01ImportInformation
+│  ├─A15FirePump 消防泵系统
+│  │  └─A01ImportInformation
+│  ├─A16ValveChamberController 阀室控制器
+│  │  └─A01ImportInformation
+│  ├─A17PumpProtection 机泵监视系统，目前多数方案已经整合进站控
+│  │  └─A01ImportInformation
+│  ├─A18FuelPump 燃料油泵系统
+│  │  └─A01ImportInformation
+│  ├─A19OilFeedPump 给油泵系统
+│  │  └─A01ImportInformation
+│  ├─A20SootBlower 吹灰系统
+│  │  └─A01ImportInformation
+│  ├─A21ElectricalGenerator 发电机系统
+│  │  └─A01ImportInformation
+│  ├─A22FeedWater 给水系统，恒压给水、净化水、软化水等等
+│  │  └─A01ImportInformation
+│  ├─A23DragReducingAgents 减阻剂系统
+│  │  └─A01ImportInformation
+│  ├─A24OdorizingEquipment 加味系统、加臭系统
+│  │  └─A01ImportInformation
+│  ├─A25CompressorSystem 压缩机系统
+│  │  └─A01ImportInformation
+│  ├─A26NitrogenMakingEquipment 制氮系统
+│  │  └─A01ImportInformation
+│  ├─A27SewageDisposalSystem 污水处理系统
+│  │  └─A01ImportInformation
+│  ├─A28IncinerationEquipment 焚烧装置、焚烧系统
+│  │  └─A01ImportInformation
+│  ├─A29VolumeTubeCalibrationDevice 体积管标定系统
+│  │  └─A01ImportInformation
+│  ├─A30MicroSeismicMonitoring 微震系统
+│  │  └─A01ImportInformation
+│  ├─A31WaterCurtainSystem 水幕系统
+│  │  └─A01ImportInformation
+│  ├─A32GroundWaterLevelMonitoring 地下水位检测系统
+│  │  └─A01ImportInformation
+│  ├─A33DryingTowerSystem 干燥塔系统
+│  │  └─A01ImportInformation
+│  ├─A34SecurityPreventionSystem 安防系统
+│  │  └─A01ImportInformation
+│  ├─A35LeakMonitoringSystem 泄漏检测系统
+│  │  └─A01ImportInformation
+│  └─A99Other
+├─A12PicAudioVideo e 图片音视频，项目实施过程中的资料
+│  ├─A01BeforeConstruction 施工前，现场图片，着重是设备、材料、地形、地貌
+│  │                       原始图片
+│  ├─A02UnderConstruction 施工中，
+│  ├─A03AfterConstruction 施工后，本小项工程内容完成后，设备、材料、地形、
+│  │                      地貌的图片
+│  ├─A04FAT 工厂验收
+│  ├─A05SAT 现场验收
+│  ├─A06Training 培训，包括厂家对我公司的培训、我公司给业主提供的培训等等
+│  ├─A07CompletionAcceptance 竣工验收
+│  ├─A08Settlement 结算
+│  └─A99Other 其他
+├─A13Letter 往来函 em
+│  ├─From01PartyA 甲方
+│  ├─From02Design 设计
+│  ├─From03Supervisor 监理
+│  ├─From04Manufactor 厂家
+│  ├─From05Subcontractor 分包，我方分包给他方
+│  ├─From99Other 其他
+│  ├─To01PartyA 甲方
+│  ├─To02Design 设计
+│  ├─To03Supervisor 监理
+│  ├─To04Manufactor 厂家
+│  ├─To05Subcontractor 分包，我方分包给他方
+│  └─To99Other 其他
+├─A14ImportantNote 重要备注 e
+│  ├─A01MeetingMinutes 会议纪要,非往来函产生,如惠东自己的交底
+│  ├─A02ProjectDiary
+│  │     项目日志，项目经理、项目成员的项目日志，项目大事记，电子档资料，
+│  │     或者是手写资料的照片，这些照片不要存档在“picaudiovideo”子文件夹
+│  └─A99Other 其他
+├─A15ConstructionData 施工过程资料 e
+│  ├─A01CommencementData 开工资料，施组、二书一表、照理要求进场前要求上报的资料
+│  │                     签字盖章后，需要存档一份扫描版 
+│  ├─A02StoppageData 停工资料，签字盖章后，需要存档一份扫描版 
+│  ├─A03ResumptionData 复工资料，签字盖章后，需要存档一份扫描版 
+│  ├─A04SiteReportInspection 现场监理业主项目部要求报验的资料
+│  ├─A05EquipmentMaterialAcquisition 向甲方中转站提交的物料申请
+│  ├─A06FAT 工厂验收，签字盖章后，需要存档一份扫描版 
+│  ├─A07IntermediateAcceptance 中间验收，有的项目业主监理要求的“步骤”
+│  │                           一般管道公司的项目是fat sat
+│  ├─A08SAT 现场验收，签字盖章后，需要存档一份扫描版 
+│  ├─A09Training 培训，培训资料、教程、ppt，图音视频存档在“picaudiovideo”
+│  ├─A10CompltionAcceptance 竣工验收，相关资料、单据，签字盖章后，需要存档一份
+│  │                        扫描版 
+│  ├─A11CompletionDataForBinding 需要装订上报给甲方的竣工资料
+│  ├─A20SubConstractData 分包方提供的现场施工资料 
+│  └─A99Other 其他
+└─A16RemainingProblemsSolved ｅ遗留问题及整改，分门别类，
+        按着问题产生、发现、提出、整改的时间轴顺序逐步记录存档，
+        由于问题的解决可能是多次的、逐步地解决，但是服务器存档文件不能修改、
+        增加内容，所以，每个问题一个子目录，文件名格式如下：
+            项目名+问题名+版本+日期+现场操作执行完成人员名称
+    ├─A01Hardware 硬件问题
+    ├─A02Software 软件问题
+    └─A99Other
+
+
+
+说明：
+
+00. 项目文件夹下预设两级子文件夹，这两级子文件夹只读，且不允许增、删
+01. 部分项目二级目录里有一个预设的第三级目录：
+        A01ImportInformation
+            本目录存放的是相关设备的信息，
+            包括但不限于：
+                设备型号、S/N、硬件配置、软件配置、硬件版本号、软件版本号
+                安装注册激活号码、超级用户、普通用户名及密码、加密密码、
+                服务代码、快速服务代码等等。请用TXT文件名直接标识硬件、
+                软件的名称版本号，如：站控PLC编程软件Rslogix5000.v20.10.10.txt，
+                锅炉系统编程软件Step7win5.0.txt，请大家想办法尽量简洁明了方便，
+                与人方便与己方便。
+    
+            这些信息非常重要！非常重要！非常重要！
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            
+            涉及后续的升级、维护、改造、远程支持、软件硬件售后等等。
+            
+            请各位一定要注意收集整理存档，一般能提供照片的，多数设备
+            的铭牌都可以进行拍照，尽量提供清晰的照片，有些信息需要在
+            设备开机运行后才能导出，拍照存档，并做详细的文字描述与记录。
+        
+02. 在第二级预设子文件夹下可以自主创建“两级子文件夹”，不允许继续创建
+    第三级子文件夹
+04. 所有文件夹、文件一但创建，就是只读状态，不允许增、删、改名
+05. 使用windows的资源管理器，在服务器项目目录里创建新文件夹时，它是先
+    创建一个叫“新文件夹”的文件夹然后再让你改名，这就会导致你创建预期
+    名称的子文件夹失败
+05. 大家最好把本项目目录拷贝到自己的机器上，按照资料类别，分类存放，
+    且自己创建的子文件夹最多二级，向服务器备份资料时，方便操作，也
+    便于自己资料的分类和归档
+06. 字母代表部门读写权限：e--工程部，m--市场部，p--项目管理部
+    e/m/p 部门员工必须是本工程项目的成员，才能读写相应的目录
+07. 工程部经理、市场部经理、项目管理部经理自动具有所有项目中，本部门能
+    够读目录的读写权限
+08. 工程、市场副总经理可以读写所有项目目录内容
+09. 推荐大家使用“total commander”，代替windows的资源管理器，此软件需要
+    花点时间学习操作掌握
+
+
+
+

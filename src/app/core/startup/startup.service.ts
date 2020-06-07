@@ -10,6 +10,7 @@ import { ACLService } from '@delon/acl';
 import { NzIconService } from 'ng-zorro-antd/icon';
 import { ICONS } from '../../../style-icons';
 import { ICONS_AUTO } from '../../../style-icons-auto';
+import { environment } from '@env/environment';
 
 /**
  * Used for application startup
@@ -31,7 +32,8 @@ export class StartupService {
   }
 
   private viaHttp(resolve: any, reject: any) {
-    zip(this.httpClient.get('assets/tmp/app-data.json'))
+    // /assets/tmp/app-data.json
+    zip(this.httpClient.get(`${environment.SERVER_URL}parameter`))
       .pipe(
         catchError((res) => {
           console.warn(`StartupService.load: Network request failed`, res);
@@ -42,7 +44,7 @@ export class StartupService {
       .subscribe(
         ([appData]) => {
           // Application data
-          const res: any = appData;
+          const res: any = appData.data;
           // Application information: including site name, description, year
           this.settingService.setApp(res.app);
           // User information: including name, avatar, email address

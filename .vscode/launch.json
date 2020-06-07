@@ -10,7 +10,9 @@
       "name": "Launch Chrome against localhost",
       "url": "http://localhost:4200",
       "webRoot": "${workspaceRoot}",
-      "sourceMaps": true
+      "sourceMaps": true,
+      // 跨域
+      "runtimeArgs": ["--disable-web-security", "--user-data-dir"]
     }
   ]
 }

@@ -1,0 +1,413 @@
+<page-header>
+  高级表单常见于一次性输入和提交大批量数据的场景。（示例采用响应式表单，也可使用模板驱动方式）
+</page-header>
+<form nz-form [formGroup]="form" (ngSubmit)="_submitForm()" [nzLayout]="'vertical'">
+  <nz-card [nzBordered]="false" nzTitle="项目基础信息">
+    <nz-row nzGutter="16">
+      <nz-col nzLg="6" nzMd="12" nzSm="24">
+        <nz-form-item>
+          <nz-form-label nzRequired>项目内部ID</nz-form-label>
+          <nz-form-control>
+            <input nz-input placeholder="自动生成无需填写" disabled />
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+      <nz-col [nzXl]="{ span: 8, offset: 2 }" [nzLg]="{ span: 10 }" [nzMd]="{ span: 24 }" nzSm="24">
+        <nz-form-item>
+          <nz-form-label nzFor="projectName" nzRequired>项目名称</nz-form-label>
+          <nz-form-control nzErrorTip="请输入项目名称">
+            <input nz-input formControlName="projectName" placeholder="请输入项目名称" />
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+      <nz-col [nzXl]="{ span: 6, offset: 2 }" [nzLg]="{ span: 8 }" [nzMd]="{ span: 12 }" nzSm="24">
+        <nz-form-item>
+          <nz-form-label nzRequired>立项依据</nz-form-label>
+          <nz-form-control nzErrorTip="请选择立项依据">
+            <nz-select formControlName="initRoot" [nzPlaceHolder]="'请选择立项依据'" [nzShowSearch]="true">
+              <nz-option *ngFor="let i of projectRoots$ | async as projectRoots" [nzLabel]="i.name" [nzValue]="i.id"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+    </nz-row>
+    <nz-row nzGutter="16">
+      <nz-col nzLg="6" nzMd="12" nzSm="24">
+        <nz-form-item>
+          <nz-form-label>项目经理</nz-form-label>
+          <nz-form-control>
+            <nz-select formControlName="projectManager" [nzShowSearch]="true" [nzPlaceHolder]="'请选择项目经理'">
+              <nz-option *ngFor="let i of employees$ | async as employees" [nzLabel]="i.name" [nzValue]="i.id"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+      <nz-col [nzXl]="{ span: 8, offset: 2 }" [nzLg]="{ span: 10 }" [nzMd]="{ span: 24 }" nzSm="24">
+        <nz-form-item>
+          <nz-form-label>项目属性</nz-form-label>
+          <nz-form-control>
+            <nz-input-group nzCompact>
+              <nz-select
+                formControlName="projectProperty"
+                [nzPlaceHolder]="'请选择项目属性'"
+                style="width: 100px;"
+                (ngModelChange)="projectPropertyChange($event)"
+              >
+                <nz-option [nzLabel]="'主项目'" [nzValue]="'parent'"></nz-option>
+                <nz-option [nzLabel]="'子项目'" [nzValue]="'child'"></nz-option>
+              </nz-select>
+              <nz-select
+                formControlName="projectRelevance"
+                [nzPlaceHolder]="'请选择关联主项目'"
+                [nzShowSearch]="true"
+                style="width: 200px;"
+                [nzDisabled]="projectRelevanceDisabled"
+                (ngModelChange)="projectRelevanceChange($event)"
+                nz-tooltip
+                [nzTooltipTitle]="projectRelevanceObj.name"
+              >
+                <nz-option *ngFor="let i of parentProjects$ | async as parentProjects" [nzLabel]="i.name" [nzValue]="i.id"></nz-option>
+              </nz-select>
+            </nz-input-group>
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+      <nz-col [nzXl]="{ span: 6, offset: 2 }" [nzLg]="{ span: 8 }" [nzMd]="{ span: 12 }" nzSm="24">
+        <nz-form-item>
+          <nz-form-label nzRequired>立项时间</nz-form-label>
+          <nz-form-control>
+            <input nz-input placeholder="自动生成无需填写" disabled />
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+    </nz-row>
+  </nz-card>
+  <nz-card [nzBordered]="false" nzTitle="合同信息">
+    <nz-row nzGutter="16">
+      <nz-col nzLg="6" nzMd="12" nzSm="24">
+        <nz-form-item>
+          <nz-form-label>合同编号（惠东）</nz-form-label>
+          <nz-form-control>
+            <input nz-input formControlName="contractIDHD" placeholder="请输入合同编号（惠东）" />
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+      <nz-col [nzXl]="{ span: 8, offset: 2 }" [nzLg]="{ span: 10 }" [nzMd]="{ span: 24 }" nzSm="24">
+        <nz-form-item>
+          <nz-form-label>合同名</nz-form-label>
+          <nz-form-control>
+            <input nz-input formControlName="contractName" placeholder="请输入合同名" />
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+      <nz-col [nzXl]="{ span: 6, offset: 2 }" [nzLg]="{ span: 8 }" [nzMd]="{ span: 12 }" nzSm="24">
+        <nz-form-item>
+          <nz-form-label>业主名</nz-form-label>
+          <nz-form-control>
+            <input nz-input formControlName="proprietorName" placeholder="请输入业主名" />
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+    </nz-row>
+    <nz-row nzGutter="16">
+      <nz-col nzLg="6" nzMd="12" nzSm="24">
+        <nz-form-item>
+          <nz-form-label>合同编号（业主）</nz-form-label>
+          <nz-form-control>
+            <input nz-input formControlName="contractIDYZ" placeholder="请输入合同编号（业主）" />
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+      <nz-col [nzXl]="{ span: 8, offset: 2 }" [nzLg]="{ span: 10 }" [nzMd]="{ span: 24 }" nzSm="24">
+        <nz-form-item>
+          <nz-form-label>工期（起始时间、结束时间）</nz-form-label>
+          <nz-form-control>
+            <nz-range-picker formControlName="projectDateRange" [nzFormat]="dateFormat"></nz-range-picker>
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+      <nz-col [nzXl]="{ span: 6, offset: 2 }" [nzLg]="{ span: 8 }" [nzMd]="{ span: 12 }" nzSm="24">
+        <nz-form-item>
+          <nz-form-label>签订日期</nz-form-label>
+          <nz-form-control>
+            <nz-date-picker formControlName="contractDate" [nzFormat]="dateFormat"></nz-date-picker>
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+    </nz-row>
+    <nz-row nzGutter="16">
+      <nz-col nzLg="6" nzMd="12" nzSm="24">
+        <nz-form-item>
+          <nz-form-label>质保期</nz-form-label>
+          <nz-form-control>
+            <nz-input-group nzAddOnAfter="月">
+              <nz-input-number
+                [nzMin]="1"
+                [nzMax]="240"
+                [nzStep]="1"
+                formControlName="warranty"
+                placeholder="请输入质保期"
+              ></nz-input-number>
+            </nz-input-group>
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+      <nz-col [nzXl]="{ span: 8, offset: 2 }" [nzLg]="{ span: 10 }" [nzMd]="{ span: 24 }" nzSm="24">
+        <nz-form-item>
+          <nz-form-label>工程内容</nz-form-label>
+          <nz-form-control>
+            <textarea nz-input formControlName="projectContent" [nzAutosize]="true" placeholder="请输入工程内容"></textarea>
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+      <nz-col [nzXl]="{ span: 6, offset: 2 }" [nzLg]="{ span: 8 }" [nzMd]="{ span: 12 }" nzSm="24">
+        <nz-form-item>
+          <nz-form-label>合同类型</nz-form-label>
+          <nz-form-control>
+            <nz-select formControlName="contractType" [nzPlaceHolder]="'请选择合同类型'" [nzShowSearch]="true">
+              <nz-option *ngFor="let i of contractTypes$ | async as contractTypes" [nzLabel]="i.name" [nzValue]="i.id"> </nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+    </nz-row>
+    <nz-row nzGutter="16">
+      <nz-col nzLg="6" nzMd="12" nzSm="24">
+        <nz-form-item>
+          <nz-form-label>甲方联系人姓名（商务）</nz-form-label>
+          <nz-form-control>
+            <input nz-input formControlName="linkmanNameSW" placeholder="请输入甲方联系人姓名（商务）" />
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+      <nz-col [nzXl]="{ span: 8, offset: 2 }" [nzLg]="{ span: 10 }" [nzMd]="{ span: 24 }" nzSm="24">
+        <nz-form-item>
+          <nz-form-label>甲方联系人电话（商务）</nz-form-label>
+          <nz-form-control>
+            <input nz-input formControlName="linkmanPhoneSW" placeholder="请输入甲方联系人电话（商务）" />
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+      <nz-col [nzXl]="{ span: 6, offset: 2 }" [nzLg]="{ span: 8 }" [nzMd]="{ span: 12 }" nzSm="24">
+        <nz-form-item>
+          <nz-form-label>项目地址</nz-form-label>
+          <nz-form-control>
+            <input nz-input formControlName="projectAddress" placeholder="请输入项目地址" />
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+    </nz-row>
+    <nz-row nzGutter="16">
+      <nz-col nzLg="6" nzMd="12" nzSm="24">
+        <nz-form-item>
+          <nz-form-label>甲方联系人姓名（技术）</nz-form-label>
+          <nz-form-control>
+            <input nz-input formControlName="linkmanNameSW" placeholder="请输入甲方联系人姓名（技术）" />
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+      <nz-col [nzXl]="{ span: 8, offset: 2 }" [nzLg]="{ span: 10 }" [nzMd]="{ span: 24 }" nzSm="24">
+        <nz-form-item>
+          <nz-form-label>甲方联系人电话（技术）</nz-form-label>
+          <nz-form-control>
+            <input nz-input formControlName="linkmanNameJS" placeholder="请输入甲方联系人电话（技术）" />
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+      <nz-col [nzXl]="{ span: 6, offset: 2 }" [nzLg]="{ span: 8 }" [nzMd]="{ span: 12 }" nzSm="24">
+        <nz-form-item>
+          <nz-form-label>业主单位地址</nz-form-label>
+          <nz-form-control>
+            <input nz-input formControlName="proprietorAddress" placeholder="请输入业主单位地址" />
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+    </nz-row>
+  </nz-card>
+  <nz-card [nzBordered]="false" nzTitle="分包信息">
+    <nz-table formArrayName="subcontracts" [nzShowPagination]="false" [nzData]="subcontracts.value">
+      <thead>
+        <tr>
+          <th>分包商名称</th>
+          <th>合同金额</th>
+          <th>工作内容</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of subcontracts.controls; let i = index" [formGroupName]="i">
+          <td>
+            <span *ngIf="editIndex !== i">{{ subcontracts.value[i].subcontractName }}</span>
+            <span *ngIf="editIndex === i" nz-form-control>
+              <input nz-input formControlName="subcontractName" placeholder="请输入分包商名称" />
+            </span>
+          </td>
+          <td>
+            <span *ngIf="editIndex !== i">{{ subcontracts.value[i].subcontractSum | _currency }}</span>
+            <span *ngIf="editIndex === i" nz-form-control>
+              <input
+                nz-input
+                formControlName="subcontractSum"
+                placeholder="请输入合同金额"
+                (ngModelChange)="subcontractSumOnChange($event)"
+                #subcontractSumInput
+                [ngModel]="subcontractSumValue"
+                (blur)="subcontractSumOnBlur()"
+              />
+            </span>
+          </td>
+          <td>
+            <span *ngIf="editIndex !== i">{{ subcontracts.value[i].subcontractDetails }}</span>
+            <span *ngIf="editIndex === i" nz-form-control>
+              <textarea nz-input formControlName="subcontractDetails" [nzAutosize]="true" placeholder="请输入工作内容"></textarea>
+            </span>
+          </td>
+          <td>
+            <span *ngIf="editIndex !== i">
+              <a (click)="edit(i)">编辑</a>
+              <nz-divider nzType="vertical"></nz-divider>
+              <a nz-popconfirm nzPopconfirmTitle="是否要删除此行？" (nzOnConfirm)="del(i)">删除</a>
+            </span>
+            <span *ngIf="editIndex === i">
+              <a (click)="save(i)">保存</a>
+              <nz-divider nzType="vertical"></nz-divider>
+              <a nz-popconfirm nzPopconfirmTitle="是否要取消操作？" (nzOnConfirm)="cancel(i)">取消</a>
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+    <button *ngIf="editIndex === -1" nz-button [nzType]="'dashed'" (click)="add()" nzBlock class="mt-md">
+      <i nz-icon nzType="plus"></i>
+      <span>新增分包</span>
+    </button>
+  </nz-card>
+  <nz-card [nzBordered]="false" nzTitle="项目资料">
+    <nz-card-tab>
+      <nz-tabset nzSize="large">
+        <nz-tab nzTitle="路径配置"></nz-tab>
+        <nz-tab nzTitle="技术协议"></nz-tab>
+        <nz-tab nzTitle="技术方案"></nz-tab>
+        <nz-tab nzTitle="预算"></nz-tab>
+        <nz-tab nzTitle="决算"></nz-tab>
+        <nz-tab nzTitle="排产通知"></nz-tab>
+      </nz-tabset>
+    </nz-card-tab>
+    <nz-row nzGutter="16">
+      <!-- <nz-input-group [nzAddOnBefore]="addOnBeforeTemplate">
+        <ng-template #addOnBeforeTemplate>
+          <nz-select formControlName="phoneNumberPrefix" class="phone-select">
+            <nz-option nzLabel="+86" nzValue="+86"></nz-option>
+            <nz-option nzLabel="+87" nzValue="+87"></nz-option>
+          </nz-select>
+        </ng-template>
+        <input formControlName="phoneNumber" id="'phoneNumber'" nz-input />
+      </nz-input-group> -->
+      <nz-col [nzSpan]="24">
+        <nz-form-item style="margin-bottom: 0;">
+          <nz-form-label>根目录</nz-form-label>
+          <nz-form-control [nzSpan]="24">
+            <nz-row>
+              <nz-col [nzSpan]="20">
+                <input nz-input disabled formControlName="rootDir" #rootDir />
+              </nz-col>
+              <nz-col>
+                <button nz-button nzType="primary" type="button" (click)="selectRootDir($event)" value="根目录">
+                  ...
+                </button>
+              </nz-col>
+            </nz-row>
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+    </nz-row>
+    <nz-row nzGutter="16">
+      <nz-col [nzSpan]="24">
+        <nz-form-item style="margin-bottom: 0;">
+          <nz-form-label>技术协议</nz-form-label>
+          <nz-form-control>
+            <nz-row>
+              <nz-col [nzSpan]="20">
+                <input nz-input value="{{ rootDir.value }}/A03Business/A01TechProtocol/" disabled />
+              </nz-col>
+              <nz-col>
+                <button nz-button nzType="primary">...</button>
+              </nz-col>
+            </nz-row>
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+    </nz-row>
+    <nz-row nzGutter="16">
+      <nz-col [nzSpan]="24">
+        <nz-form-item style="margin-bottom: 0;">
+          <nz-form-label>技术方案</nz-form-label>
+          <nz-form-control>
+            <nz-row>
+              <nz-col [nzSpan]="20">
+                <input nz-input value="{{ rootDir.value }}/A03Business/A01TechProtocol/" disabled />
+              </nz-col>
+              <nz-col>
+                <button nz-button nzType="primary">...</button>
+              </nz-col>
+            </nz-row>
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+    </nz-row>
+    <nz-row nzGutter="16">
+      <nz-col [nzSpan]="24">
+        <nz-form-item style="margin-bottom: 0;">
+          <nz-form-label>预算</nz-form-label>
+          <nz-form-control>
+            <nz-row>
+              <nz-col [nzSpan]="20">
+                <input nz-input value="{{ rootDir.value }}/A03Business/A01TechProtocol/" disabled />
+              </nz-col>
+              <nz-col>
+                <button nz-button nzType="primary">...</button>
+              </nz-col>
+            </nz-row>
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+    </nz-row>
+    <nz-row nzGutter="16">
+      <nz-col [nzSpan]="24">
+        <nz-form-item style="margin-bottom: 0;">
+          <nz-form-label>决算</nz-form-label>
+          <nz-form-control>
+            <nz-row>
+              <nz-col [nzSpan]="20">
+                <input nz-input value="{{ rootDir.value }}/A03Business/A01TechProtocol/" disabled />
+              </nz-col>
+              <nz-col>
+                <button nz-button nzType="primary">...</button>
+              </nz-col>
+            </nz-row>
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+    </nz-row>
+    <nz-row nzGutter="16">
+      <nz-col [nzSpan]="24">
+        <nz-form-item style="margin-bottom: 0;">
+          <nz-form-label>排产通知</nz-form-label>
+          <nz-form-control>
+            <nz-row>
+              <nz-col [nzSpan]="20">
+                <input nz-input value="{{ rootDir.value }}/A03Business/A01TechProtocol/" disabled />
+              </nz-col>
+              <nz-col>
+                <button nz-button nzType="primary">...</button>
+              </nz-col>
+            </nz-row>
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+    </nz-row>
+  </nz-card>
+  <footer-toolbar errorCollect>
+    <button nz-button nzType="primary" nzType="primary">提交</button>
+  </footer-toolbar>
+</form>

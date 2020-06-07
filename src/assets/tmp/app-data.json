@@ -10,19 +10,25 @@
   },
   "menu": [
     {
-      "text": "项目",
+      "text": "主导航",
       "group": true,
       "hideInBreadcrumb": true,
       "children": [
         {
-          "text": "项目立项",
-          "icon": "anticon-file-add",
-          "link": "/dashboard"
-        },
-        {
-          "text": "项目总览",         
-          "icon": "anticon-project",            
-          "link": "/dashboard"
+          "text": "项目管理",
+          "icon": "anticon-project",          
+          "children": [
+            {
+              "text": "项目立项",
+              "icon": "anticon-file-add",
+              "link": "/projects/initial"            
+            },
+            {
+              "text": "项目总览",         
+              "icon": "anticon-radar-chart",            
+              "link": "/exception/404"
+            }            
+          ]
         }
       ]
     }
