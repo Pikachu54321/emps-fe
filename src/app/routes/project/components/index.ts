@@ -1,2 +1,2 @@
-export * from './project-initial';
+export * from './project-new';
 export * from './project-overview';

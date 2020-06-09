@@ -1,1 +1,15 @@
-1111111111111111111111
+<div class="container">
+  <nz-tree
+    [nzData]="nodes"
+    nzShowIcon
+    [nzExpandedIcon]="fileSelectionExpandedIconTemplate"
+    nzShowLine
+    nzAsyncData
+    (click)="nzEvent($event)"
+    (nzExpandChange)="nzEvent($event)"
+  >
+    <ng-template #fileSelectionExpandedIconTemplate let-node>
+      <i *ngIf="!node.isLeaf" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="ant-tree-switcher-line-icon"></i>
+    </ng-template>
+  </nz-tree>
+</div>

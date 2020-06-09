@@ -17,3 +17,23 @@ export interface ContractType {
   id: number;
   name: string;
 }
+// 文件
+export interface FileInfo {
+  isDir: number;
+  name: string;
+  path: string;
+  size: string;
+  mtime: string;
+}
+// 文件Breadcrumb面包屑
+export interface FileBreadcrumbItem {
+  name: string;
+  path: string;
+}
+// 文件列表页
+export interface FileListPage {
+  fileList: FileInfo[];
+  sortName: string;
+  sortOrder: string;
+  FileBreadcrumb: FileBreadcrumbItem[];
+}

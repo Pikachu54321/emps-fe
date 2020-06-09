@@ -1,10 +1,19 @@
-import { ChangeDetectionStrategy, Component, OnInit, ViewChild, ElementRef, Renderer2 } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, ViewChild, ElementRef, Renderer2, ChangeDetectorRef } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { ProjectService } from '../../services';
-import { ProjectRoot, Project, Employee, ContractType, FileManagerComponent, FileSelectionComponent } from '@shared';
+import {
+  ProjectRoot,
+  Project,
+  Employee,
+  ContractType,
+  FileManagerComponent,
+  FileSelectionComponent,
+  FileListPage,
+  FileInfo,
+} from '@shared';
 
 @Component({
   selector: 'app-project-new',
@@ -43,6 +52,7 @@ export class ProjectNewComponent implements OnInit {
     private modalSrv: NzModalService,
     private service: ProjectService,
     private rd2: Renderer2,
+    private cd: ChangeDetectorRef,
   ) {}
 
   ngOnInit() {
@@ -242,7 +252,7 @@ export class ProjectNewComponent implements OnInit {
   }
 
   // 分包合同金额
-  @ViewChild('subcontractSumSpan', { static: false }) subcontractSumInput?: ElementRef;
+  @ViewChild('subcontractSumInput', { static: false }) subcontractSumInput?: ElementRef;
   subcontractSumValue = '';
 
   // '.' at the end or only '-' in the input box.
@@ -261,38 +271,56 @@ export class ProjectNewComponent implements OnInit {
     }
     this.rd2.setProperty(this.subcontractSumInput.nativeElement, 'value', this.subcontractSumValue);
   }
-  // 项目资料-路径配置-选择根目录
-  selectRootDir(event: MouseEvent): void {
-    const modal = this.modalSrv.create({
-      nzTitle: (event.target as HTMLButtonElement).value + '路径',
-      nzContent: FileManagerComponent,
-      nzGetContainer: () => document.body,
-      nzComponentParams: {
-        // title: 'title in component',
-        // subtitle: 'component sub title，will be changed after 2 sec',
-      },
-      nzOnOk: () => new Promise((resolve) => setTimeout(resolve, 1000)),
-      nzFooter: [
-        {
-          label: 'change component title from outside',
-          onClick: (componentInstance) => {
-            // componentInstance!.title = 'title in inner component is changed';
-          },
-        },
-      ],
-    });
-    const instance = modal.getContentComponent();
-    modal.afterOpen.subscribe(() => console.log('[afterOpen] emitted!'));
-    // Return a result when closed
-    modal.afterClose.subscribe((result) => console.log('[afterClose] The result is:', result));
 
-    // delay until modal instance created
-    setTimeout(() => {
-      // instance.subtitle = 'sub title is changed';
-    }, 2000);
+  // isVisible = false;
+  // 项目资料-路径配置-选择根目录按钮
+  selectRootDirOnclick(event: MouseEvent): void {
+    // 读取指定目录下文件、文件夹(并且排序)
+    this.service.getFileListPage('./', 'name', 'ASC').subscribe((res: any) => {
+      let fileList: FileInfo[] = res.data.fileList;
+      // this.isVisible = true;
+      // this.cd.checkNoChanges();
+      const modal = this.modalSrv.create({
+        nzTitle: (event.target as HTMLButtonElement).value + '路径',
+        nzContent: FileSelectionComponent,
+        nzGetContainer: () => document.body,
+        nzComponentParams: {
+          fileList: fileList,
+          // subtitle: 'component sub title，will be changed after 2 sec',
+        },
+        nzOnOk: () => new Promise((resolve) => setTimeout(resolve, 1000)),
+        nzFooter: [
+          {
+            label: 'change component title from outside',
+            onClick: (componentInstance) => {
+              // componentInstance!.title = 'title in inner component is changed';
+            },
+          },
+        ],
+      });
+      const instance = modal.getContentComponent();
+      modal.afterOpen.subscribe(() => console.log('[afterOpen] emitted!'));
+      // Return a result when closed
+      modal.afterClose.subscribe((result) => console.log('[afterClose] The result is:', result));
+
+      // delay until modal instance created
+      setTimeout(() => {
+        // instance.subtitle = 'sub title is changed';
+      }, 2000);
+    });
   }
+  // handleOk(): void {
+  //   console.log('Button ok clicked!');
+  //   this.isVisible = false;
+  // }
+
+  // handleCancel(): void {
+  //   console.log('Button cancel clicked!');
+  //   this.isVisible = false;
+  // }
 
   _submitForm() {
+    // 对话框没有销毁
     Object.keys(this.form.controls).forEach((key) => {
       this.form.controls[key].markAsDirty();
       this.form.controls[key].updateValueAndValidity();

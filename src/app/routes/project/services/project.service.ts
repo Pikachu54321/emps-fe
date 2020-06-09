@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '@env/environment';
-import { ProjectRoot, Project, Employee, ContractType } from '@shared';
+import { ProjectRoot, Project, Employee, ContractType, FileListPage } from '@shared';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -30,5 +30,13 @@ export class ProjectService {
   // 获得所有合同类型
   getContractTypes() {
     return this.http.get<ContractType[]>(`${environment.SERVER_URL}contracts/types`);
+  }
+  // 读取指定目录下文件、文件夹(并且排序)
+  getFileListPage(path: string, sortName: string, sortOrder: string) {
+    return this.http.post(`${environment.SERVER_URL}file/read-directory`, {
+      path: path,
+      sortName: sortName,
+      sortOrder: sortOrder,
+    });
   }
 }

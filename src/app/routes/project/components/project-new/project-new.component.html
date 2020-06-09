@@ -312,9 +312,12 @@
                 <input nz-input disabled formControlName="rootDir" #rootDir />
               </nz-col>
               <nz-col>
-                <button nz-button nzType="primary" type="button" (click)="selectRootDir($event)" value="根目录">
+                <button nz-button nzType="primary" type="button" (click)="selectRootDirOnclick($event)" value="根目录">
                   ...
                 </button>
+                <!-- <nz-modal [(nzVisible)]="isVisible" nzTitle="The first Modal" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
+                  <app-file-selection [fileList]="fileList"></app-file-selection>
+                </nz-modal> -->
               </nz-col>
             </nz-row>
           </nz-form-control>
