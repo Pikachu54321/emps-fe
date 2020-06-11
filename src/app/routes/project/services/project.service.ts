@@ -39,4 +39,11 @@ export class ProjectService {
       sortOrder: sortOrder,
     });
   }
+  // 创建文件夹
+  postNewFolder(parentFolderPath: string, newFoldername: string) {
+    return this.http.post(`${environment.SERVER_URL}file/new-folder`, {
+      parentFolderPath: parentFolderPath,
+      newFoldername: newFoldername,
+    });
+  }
 }

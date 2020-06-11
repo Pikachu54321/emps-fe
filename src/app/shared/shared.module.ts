@@ -9,8 +9,7 @@ import { DelonFormModule } from '@delon/form';
 import { SHARED_DELON_MODULES } from './shared-delon.module';
 import { SHARED_ZORRO_MODULES } from './shared-zorro.module';
 
-import { FileManagerComponent } from './components';
-import { FileSelectionComponent } from './components';
+import { FileManagerComponent, FileSelectionComponent, FileNewFolderComponent } from './components';
 
 // #region third libs
 
@@ -20,7 +19,7 @@ const THIRDMODULES = [];
 
 // #region your componets & directives
 
-const COMPONENTS = [FileManagerComponent, FileSelectionComponent];
+const COMPONENTS = [FileManagerComponent, FileSelectionComponent, FileNewFolderComponent];
 const DIRECTIVES = [];
 
 // #endregion

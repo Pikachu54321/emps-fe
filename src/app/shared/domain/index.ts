@@ -24,6 +24,7 @@ export interface FileInfo {
   path: string;
   size: string;
   mtime: string;
+  superPath: string;
 }
 // 文件Breadcrumb面包屑
 export interface FileBreadcrumbItem {

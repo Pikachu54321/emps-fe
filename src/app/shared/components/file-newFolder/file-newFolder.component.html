@@ -1,0 +1,2 @@
+<nz-alert nzType="warning" nzMessage='文件名不能包含下列任何字符 \ / : * ? " < > |，并且长度小于100个字符' nzShowIcon></nz-alert>
+<input nz-input placeholder="请输入文件夹名" (ngModelChange)="folderNameOnChange($event)" [ngModel]="folderNameValue" />

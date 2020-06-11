@@ -3,10 +3,11 @@
     [nzData]="nodes"
     nzShowIcon
     [nzExpandedIcon]="fileSelectionExpandedIconTemplate"
-    nzShowLine
+    [nzShowLine]="true"
     nzAsyncData
-    (click)="nzEvent($event)"
+    (nzClick)="nzEvent($event)"
     (nzExpandChange)="nzEvent($event)"
+    #fileTreeComponent
   >
     <ng-template #fileSelectionExpandedIconTemplate let-node>
       <i *ngIf="!node.isLeaf" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="ant-tree-switcher-line-icon"></i>

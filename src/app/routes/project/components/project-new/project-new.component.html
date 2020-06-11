@@ -1,6 +1,7 @@
 <page-header>
   高级表单常见于一次性输入和提交大批量数据的场景。（示例采用响应式表单，也可使用模板驱动方式）
 </page-header>
+<nz-back-top></nz-back-top>
 <form nz-form [formGroup]="form" (ngSubmit)="_submitForm()" [nzLayout]="'vertical'">
   <nz-card [nzBordered]="false" nzTitle="项目基础信息">
     <nz-row nzGutter="16">
@@ -293,31 +294,29 @@
         <nz-tab nzTitle="排产通知"></nz-tab>
       </nz-tabset>
     </nz-card-tab>
+    <!-- <ng-template #newFolderInputTem>
+      <nz-alert *ngIf="" nzType="error" nzMessage="Error" nzShowIcon></nz-alert>
+      <input
+        nz-input
+        placeholder="请输入文件夹名"
+        (ngModelChange)="subcontractSumOnChange($event)"
+        #subcontractSumInput
+        [ngModel]="subcontractSumValue"
+      />
+    </ng-template> -->
     <nz-row nzGutter="16">
-      <!-- <nz-input-group [nzAddOnBefore]="addOnBeforeTemplate">
-        <ng-template #addOnBeforeTemplate>
-          <nz-select formControlName="phoneNumberPrefix" class="phone-select">
-            <nz-option nzLabel="+86" nzValue="+86"></nz-option>
-            <nz-option nzLabel="+87" nzValue="+87"></nz-option>
-          </nz-select>
-        </ng-template>
-        <input formControlName="phoneNumber" id="'phoneNumber'" nz-input />
-      </nz-input-group> -->
       <nz-col [nzSpan]="24">
         <nz-form-item style="margin-bottom: 0;">
           <nz-form-label>根目录</nz-form-label>
           <nz-form-control [nzSpan]="24">
             <nz-row>
               <nz-col [nzSpan]="20">
-                <input nz-input disabled formControlName="rootDir" #rootDir />
+                <input nz-input disabled formControlName="rootDir" #rootDirInputRef />
               </nz-col>
               <nz-col>
-                <button nz-button nzType="primary" type="button" (click)="selectRootDirOnclick($event)" value="根目录">
+                <button nz-button nzType="primary" type="button" (click)="selectDirOnclick($event)" value="根目录">
                   ...
                 </button>
-                <!-- <nz-modal [(nzVisible)]="isVisible" nzTitle="The first Modal" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
-                  <app-file-selection [fileList]="fileList"></app-file-selection>
-                </nz-modal> -->
               </nz-col>
             </nz-row>
           </nz-form-control>
@@ -331,10 +330,15 @@
           <nz-form-control>
             <nz-row>
               <nz-col [nzSpan]="20">
-                <input nz-input value="{{ rootDir.value }}/A03Business/A01TechProtocol/" disabled />
+                <input
+                  nz-input
+                  formControlName="technologyAgreementDir"
+                  value="{{ rootDirInputRef.value }}/A03Business/A01TechProtocol/"
+                  disabled
+                />
               </nz-col>
               <nz-col>
-                <button nz-button nzType="primary">...</button>
+                <button nz-button nzType="primary" type="button" (click)="selectDirOnclick($event)" value="技术协议">...</button>
               </nz-col>
             </nz-row>
           </nz-form-control>
@@ -348,10 +352,15 @@
           <nz-form-control>
             <nz-row>
               <nz-col [nzSpan]="20">
-                <input nz-input value="{{ rootDir.value }}/A03Business/A01TechProtocol/" disabled />
+                <input
+                  nz-input
+                  formControlName="technologySchemeDir"
+                  value="{{ rootDirInputRef.value }}/A03Business/A01TechProtocol/"
+                  disabled
+                />
               </nz-col>
               <nz-col>
-                <button nz-button nzType="primary">...</button>
+                <button nz-button nzType="primary" type="button" (click)="selectDirOnclick($event)" value="技术方案">...</button>
               </nz-col>
             </nz-row>
           </nz-form-control>
@@ -365,10 +374,10 @@
           <nz-form-control>
             <nz-row>
               <nz-col [nzSpan]="20">
-                <input nz-input value="{{ rootDir.value }}/A03Business/A01TechProtocol/" disabled />
+                <input nz-input formControlName="budgetDir" value="{{ rootDirInputRef.value }}/A03Business/A01TechProtocol/" disabled />
               </nz-col>
               <nz-col>
-                <button nz-button nzType="primary">...</button>
+                <button nz-button nzType="primary" type="button" (click)="selectDirOnclick($event)" value="预算">...</button>
               </nz-col>
             </nz-row>
           </nz-form-control>
@@ -382,10 +391,10 @@
           <nz-form-control>
             <nz-row>
               <nz-col [nzSpan]="20">
-                <input nz-input value="{{ rootDir.value }}/A03Business/A01TechProtocol/" disabled />
+                <input nz-input formControlName="settlementDir" value="{{ rootDirInputRef.value }}/A03Business/A01TechProtocol/" disabled />
               </nz-col>
               <nz-col>
-                <button nz-button nzType="primary">...</button>
+                <button nz-button nzType="primary" type="button" (click)="selectDirOnclick($event)" value="决算">...</button>
               </nz-col>
             </nz-row>
           </nz-form-control>
@@ -399,10 +408,15 @@
           <nz-form-control>
             <nz-row>
               <nz-col [nzSpan]="20">
-                <input nz-input value="{{ rootDir.value }}/A03Business/A01TechProtocol/" disabled />
+                <input
+                  nz-input
+                  formControlName="productionSchedulingNoticeDir"
+                  value="{{ rootDirInputRef.value }}/A03Business/A01TechProtocol/"
+                  disabled
+                />
               </nz-col>
               <nz-col>
-                <button nz-button nzType="primary">...</button>
+                <button nz-button nzType="primary" type="button" (click)="selectDirOnclick($event)" value="排产通知">...</button>
               </nz-col>
             </nz-row>
           </nz-form-control>
