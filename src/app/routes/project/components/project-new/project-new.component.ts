@@ -11,7 +11,7 @@ import {
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzModalService, NzModalRef, ModalButtonOptions, ModalOptions } from 'ng-zorro-antd/modal';
 import { ProjectService } from '../../services';
 import {
   ProjectRoot,
@@ -23,6 +23,7 @@ import {
   FileListPage,
   FileInfo,
   FileNewFolderComponent,
+  ProjectNewFilePath,
 } from '@shared';
 
 @Component({
@@ -219,8 +220,6 @@ export class ProjectNewComponent implements OnInit {
   }
   // 关联项目太长时，下拉菜单显示不下，设置关联项目提示
   projectRelevanceChange($event): void {
-    // subscribe(tabs => {
-    //   this.topMenus = tabs;
     this.parentProjects$.subscribe((relevanceProjects) => {
       for (const item of relevanceProjects) {
         if (item.id === $event) {
@@ -288,131 +287,134 @@ export class ProjectNewComponent implements OnInit {
     this.rd2.setProperty(this.subcontractSumInput.nativeElement, 'value', this.subcontractSumValue);
   }
 
+  // 根目录输入框
   @ViewChild('rootDirInputRef', { static: true }) rootDirInputRef: ElementRef;
-  // @ViewChild('newFolderInputTem', { static: true }) newFolderInputTemplateRef: TemplateRef;
+  // 项目立项路径配置参数
+  projectNewFilePath: ProjectNewFilePath;
   // 项目资料-路径配置-选择根目录按钮
   selectDirOnclick(event: MouseEvent): void {
-    let newFolderNameValid = false;
+    // 读取项目立项路径配置参数
+    this.service.getProjectNewPathParameter().subscribe((res: any) => {
+      this.projectNewFilePath = res.data.projectNewFilePath;
+    });
     // 读取指定目录下文件、文件夹(并且排序)
     this.service.getFileListPage('', 'name', 'ASC').subscribe((res: any) => {
       let fileList: FileInfo[] = res.data.fileList;
-      const modal = this.modalSrv.create({
-        nzTitle: (event.target as HTMLButtonElement).value + '路径',
-        nzContent: FileSelectionComponent,
-        // nzGetContainer: () => document.body,
-        nzComponentParams: {
-          fileList: fileList,
+      this.createFileSelectionModal(fileList, event);
+    });
+  }
+  // 创建文件夹路径对话框
+  createFileSelectionModal(fileList: FileInfo[], event: MouseEvent): void {
+    const modal: NzModalRef = this.modalSrv.create({
+      nzTitle: (event.target as HTMLButtonElement).value + '路径',
+      nzContent: FileSelectionComponent,
+      // nzGetContainer: () => document.body,
+      nzComponentParams: {
+        fileList: fileList,
+      },
+      // 点击蒙层是否允许关闭
+      nzMaskClosable: false,
+      // 是否显示右上角的关闭按钮。
+      nzClosable: false,
+      nzFooter: [
+        {
+          label: '新建文件夹',
+          type: 'default',
+          disabled: (FileSelectionComponent) => {
+            if (FileSelectionComponent.nodeSelected === null) {
+              return true;
+            } else {
+              return false;
+            }
+          },
+          onClick: (FileSelectionComponent) => {
+            // 创建输入新建文件夹名的对话框
+            this.createFileNewFolderModal(FileSelectionComponent, this.service);
+          },
         },
-        // 点击蒙层是否允许关闭
-        nzMaskClosable: false,
-        // 是否显示右上角的关闭按钮。
-        nzClosable: false,
-        nzFooter: [
-          {
-            label: '新建文件夹',
-            type: 'default',
-            disabled: (FileSelectionComponent) => {
-              if (FileSelectionComponent.nodeSelected === null) {
-                return true;
-              } else {
-                return false;
-              }
-            },
-            onClick: (FileSelectionComponent) => {
-              // 异步关闭变量
-              let isOkLoading = false;
-              // 创建输入新建文件夹名的对话框
-              const modalNew = this.modalSrv.create({
-                nzTitle: '新建文件夹',
-                nzContent: FileNewFolderComponent,
-                // 点击蒙层是否允许关闭
-                nzMaskClosable: false,
-                // 是否显示右上角的关闭按钮。
-                nzClosable: false,
+        {
+          label: '确定',
+          type: 'primary',
+          disabled: (FileSelectionComponent) => {
+            if (FileSelectionComponent.nodeSelected === null) {
+              return true;
+            } else {
+              return false;
+            }
+          },
+          onClick: (FileSelectionComponent) => {
+            if (FileSelectionComponent.nodeSelected === null) {
+              return;
+            } else {
+              this.rd2.setProperty(this.rootDirInputRef.nativeElement, 'value', FileSelectionComponent!.nodeSelected[0].key);
+            }
+            modal.destroy();
+            this.form.controls['rootDir'].markAsDirty();
+            this.form.controls['rootDir'].updateValueAndValidity();
+          },
+        },
+        {
+          label: '取消',
+          type: 'default',
+          onClick: () => {
+            modal.destroy();
+          },
+        },
+      ],
+    });
+  }
 
-                nzFooter: [
-                  {
-                    label: '确定',
-                    type: 'primary',
-
-                    disabled: (fileNewFoldercomponentInstance) => {
-                      if (fileNewFoldercomponentInstance.isFolderNameError) {
-                        return true;
-                      } else {
-                        return false;
-                      }
-                    },
-                    loading: () => {
-                      return true;
-                    },
-                    // 新建文件夹提交
-                    onClick: (fileNewFoldercomponentInstance) => {
-                      // 文件名错误，返回
-                      if (fileNewFoldercomponentInstance.isFolderNameError) {
-                        return;
-                      } else {
-                        // 异步关闭
-                        // modalNew. = true;
-
-                        let parentFolderPath = FileSelectionComponent.nodeSelected[0].key;
-                        let newFoldername = fileNewFoldercomponentInstance.folderNameValue;
-                        // 读取指定目录下文件、文件夹(并且排序)
-                        this.service.postNewFolder(parentFolderPath, newFoldername).subscribe((res: any) => {
-                          // 如果服务器出现错误，返回
-                          if (res.msg !== 'ok') {
-                            return;
-                          }
-                          // 显示新建文件夹
-                          FileSelectionComponent.newFolderOkOnClick(res.data.fileList[0]);
-                          // 异步关闭
-                          isOkLoading = false;
-                          modalNew.destroy();
-                        });
-                      }
-                    },
-                  },
-                  {
-                    label: '取消',
-                    type: 'default',
-                    onClick: () => {
-                      modalNew.destroy();
-                    },
-                  },
-                ],
+  // 创建输入文件夹名对话框
+  createFileNewFolderModal(FileSelectionComponent: FileSelectionComponent, service: ProjectService): void {
+    // 创建输入新建文件夹名的对话框
+    const modal: NzModalRef = this.modalSrv.create({
+      nzTitle: '新建文件夹',
+      nzContent: FileNewFolderComponent,
+      // 点击蒙层是否允许关闭
+      nzMaskClosable: false,
+      // 是否显示右上角的关闭按钮。
+      nzClosable: false,
+      nzFooter: [
+        {
+          label: '确定',
+          type: 'primary',
+          loading: false,
+          disabled(this, fileNewFoldercomponentInstance): boolean {
+            return fileNewFoldercomponentInstance.isFolderNameError;
+          },
+          // 新建文件夹提交
+          onClick(this, fileNewFoldercomponentInstance): void {
+            // 异步关闭
+            this.loading = true;
+            // 文件名错误，返回
+            if (fileNewFoldercomponentInstance.isFolderNameError) {
+              return;
+            } else {
+              let parentFolderPath = FileSelectionComponent.nodeSelected[0].key;
+              let newFoldername = fileNewFoldercomponentInstance.folderNameValue;
+              // 新建文件夹
+              service.postNewFolder(parentFolderPath, newFoldername).subscribe((res: any) => {
+                // 如果服务器出现错误，返回
+                if (res.msg !== 'ok') {
+                  return;
+                }
+                // 显示新建文件夹
+                FileSelectionComponent.newFolderOkOnClick(res.data.fileList, parentFolderPath, parentFolderPath + '/' + newFoldername);
+                // 异步关闭
+                this.loading = false;
+                modal.destroy();
               });
-              // componentInstance.newFolderOnClick();
-            },
+            }
           },
-          {
-            label: '确定',
-            type: 'primary',
-            disabled: (FileSelectionComponent) => {
-              if (FileSelectionComponent.nodeSelected === null) {
-                return true;
-              } else {
-                return false;
-              }
-            },
-            onClick: (FileSelectionComponent) => {
-              if (FileSelectionComponent.nodeSelected === null) {
-                return;
-              } else {
-                this.rd2.setProperty(this.rootDirInputRef.nativeElement, 'value', FileSelectionComponent!.nodeSelected[0].key);
-              }
-              modal.destroy();
-              this.form.controls['rootDir'].markAsDirty();
-              this.form.controls['rootDir'].updateValueAndValidity();
-            },
+        },
+        {
+          label: '取消',
+          type: 'default',
+          onClick: () => {
+            modal.destroy();
           },
-          {
-            label: '取消',
-            type: 'default',
-            onClick: () => {
-              modal.destroy();
-            },
-          },
-        ],
-      });
+        },
+      ],
     });
   }
 

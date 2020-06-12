@@ -62,12 +62,12 @@ export class FileSelectionComponent implements OnInit {
 
     return nodes;
   }
-
-  newFolderOkOnClick(file: FileInfo) {
-    this.fileTreeComponent.getSelectedNodeList()[0].addChildren([{ title: file.name, key: file.path, isLeaf: !file.isDir }]);
-    console.log(77);
+  // 输入新建文件夹名字的对话框点击确定按钮函数
+  newFolderOkOnClick(fileList: FileInfo[]) {
     this.fileTreeComponent.getSelectedNodeList()[0].isExpanded = true;
-    // this.cdr.checkNoChanges();
+    // 清除子节点
+    this.fileTreeComponent.getSelectedNodeList()[0].clearChildren();
+    this.fileTreeComponent.getSelectedNodeList()[0].addChildren(this.folderFilter(fileList));
   }
 
   ngOnInit() {
