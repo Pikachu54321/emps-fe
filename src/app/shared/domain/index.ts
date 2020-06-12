@@ -17,6 +17,18 @@ export interface ContractType {
   id: number;
   name: string;
 }
+
+// 新建项目文件路径参数
+export interface ProjectNewFilePath {
+  text: string;
+  path: string;
+  children: [
+    {
+      text: string;
+      path: string;
+    },
+  ];
+}
 // 文件
 export interface FileInfo {
   isDir: number;

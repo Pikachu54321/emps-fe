@@ -111,7 +111,7 @@ export class UserLoginComponent implements OnDestroy {
     this.http
       // '/login/account?_allow_anonymous=true'
       // '/api/user/access/login?_allow_anonymous=true'
-      .post(`${environment.SERVER_URL}api/user/access/login?_allow_anonymous=true`, {
+      .post(`${environment.SERVER_URL}user/access/login?_allow_anonymous=true`, {
         type: this.type,
         userName: this.userName.value,
         password: this.password.value,

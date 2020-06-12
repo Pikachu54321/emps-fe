@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '@env/environment';
-import { ProjectRoot, Project, Employee, ContractType, FileListPage } from '@shared';
+import { ProjectRoot, Project, Employee, ContractType, FileListPage, ProjectNewFilePath } from '@shared';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -15,6 +15,9 @@ export class ProjectService {
   //   id: '1',
   //   name: '合同',
   // }];
+
+  // 项目立项页 project-new
+  // 获得立项依据
   getRoots() {
     // `${environment.baseUrl}/profile`
     return this.http.get<ProjectRoot[]>(`${environment.SERVER_URL}projects/roots`);
@@ -30,6 +33,10 @@ export class ProjectService {
   // 获得所有合同类型
   getContractTypes() {
     return this.http.get<ContractType[]>(`${environment.SERVER_URL}contracts/types`);
+  }
+  // 获得项目立项路径配置参数
+  getProjectNewPathParameter() {
+    return this.http.get(`${environment.SERVER_URL}projects/project-new-path-parameters`);
   }
   // 读取指定目录下文件、文件夹(并且排序)
   getFileListPage(path: string, sortName: string, sortOrder: string) {
