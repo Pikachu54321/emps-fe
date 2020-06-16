@@ -22,12 +22,14 @@ export interface ContractType {
 export interface ProjectNewFilePath {
   text: string;
   path: string;
-  children: [
-    {
-      text: string;
-      path: string;
-    },
-  ];
+  key: string;
+  children: ProjectNewFileChildPath[];
+}
+// 新建项目文件子路径参数
+export interface ProjectNewFileChildPath {
+  text: string;
+  path: string;
+  key: string;
 }
 // 文件
 export interface FileInfo {

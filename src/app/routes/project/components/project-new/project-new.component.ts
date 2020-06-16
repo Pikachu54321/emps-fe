@@ -12,6 +12,8 @@ import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { NzModalService, NzModalRef, ModalButtonOptions, ModalOptions } from 'ng-zorro-antd/modal';
+import { UploadFile, UploadChangeParam } from 'ng-zorro-antd/upload';
+import { NzMessageService } from 'ng-zorro-antd/message';
 import { ProjectService } from '../../services';
 import {
   ProjectRoot,
@@ -24,18 +26,17 @@ import {
   FileInfo,
   FileNewFolderComponent,
   ProjectNewFilePath,
+  ProjectNewFileChildPath,
 } from '@shared';
+import { environment } from '@env/environment';
 
 @Component({
   selector: 'app-project-new',
   templateUrl: './project-new.component.html',
-  styles: [],
+  styleUrls: ['./project-new.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectNewComponent implements OnInit {
-  editIndex = -1;
-  editObj = {};
-
   form: FormGroup;
 
   // 立项依据数组
@@ -52,10 +53,8 @@ export class ProjectNewComponent implements OnInit {
   projectRelevanceObj: Project = { id: undefined, name: null };
   // 表单页面日期格式
   dateFormat = 'yyyy/MM/dd';
-  // users: any[] = [
-  //   { value: 'xiao', label: '付晓晓' },
-  //   { value: 'mao', label: '周毛毛' },
-  // ];
+  // 项目立项路径配置参数
+  projectNewFilePaths: ProjectNewFilePath[];
 
   constructor(
     private fb: FormBuilder,
@@ -64,7 +63,13 @@ export class ProjectNewComponent implements OnInit {
     private service: ProjectService,
     private rd2: Renderer2,
     private cd: ChangeDetectorRef,
-  ) {}
+    private msg: NzMessageService,
+  ) {
+    // 读取项目立项路径配置参数
+    this.service.getProjectNewPathParameter().subscribe((res: any) => {
+      this.projectNewFilePaths = res.data.projectNewFilePaths;
+    });
+  }
 
   ngOnInit() {
     this.form = this.fb.group({
@@ -126,15 +131,6 @@ export class ProjectNewComponent implements OnInit {
     //   field.patchValue(i);
     //   this.items.push(field);
     // });
-  }
-
-  createSubcontract(): FormGroup {
-    return this.fb.group({
-      subcontractName: [null],
-      subcontractSum: [null],
-      subcontractDetails: [null],
-      subcontractChecklist: [null],
-    });
   }
 
   //#region get form fields
@@ -231,9 +227,23 @@ export class ProjectNewComponent implements OnInit {
       }
     });
   }
+
   // 分包
+  editIndex = -1;
+  editObj = {};
+  subcontractSumValue = '';
+  createSubcontract(): FormGroup {
+    return this.fb.group({
+      subcontractName: [null],
+      subcontractSum: [null],
+      subcontractDetails: [null],
+      subcontractChecklist: [null],
+    });
+  }
   add() {
     this.subcontracts.push(this.createSubcontract());
+    // 当按下添加分包按钮，保存的上一个分包金额清除
+    this.subcontractSumValue = '';
     this.edit(this.subcontracts.length - 1);
   }
 
@@ -258,7 +268,7 @@ export class ProjectNewComponent implements OnInit {
   }
 
   cancel(index: number) {
-    if (!this.subcontracts.at(index).value.key) {
+    if (!this.subcontracts.at(index).value.subcontractName) {
       this.del(index);
     } else {
       this.subcontracts.at(index).patchValue(this.editObj);
@@ -267,46 +277,98 @@ export class ProjectNewComponent implements OnInit {
   }
 
   // 分包合同金额
-  @ViewChild('subcontractSumInput', { static: false }) subcontractSumInput?: ElementRef;
-  subcontractSumValue = '';
-
-  // '.' at the end or only '-' in the input box.
-  subcontractSumOnBlur(): void {
-    if (this.subcontractSumValue.charAt(this.subcontractSumValue.length - 1) === '.' || this.subcontractSumValue === '-') {
-      this.updateNumValue(this.subcontractSumValue.slice(0, -1));
+  subcontractSumOnBlur(event: InputEvent, index: number): void {
+    let value = (event.target as HTMLInputElement).value;
+    if (event.data.charAt(value.length - 1) === '.' || value === '-') {
+      this.updateNumValue(value.slice(0, -1), index);
     }
   }
-  subcontractSumOnChange(value: string): void {
-    this.updateNumValue(value);
+  subcontractSumOnChange(event: InputEvent, index: number): void {
+    this.updateNumValue((event.target as HTMLInputElement).value, index);
   }
-  updateNumValue(value: string): void {
+  updateNumValue(value: string, index: number): void {
     const reg = /^-?(0|[1-9][0-9]*)(\.[0-9]*)?$/;
     if ((!isNaN(+value) && reg.test(value)) || value === '' || value === '-') {
       this.subcontractSumValue = value;
     }
-    this.rd2.setProperty(this.subcontractSumInput.nativeElement, 'value', this.subcontractSumValue);
+    this.subcontracts.at(index).get('subcontractSum').setValue(this.subcontractSumValue);
+    // this.rd2.setProperty(this.subcontractSumInput.nativeElement, 'value', this.subcontractSumValue);
   }
 
+  // 项目资料-路径配置
   // 根目录输入框
   @ViewChild('rootDirInputRef', { static: true }) rootDirInputRef: ElementRef;
-  // 项目立项路径配置参数
-  projectNewFilePath: ProjectNewFilePath;
   // 项目资料-路径配置-选择根目录按钮
   selectDirOnclick(event: MouseEvent): void {
-    // 读取项目立项路径配置参数
-    this.service.getProjectNewPathParameter().subscribe((res: any) => {
-      this.projectNewFilePath = res.data.projectNewFilePath;
-    });
+    let childPathConfig: ProjectNewFileChildPath = {
+      text: '根目录',
+      path: '',
+      key: 'rootDir',
+    };
+    // 如果点击是根目录的配置按钮
+    if (this.projectNewFilePaths[0].key === (event.target as HTMLButtonElement).value) {
+      childPathConfig.key = this.projectNewFilePaths[0].key;
+      childPathConfig.text = this.projectNewFilePaths[0].text;
+      childPathConfig.path = this.projectNewFilePaths[0].path;
+    } else {
+      // 遍历projectNewFilePath[0].children，找到被点击按钮的value值等于对象key值的对象
+      for (const pathConfig of this.projectNewFilePaths[0].children) {
+        // 找到被点击按钮的value值等于对象key值的对象
+        if (pathConfig.key === (event.target as HTMLButtonElement).value) {
+          childPathConfig = pathConfig;
+          break;
+        }
+      }
+    }
+
     // 读取指定目录下文件、文件夹(并且排序)
     this.service.getFileListPage('', 'name', 'ASC').subscribe((res: any) => {
       let fileList: FileInfo[] = res.data.fileList;
-      this.createFileSelectionModal(fileList, event);
+
+      this.createFileSelectionModal(fileList, childPathConfig);
     });
   }
+
+  uploadFileList: UploadFile[] = [
+    {
+      uid: '1',
+      name: 'xxx.png',
+      status: 'done',
+      response: 'Server Error 500', // custom error message to show
+      url: 'http://www.baidu.com/xxx.png',
+    },
+    {
+      uid: '2',
+      name: 'yyy.png',
+      status: 'done',
+      url: 'http://www.baidu.com/yyy.png',
+    },
+    {
+      uid: '3',
+      name: 'zzz.png',
+      status: 'error',
+      response: 'Server Error 500', // custom error message to show
+      url: 'http://www.baidu.com/zzz.png',
+    },
+  ];
+  // 上传的地址
+  uploadAction = `${environment.SERVER_URL}uploads`;
+  handleChange({ file, fileList }: UploadChangeParam): void {
+    const status = file.status;
+    if (status !== 'uploading') {
+      console.log(file, fileList);
+    }
+    if (status === 'done') {
+      this.msg.success(`${file.name} file uploaded successfully.`);
+    } else if (status === 'error') {
+      this.msg.error(`${file.name} file upload failed.`);
+    }
+  }
+
   // 创建文件夹路径对话框
-  createFileSelectionModal(fileList: FileInfo[], event: MouseEvent): void {
+  createFileSelectionModal(fileList: FileInfo[], pathConfig: ProjectNewFileChildPath): void {
     const modal: NzModalRef = this.modalSrv.create({
-      nzTitle: (event.target as HTMLButtonElement).value + '路径',
+      nzTitle: pathConfig.text + '路径',
       nzContent: FileSelectionComponent,
       // nzGetContainer: () => document.body,
       nzComponentParams: {
@@ -320,6 +382,7 @@ export class ProjectNewComponent implements OnInit {
         {
           label: '新建文件夹',
           type: 'default',
+          style: 'float:right;',
           disabled: (FileSelectionComponent) => {
             if (FileSelectionComponent.nodeSelected === null) {
               return true;
@@ -343,14 +406,21 @@ export class ProjectNewComponent implements OnInit {
             }
           },
           onClick: (FileSelectionComponent) => {
+            // 如果没有选中的文件夹
             if (FileSelectionComponent.nodeSelected === null) {
               return;
             } else {
-              this.rd2.setProperty(this.rootDirInputRef.nativeElement, 'value', FileSelectionComponent!.nodeSelected[0].key);
+              this.form.controls[pathConfig.key].setValue(FileSelectionComponent!.nodeSelected[0].key);
+              // this.rd2.setProperty(this.rootDirInputRef.nativeElement, 'value', FileSelectionComponent!.nodeSelected[0].key);
+            }
+            // 如果点击的是根目录
+            if (pathConfig.key === this.projectNewFilePaths[0].key) {
+              // 自动配置其他路径配置
+              for (const childPathConfig of this.projectNewFilePaths[0].children) {
+                this.form.controls[childPathConfig.key].setValue(FileSelectionComponent!.nodeSelected[0].key + childPathConfig.path);
+              }
             }
             modal.destroy();
-            this.form.controls['rootDir'].markAsDirty();
-            this.form.controls['rootDir'].updateValueAndValidity();
           },
         },
         {
