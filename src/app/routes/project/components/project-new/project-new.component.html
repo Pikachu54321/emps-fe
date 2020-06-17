@@ -321,7 +321,7 @@
                     <input nz-input [formControlName]="childPathConfig.key" disabled />
                   </nz-col>
                   <nz-col>
-                    <button nz-button nzType="primary" type="button" (click)="selectDirOnclick($event)" [value]="childPathConfig.key">
+                    <button nz-button nzType="primary" type="button" (click)="selectDirOnclick(childPathConfig.key)">
                       ...
                     </button>
                   </nz-col>
@@ -332,40 +332,44 @@
         </nz-row>
       </nz-tab>
       <nz-tab *ngFor="let childPathConfig of projectNewFilePaths[0].children; let i = index" [nzTitle]="childPathConfig.text">
-        <!-- 懒加载 使用懒加载，上传时切换标签，再切回来时，上传没有了，所以屏蔽了-->
-        <!-- <ng-template nz-tab> -->
-        <!-- [nzFileList]="uploadFileList" -->
-        <!-- [nzData]="childPathConfig" -->
-        <nz-upload
-          [nzMultiple]="true"
-          [nzFileList]="uploadFileList"
-          nzType="drag"
-          [nzAction]="uploadAction"
-          (nzChange)="handleChange($event)"
+        <ng-template #extraTemplate>
+          <button nz-button nzType="primary" type="button" (click)="selectDirOnclick(childPathConfig.key)">
+            更改
+          </button>
+          <button nz-button nzType="primary" type="button" (click)="selectDirOnclick(childPathConfig.key)">
+            导入
+          </button>
+        </ng-template>
+        <nz-card
+          nzType="inner"
+          [nzTitle]="form.get(childPathConfig.key).value === null ? '上传目录：无' : '上传目录：' + form.get(childPathConfig.key).value"
+          [nzExtra]="extraTemplate"
+          nz-tooltip
+          [nzTooltipTitle]="form.get(childPathConfig.key).value === null ? '无' : form.get(childPathConfig.key).value"
         >
-          <!-- (nzChange)="handleChange($event)" -->
-
-          <p class="ant-upload-drag-icon">
-            <i nz-icon nzType="inbox"></i>
-          </p>
-          <p class="ant-upload-text">单击或拖动文件到此区域上传</p>
-          <p class="ant-upload-hint">
-            支持单个或批量上传
-          </p>
-        </nz-upload>
-        <!-- </ng-template> -->
+          <!-- 懒加载 使用懒加载，上传时切换标签，再切回来时，上传没有了，所以屏蔽了-->
+          <!-- <ng-template nz-tab> -->
+          <!-- [nzFileList]="uploadFileList" -->
+          <!-- [nzData]="childPathConfig" -->
+          <nz-upload
+            [nzMultiple]="true"
+            [nzFileList]="uploadFileList"
+            nzType="drag"
+            [nzAction]="uploadAction"
+            (nzChange)="handleChange($event)"
+          >
+            <p class="ant-upload-drag-icon">
+              <i nz-icon nzType="inbox"></i>
+            </p>
+            <p class="ant-upload-text">单击或拖动文件到此区域上传</p>
+            <p class="ant-upload-hint">
+              支持单个或批量上传
+            </p>
+          </nz-upload>
+          <!-- </ng-template> -->
+        </nz-card>
       </nz-tab>
     </nz-tabset>
-    <!-- <ng-template #newFolderInputTem>
-      <nz-alert *ngIf="" nzType="error" nzMessage="Error" nzShowIcon></nz-alert>
-      <input
-        nz-input
-        placeholder="请输入文件夹名"
-        (ngModelChange)="subcontractSumOnChange($event)"
-        #subcontractSumInput
-        [ngModel]="subcontractSumValue"
-      />
-    </ng-template> -->
   </nz-card>
   <footer-toolbar errorCollect>
     <button nz-button nzType="primary" nzType="primary">提交</button>

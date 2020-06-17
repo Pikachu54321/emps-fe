@@ -299,14 +299,14 @@ export class ProjectNewComponent implements OnInit {
   // 根目录输入框
   @ViewChild('rootDirInputRef', { static: true }) rootDirInputRef: ElementRef;
   // 项目资料-路径配置-选择根目录按钮
-  selectDirOnclick(event: MouseEvent): void {
+  selectDirOnclick(value): void {
     let childPathConfig: ProjectNewFileChildPath = {
       text: '根目录',
       path: '',
       key: 'rootDir',
     };
     // 如果点击是根目录的配置按钮
-    if (this.projectNewFilePaths[0].key === (event.target as HTMLButtonElement).value) {
+    if (this.projectNewFilePaths[0].key === value) {
       childPathConfig.key = this.projectNewFilePaths[0].key;
       childPathConfig.text = this.projectNewFilePaths[0].text;
       childPathConfig.path = this.projectNewFilePaths[0].path;
@@ -314,7 +314,7 @@ export class ProjectNewComponent implements OnInit {
       // 遍历projectNewFilePath[0].children，找到被点击按钮的value值等于对象key值的对象
       for (const pathConfig of this.projectNewFilePaths[0].children) {
         // 找到被点击按钮的value值等于对象key值的对象
-        if (pathConfig.key === (event.target as HTMLButtonElement).value) {
+        if (pathConfig.key === value) {
           childPathConfig = pathConfig;
           break;
         }
@@ -368,7 +368,7 @@ export class ProjectNewComponent implements OnInit {
   // 创建文件夹路径对话框
   createFileSelectionModal(fileList: FileInfo[], pathConfig: ProjectNewFileChildPath): void {
     const modal: NzModalRef = this.modalSrv.create({
-      nzTitle: pathConfig.text + '路径',
+      nzTitle: pathConfig.text + '上传目录',
       nzContent: FileSelectionComponent,
       // nzGetContainer: () => document.body,
       nzComponentParams: {
