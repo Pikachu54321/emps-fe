@@ -332,6 +332,7 @@
         </nz-row>
       </nz-tab>
       <nz-tab *ngFor="let childPathConfig of projectNewFilePaths[0].children; let i = index" [nzTitle]="childPathConfig.text">
+        <!-- 按钮模板 -->
         <ng-template #extraTemplate>
           <button nz-button nzType="primary" type="button" (click)="selectDirOnclick(childPathConfig.key)">
             更改
@@ -340,23 +341,24 @@
             导入
           </button>
         </ng-template>
-        <nz-card
-          nzType="inner"
-          [nzTitle]="form.get(childPathConfig.key).value === null ? '上传目录：无' : '上传目录：' + form.get(childPathConfig.key).value"
-          [nzExtra]="extraTemplate"
-          nz-tooltip
-          [nzTooltipTitle]="form.get(childPathConfig.key).value === null ? '无' : form.get(childPathConfig.key).value"
-        >
+        <!-- 标题模板 -->
+        <ng-template #cardTitleTemplate>
+          <div nz-tooltip [nzTooltipTitle]="form.get(childPathConfig.key).value === null ? '无' : form.get(childPathConfig.key).value">
+            {{ form.get(childPathConfig.key).value === null ? '上传目录：无' : '上传目录：' + form.get(childPathConfig.key).value }}
+          </div>
+        </ng-template>
+        <nz-card nzType="inner" [nzTitle]="cardTitleTemplate" [nzExtra]="extraTemplate">
           <!-- 懒加载 使用懒加载，上传时切换标签，再切回来时，上传没有了，所以屏蔽了-->
           <!-- <ng-template nz-tab> -->
           <!-- [nzFileList]="uploadFileList" -->
           <!-- [nzData]="childPathConfig" -->
           <nz-upload
             [nzMultiple]="true"
-            [nzFileList]="uploadFileList"
+            [nzFileList]="uploadFileLists[i]"
             nzType="drag"
             [nzAction]="uploadAction"
-            (nzChange)="handleChange($event)"
+            (nzChange)="handleChange($event, i)"
+            [nzDisabled]="form.get(childPathConfig.key).value === null"
           >
             <p class="ant-upload-drag-icon">
               <i nz-icon nzType="inbox"></i>

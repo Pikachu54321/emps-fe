@@ -55,6 +55,8 @@ export class ProjectNewComponent implements OnInit {
   dateFormat = 'yyyy/MM/dd';
   // 项目立项路径配置参数
   projectNewFilePaths: ProjectNewFilePath[];
+  // 上传文件的列表的列表，总表
+  uploadFileLists: Array<UploadFile[]> = [];
 
   constructor(
     private fb: FormBuilder,
@@ -68,6 +70,10 @@ export class ProjectNewComponent implements OnInit {
     // 读取项目立项路径配置参数
     this.service.getProjectNewPathParameter().subscribe((res: any) => {
       this.projectNewFilePaths = res.data.projectNewFilePaths;
+      // 设定有几个上传文件列表 new Array<UploadFile[]>(this.projectNewFilePaths[0].children.length)
+      for (let index = 0; index < this.projectNewFilePaths[0].children.length; index++) {
+        this.uploadFileLists[index] = [];
+      }
     });
   }
 
@@ -329,42 +335,6 @@ export class ProjectNewComponent implements OnInit {
     });
   }
 
-  uploadFileList: UploadFile[] = [
-    {
-      uid: '1',
-      name: 'xxx.png',
-      status: 'done',
-      response: 'Server Error 500', // custom error message to show
-      url: 'http://www.baidu.com/xxx.png',
-    },
-    {
-      uid: '2',
-      name: 'yyy.png',
-      status: 'done',
-      url: 'http://www.baidu.com/yyy.png',
-    },
-    {
-      uid: '3',
-      name: 'zzz.png',
-      status: 'error',
-      response: 'Server Error 500', // custom error message to show
-      url: 'http://www.baidu.com/zzz.png',
-    },
-  ];
-  // 上传的地址
-  uploadAction = `${environment.SERVER_URL}uploads`;
-  handleChange({ file, fileList }: UploadChangeParam): void {
-    const status = file.status;
-    if (status !== 'uploading') {
-      console.log(file, fileList);
-    }
-    if (status === 'done') {
-      this.msg.success(`${file.name} file uploaded successfully.`);
-    } else if (status === 'error') {
-      this.msg.error(`${file.name} file upload failed.`);
-    }
-  }
-
   // 创建文件夹路径对话框
   createFileSelectionModal(fileList: FileInfo[], pathConfig: ProjectNewFileChildPath): void {
     const modal: NzModalRef = this.modalSrv.create({
@@ -486,6 +456,44 @@ export class ProjectNewComponent implements OnInit {
         },
       ],
     });
+  }
+
+  // 上传
+  uploadFileList: UploadFile[] = [
+    {
+      uid: '1',
+      name: 'xxx.png',
+      status: 'done',
+      response: 'Server Error 500', // custom error message to show
+      url: 'http://www.baidu.com/xxx.png',
+    },
+    {
+      uid: '2',
+      name: 'yyy.png',
+      status: 'done',
+      url: 'http://www.baidu.com/yyy.png',
+    },
+    {
+      uid: '3',
+      name: 'zzz.png',
+      status: 'error',
+      response: 'Server Error 500', // custom error message to show
+      url: 'http://www.baidu.com/zzz.png',
+    },
+  ];
+
+  // 上传的地址
+  uploadAction = `${environment.SERVER_URL}uploads`;
+  handleChange({ file, fileList }: UploadChangeParam, i: number): void {
+    const status = file.status;
+    if (status !== 'uploading') {
+      console.log(file, fileList);
+    }
+    if (status === 'done') {
+      this.msg.success(`${file.name} file uploaded successfully.`);
+    } else if (status === 'error') {
+      this.msg.error(`${file.name} file upload failed.`);
+    }
   }
 
   _submitForm() {
