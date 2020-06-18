@@ -357,8 +357,11 @@
             [nzFileList]="uploadFileLists[i]"
             nzType="drag"
             [nzAction]="uploadAction"
+            [nzBeforeUpload]="beforeUpload"
             (nzChange)="handleChange($event, i)"
             [nzDisabled]="form.get(childPathConfig.key).value === null"
+            (click)="getCurrentUploadTabID($event, i)"
+            (drop)="getCurrentUploadTabID($event, i)"
           >
             <p class="ant-upload-drag-icon">
               <i nz-icon nzType="inbox"></i>

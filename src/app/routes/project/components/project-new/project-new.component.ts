@@ -482,8 +482,28 @@ export class ProjectNewComponent implements OnInit {
     },
   ];
 
+  // 上传
   // 上传的地址
-  uploadAction = `${environment.SERVER_URL}uploads`;
+  uploadAction: string = `${environment.SERVER_URL}uploads`;
+  // 当前上传的tab标签号
+  currentUploadTabID: number = -1;
+  // 当点击或拖拽时调用
+  getCurrentUploadTabID(event: DragEvent | MouseEvent, id: number): void {
+    if (event.type === 'dragover') {
+      event.preventDefault();
+      return;
+    }
+    this.currentUploadTabID = id;
+  }
+  // 上传前验证
+  beforeUpload = (file: UploadFile, fileList: UploadFile[]): boolean => {
+    console.log(file);
+    console.log(fileList);
+    console.log(this.currentUploadTabID);
+
+    return false;
+  };
+
   handleChange({ file, fileList }: UploadChangeParam, i: number): void {
     const status = file.status;
     if (status !== 'uploading') {
