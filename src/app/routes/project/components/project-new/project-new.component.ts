@@ -10,10 +10,11 @@ import {
 } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, Observer } from 'rxjs';
 import { NzModalService, NzModalRef, ModalButtonOptions, ModalOptions } from 'ng-zorro-antd/modal';
 import { UploadFile, UploadChangeParam } from 'ng-zorro-antd/upload';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ProjectService } from '../../services';
 import {
   ProjectRoot,
@@ -66,13 +67,15 @@ export class ProjectNewComponent implements OnInit {
     private rd2: Renderer2,
     private cd: ChangeDetectorRef,
     private msg: NzMessageService,
+    private notify: NzNotificationService,
   ) {
     // 读取项目立项路径配置参数
     this.service.getProjectNewPathParameter().subscribe((res: any) => {
       this.projectNewFilePaths = res.data.projectNewFilePaths;
       // 设定有几个上传文件列表 new Array<UploadFile[]>(this.projectNewFilePaths[0].children.length)
       for (let index = 0; index < this.projectNewFilePaths[0].children.length; index++) {
-        this.uploadFileLists[index] = [];
+        this.uploadFileLists[index] = this.uploadFileList;
+        // this.uploadFileLists[index] = [];
       }
     });
   }
@@ -207,6 +210,15 @@ export class ProjectNewComponent implements OnInit {
     return this.form.controls.subcontracts as FormArray;
   }
   //#endregion
+
+  // 防止按下回车表单提交
+  formKeyDownFunction(event) {
+    if (event.keyCode == 13) {
+      // alert('you just clicked enter');
+      // rest of your code
+      return false;
+    }
+  }
   // 项目属性改变。主项目、子项目
   projectPropertyChange(value: string): void {
     if (value === 'child') {
@@ -254,6 +266,13 @@ export class ProjectNewComponent implements OnInit {
   }
 
   del(index: number) {
+    // 表示有条目在编辑状态
+    if (this.editIndex !== -1) {
+      // 如果删除条目索引小于当前编辑条目索引，当前编辑条目索引-1
+      if (index < this.editIndex) {
+        this.editIndex -= 1;
+      }
+    }
     this.subcontracts.removeAt(index);
   }
 
@@ -496,12 +515,47 @@ export class ProjectNewComponent implements OnInit {
     this.currentUploadTabID = id;
   }
   // 上传前验证
-  beforeUpload = (file: UploadFile, fileList: UploadFile[]): boolean => {
+  beforeUpload = (file: UploadFile, fileList: UploadFile[]): Observable<boolean> => {
+    let path = this.form.get(this.projectNewFilePaths[0].children[this.currentUploadTabID].key).value;
     console.log(file);
     console.log(fileList);
     console.log(this.currentUploadTabID);
 
-    return false;
+    return new Observable((observer: Observer<boolean>) => {
+      // 查找是否和已上传文件重名
+      for (let index = 0; index < this.uploadFileLists[this.currentUploadTabID].length; index++) {
+        if (this.uploadFileLists[this.currentUploadTabID][index]?.name === file.name) {
+          const suffix = file.name.slice(file.name.lastIndexOf('.'));
+          // 如果重名添加file.filename，file.name无法修改只读属性
+          file.filename = file.name.slice(0, file.name.lastIndexOf('.')) + '_' + Date.now() + suffix;
+          console.log(file.filename);
+          break;
+        }
+      }
+      // 读取指定目录下文件、文件夹(并且排序)
+      this.service.getFileListPage(path, 'name', 'ASC').subscribe((res: any) => {
+        let fileList: FileInfo[] = res?.data?.fileList;
+
+        // 表示文件夹不存在，可以上传
+        if (res?.msg.substr(0, 33) == 'ENOENT: no such file or directory') {
+          observer.next(true);
+          observer.complete();
+        }
+
+        // 查找是否和上传目录下的文件重名
+        for (let index = 0; index < fileList.length; index++) {
+          if (fileList[index].name === file.name) {
+            const suffix = file.name.slice(file.name.lastIndexOf('.'));
+            // 如果重名添加file.filename，file.name无法修改只读属性
+            file.filename = file.name.slice(0, file.name.lastIndexOf('.')) + '_' + Date.now() + suffix;
+            console.log(file.filename);
+            break;
+          }
+        }
+        observer.next(true);
+        observer.complete();
+      });
+    });
   };
 
   handleChange({ file, fileList }: UploadChangeParam, i: number): void {

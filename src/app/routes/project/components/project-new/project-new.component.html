@@ -1,7 +1,7 @@
 <page-header>
   高级表单常见于一次性输入和提交大批量数据的场景。（示例采用响应式表单，也可使用模板驱动方式）
 </page-header>
-<form nz-form [formGroup]="form" (ngSubmit)="_submitForm()" [nzLayout]="'vertical'">
+<form nz-form [formGroup]="form" (ngSubmit)="_submitForm()" [nzLayout]="'vertical'" (keydown)="formKeyDownFunction($event)">
   <nz-card [nzBordered]="false" nzTitle="项目基础信息">
     <nz-row nzGutter="16">
       <nz-col nzLg="6" nzMd="12" nzSm="24">
