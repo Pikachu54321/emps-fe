@@ -506,32 +506,34 @@ export class ProjectNewComponent implements OnInit {
   uploadAction: string = `${environment.SERVER_URL}uploads`;
   // 当前上传的tab标签号
   currentUploadTabID: number = -1;
+  uploadData = {
+    isTemp: true,
+  };
   // 当点击或拖拽时调用
-  getCurrentUploadTabID(event: DragEvent | MouseEvent, id: number): void {
-    if (event.type === 'dragover') {
-      event.preventDefault();
-      return;
-    }
+  getCurrentUploadTabID(id: number): void {
+    // if (event.type === 'dragover') {
+    //   event.preventDefault();
+    //   return;
+    // }
     this.currentUploadTabID = id;
   }
   // 上传前验证
   beforeUpload = (file: UploadFile, fileList: UploadFile[]): Observable<boolean> => {
     let path = this.form.get(this.projectNewFilePaths[0].children[this.currentUploadTabID].key).value;
-    console.log(file);
-    console.log(fileList);
-    console.log(this.currentUploadTabID);
 
     return new Observable((observer: Observer<boolean>) => {
-      // 查找是否和已上传文件重名
-      for (let index = 0; index < this.uploadFileLists[this.currentUploadTabID].length; index++) {
-        if (this.uploadFileLists[this.currentUploadTabID][index]?.name === file.name) {
-          const suffix = file.name.slice(file.name.lastIndexOf('.'));
-          // 如果重名添加file.filename，file.name无法修改只读属性
-          file.filename = file.name.slice(0, file.name.lastIndexOf('.')) + '_' + Date.now() + suffix;
-          console.log(file.filename);
-          break;
-        }
-      }
+      // 查找是否和已上传文件重名，
+      // 控制不了，如果1个大文件上传很慢，这期间又再次上传，上传列表没有这个正在上传的文件
+      // 2个文件还是会重名
+      // for (let index = 0; index < this.uploadFileLists[this.currentUploadTabID].length; index++) {
+      //   if (this.uploadFileLists[this.currentUploadTabID][index]?.name === file.name) {
+      //     const suffix = file.name.slice(file.name.lastIndexOf('.'));
+      //     // 如果重名添加file.filename，file.name无法修改只读属性
+      //     file.filename = file.name.slice(0, file.name.lastIndexOf('.')) + '_' + Date.now() + suffix;
+      //     console.log(file.filename);
+      //     break;
+      //   }
+      // }
       // 读取指定目录下文件、文件夹(并且排序)
       this.service.getFileListPage(path, 'name', 'ASC').subscribe((res: any) => {
         let fileList: FileInfo[] = res?.data?.fileList;
@@ -542,14 +544,16 @@ export class ProjectNewComponent implements OnInit {
           observer.complete();
         }
 
-        // 查找是否和上传目录下的文件重名
+        // 文件夹存在，查找是否和上传目录下的文件重名
         for (let index = 0; index < fileList.length; index++) {
           if (fileList[index].name === file.name) {
-            const suffix = file.name.slice(file.name.lastIndexOf('.'));
-            // 如果重名添加file.filename，file.name无法修改只读属性
-            file.filename = file.name.slice(0, file.name.lastIndexOf('.')) + '_' + Date.now() + suffix;
-            console.log(file.filename);
-            break;
+            // const suffix = file.name.slice(file.name.lastIndexOf('.'));
+            // // 如果重名添加file.filename，file.name无法修改只读属性
+            // file.filename = file.name.slice(0, file.name.lastIndexOf('.')) + '_' + Date.now() + suffix;
+            this.notify.error('文件名已存在', `文件"${file.name}"在目录"${path}"下已存在`);
+            observer.next(false);
+            observer.complete();
+            // break;
           }
         }
         observer.next(true);

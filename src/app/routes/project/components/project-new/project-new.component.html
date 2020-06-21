@@ -284,7 +284,7 @@
   <nz-card [nzBordered]="false" nzTitle="项目资料">
     <!-- 标签页 -->
     <nz-tabset nzSize="large">
-      <nz-tab nzTitle="路径配置">
+      <nz-tab nzTitle="路径配置" (nzSelect)="getCurrentUploadTabID(-1)">
         <!-- 根目录 -->
         <nz-row nzGutter="16">
           <nz-col [nzSpan]="24">
@@ -331,7 +331,11 @@
           </nz-col>
         </nz-row>
       </nz-tab>
-      <nz-tab *ngFor="let childPathConfig of projectNewFilePaths[0].children; let i = index" [nzTitle]="childPathConfig.text">
+      <nz-tab
+        *ngFor="let childPathConfig of projectNewFilePaths[0].children; let i = index"
+        [nzTitle]="childPathConfig.text"
+        (nzSelect)="getCurrentUploadTabID(i)"
+      >
         <!-- 按钮模板 -->
         <ng-template #extraTemplate>
           <button nz-button nzType="primary" type="button" (click)="selectDirOnclick(childPathConfig.key)">
@@ -360,8 +364,7 @@
             [nzBeforeUpload]="beforeUpload"
             (nzChange)="handleChange($event, i)"
             [nzDisabled]="form.get(childPathConfig.key).value === null"
-            (click)="getCurrentUploadTabID($event, i)"
-            (drop)="getCurrentUploadTabID($event, i)"
+            [nzData]="uploadData"
           >
             <p class="ant-upload-drag-icon">
               <i nz-icon nzType="inbox"></i>
