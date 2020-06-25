@@ -4,6 +4,7 @@
     nzShowIcon
     [nzExpandedIcon]="fileSelectionExpandedIconTemplate"
     [nzShowLine]="true"
+    [nzMultiple]="isMultiple"
     nzAsyncData
     (nzClick)="nzEvent($event)"
     (nzExpandChange)="nzEvent($event)"

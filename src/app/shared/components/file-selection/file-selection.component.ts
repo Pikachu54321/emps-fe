@@ -12,44 +12,84 @@ import { ProjectService } from 'src/app/routes/project/services';
 export class FileSelectionComponent implements OnInit {
   // 外层对话框传进来的数据用于初始化对话框
   @Input() fileList: FileInfo[];
+  // 是否显示文件
+  @Input() isDisplayFile: boolean;
+  // 是否可以多选
+  @Input() isMultiple: boolean;
+  // 是否文件夹可被选中
+  @Input() isFolderSelectable: boolean;
   nodeSelected: NzTreeNode[] = null;
   @ViewChild('fileTreeComponent', { static: false }) fileTreeComponent!: NzTreeComponent;
   // 初始化[nzData]="nodes"
-  nodes = [];
+  nodes: NzTreeNodeOptions[] = [];
   constructor(private projectService: ProjectService, private cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
-    this.nodes = this.folderFilter(this.fileList);
+    this.nodes = this.nodesInit(this.fileList);
   }
 
-  // 过滤文件夹。去除文件
-  folderFilter(fileList: FileInfo[]) {
-    let nodesIndex = 0;
-    let nodes = [];
-    // 如果是根目录，有可能会有fileList[0]为空的情况
+  // 节点初始化
+  nodesInit(fileList: FileInfo[]) {
+    // let nodesIndex = 0;
+    let nodes: NzTreeNodeOptions[] = [];
+    // 如果第一个元素的父目录是根目录，有可能会有fileList[0]为空的情况【表示没有文件夹或文件】
     if (fileList[0]?.superPath === '') {
       // 初始化根节点
-      nodes[0] = { title: '全部文件', key: fileList[0].superPath, isLeaf: false, children: [], expanded: true };
-      for (let index = 0; index < fileList.length; index++) {
-        const element = fileList[index];
-        // 只保留文件夹
+      // isFolderSelectable: true  表示文件夹可以被选中
+      // isFolderSelectable: false 表示文件夹不可以被选中
+      nodes[0] = {
+        title: '全部文件',
+        key: fileList[0].superPath,
+        isLeaf: false,
+        children: [],
+        expanded: true,
+        selectable: this.isFolderSelectable,
+      };
+      // 初始化'全部文件'下的子节点
+      this.nodesInitHandle(fileList, nodes[0].children);
+    } else {
+      // 如果第一个元素的父目录不是根目录，初始化
+      this.nodesInitHandle(fileList, nodes);
+    }
+
+    return nodes;
+  }
+
+  // 节点初始化操作复用函数
+  nodesInitHandle(fileList: FileInfo[], nodes: NzTreeNodeOptions[]) {
+    let nodesIndex = 0;
+    // 初始化
+    for (let index = 0; index < fileList.length; index++) {
+      const element = fileList[index];
+
+      // 如果显示文件
+      if (this.isDisplayFile) {
+        // 如果元素是文件夹
         if (element.isDir) {
-          nodes[0].children[nodesIndex] = { title: element.name, key: element.path, isLeaf: !element.isDir };
+          nodes[nodesIndex] = {
+            title: element.name,
+            key: element.path,
+            isLeaf: !element.isDir,
+            selectable: this.isFolderSelectable,
+          };
+          nodesIndex++;
+        } else {
+          // 如果元素是文件
+          nodes[nodesIndex] = {
+            title: element.name,
+            key: element.path,
+            isLeaf: !element.isDir,
+          };
           nodesIndex++;
         }
-      }
-    } else {
-      for (let index = 0; index < fileList.length; index++) {
-        const element = fileList[index];
-        // 只保留文件夹
+      } else {
+        // 不显示文件，只保留文件夹
         if (element.isDir) {
           nodes[nodesIndex] = { title: element.name, key: element.path, isLeaf: !element.isDir };
           nodesIndex++;
         }
       }
     }
-
-    return nodes;
   }
 
   // 点击节点或点击节点图标事件
@@ -60,7 +100,7 @@ export class FileSelectionComponent implements OnInit {
       if (node?.getChildren().length === 0 && node?.isExpanded) {
         // 读取指定目录下文件、文件夹(并且排序)
         this.projectService.getFileListPage(node.key, 'name', 'ASC').subscribe((res: any) => {
-          node.addChildren(this.folderFilter(res.data.fileList));
+          node.addChildren(this.nodesInit(res.data.fileList));
         });
       }
     } else if (event.eventName === 'click') {
@@ -73,7 +113,7 @@ export class FileSelectionComponent implements OnInit {
   newFolderOkOnClick(fileList: FileInfo[], newFolderParentKey: string, newFolderKey: string) {
     // 清除子节点
     this.fileTreeComponent.getSelectedNodeList()[0].clearChildren();
-    this.fileTreeComponent.getSelectedNodeList()[0].addChildren(this.folderFilter(fileList));
+    this.fileTreeComponent.getSelectedNodeList()[0].addChildren(this.nodesInit(fileList));
     this.fileTreeComponent.getSelectedNodeList()[0].isExpanded = true;
     // 通过key获得新建文件夹节点，变成选中状态
     this.fileTreeComponent.getTreeNodeByKey(newFolderKey).isSelected = true;

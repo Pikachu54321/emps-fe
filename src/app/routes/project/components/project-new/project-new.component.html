@@ -16,7 +16,7 @@
         <nz-form-item>
           <nz-form-label nzFor="projectName" nzRequired>项目名称</nz-form-label>
           <nz-form-control nzErrorTip="请输入项目名称">
-            <input nz-input formControlName="projectName" placeholder="请输入项目名称" />
+            <input nz-input formControlName="projectName" placeholder="请输入项目名称【尽量与合同名称一致】" />
           </nz-form-control>
         </nz-form-item>
       </nz-col>
@@ -288,22 +288,33 @@
         <!-- 根目录 -->
         <nz-row nzGutter="16">
           <nz-col [nzSpan]="24">
-            <nz-form-item style="margin-bottom: 0;">
+            <nz-form-item>
               <nz-form-label>{{ projectNewFilePaths[0].text }}</nz-form-label>
-              <nz-form-control [nzSpan]="24">
-                <nz-row>
-                  <nz-col [nzSpan]="20">
+              <nz-form-control>
+                <nz-row style="flex-wrap: nowrap;">
+                  <nz-col nzFlex="auto">
                     <input nz-input disabled [formControlName]="projectNewFilePaths[0].key" #rootDirInputRef />
                   </nz-col>
-                  <nz-col>
+                  <nz-col nzFlex="120px">
                     <button
                       nz-button
                       nzType="primary"
                       type="button"
-                      (click)="selectDirOnclick($event)"
+                      (click)="selectDirOnclick(projectNewFilePaths[0].key)"
                       value="{{ projectNewFilePaths[0].key }}"
                     >
                       ...
+                    </button>
+                    <button
+                      nz-button
+                      nzType="primary"
+                      type="button"
+                      nzDanger
+                      (click)="clearDirOnclick(projectNewFilePaths[0].key)"
+                      value="{{ projectNewFilePaths[0].key }}"
+                      [disabled]="form.get(projectNewFilePaths[0].key).value === null"
+                    >
+                      清除
                     </button>
                   </nz-col>
                 </nz-row>
@@ -313,16 +324,27 @@
         </nz-row>
         <nz-row nzGutter="16" *ngFor="let childPathConfig of projectNewFilePaths[0].children; let i = index">
           <nz-col [nzSpan]="24">
-            <nz-form-item style="margin-bottom: 0;">
+            <nz-form-item>
               <nz-form-label>{{ childPathConfig.text }}</nz-form-label>
               <nz-form-control>
-                <nz-row>
-                  <nz-col [nzSpan]="20">
+                <nz-row style="flex-wrap: nowrap;">
+                  <nz-col nzFlex="auto">
                     <input nz-input [formControlName]="childPathConfig.key" disabled />
                   </nz-col>
-                  <nz-col>
+                  <nz-col nzFlex="120px">
                     <button nz-button nzType="primary" type="button" (click)="selectDirOnclick(childPathConfig.key)">
                       ...
+                    </button>
+                    <button
+                      nz-button
+                      nzType="primary"
+                      type="button"
+                      nzDanger
+                      (click)="clearDirOnclick(childPathConfig.key)"
+                      value="{{ childPathConfig.key }}"
+                      [disabled]="form.get(childPathConfig.key).value === null"
+                    >
+                      清除
                     </button>
                   </nz-col>
                 </nz-row>
@@ -341,8 +363,25 @@
           <button nz-button nzType="primary" type="button" (click)="selectDirOnclick(childPathConfig.key)">
             更改
           </button>
-          <button nz-button nzType="primary" type="button" (click)="selectDirOnclick(childPathConfig.key)">
+          <button
+            nz-button
+            nzType="primary"
+            type="button"
+            (click)="importFileOnclick()"
+            [disabled]="form.get(childPathConfig.key).value === null"
+          >
             导入
+          </button>
+          <button
+            nz-button
+            nzType="primary"
+            type="button"
+            nzDanger
+            (click)="clearDirOnclick(childPathConfig.key)"
+            value="{{ childPathConfig.key }}"
+            [disabled]="form.get(childPathConfig.key).value === null"
+          >
+            清除
           </button>
         </ng-template>
         <!-- 标题模板 -->
@@ -354,14 +393,14 @@
         <nz-card nzType="inner" [nzTitle]="cardTitleTemplate" [nzExtra]="extraTemplate">
           <!-- 懒加载 使用懒加载，上传时切换标签，再切回来时，上传没有了，所以屏蔽了-->
           <!-- <ng-template nz-tab> -->
-          <!-- [nzFileList]="uploadFileList" -->
           <!-- [nzData]="childPathConfig" -->
+          <!-- [nzBeforeUpload]="beforeUpload" -->
           <nz-upload
             [nzMultiple]="true"
-            [nzFileList]="uploadFileLists[i]"
+            [(nzFileList)]="uploadFileLists[i]"
+            [nzShowUploadList]="true"
             nzType="drag"
             [nzAction]="uploadAction"
-            [nzBeforeUpload]="beforeUpload"
             (nzChange)="handleChange($event, i)"
             [nzDisabled]="form.get(childPathConfig.key).value === null"
             [nzData]="uploadData"
