@@ -3,14 +3,14 @@
     <nz-tab [nzTitle]="'账户密码登录'">
       <nz-alert *ngIf="error" [nzType]="'error'" [nzMessage]="error" [nzShowIcon]="true" class="mb-lg"></nz-alert>
       <nz-form-item>
-        <nz-form-control [nzErrorTip]="'Please enter mobile number!'">
+        <nz-form-control [nzErrorTip]="'请输入用户名！'">
           <nz-input-group nzSize="large" nzPrefixIcon="user">
             <input nz-input formControlName="userName" placeholder="username: admin or user" />
           </nz-input-group>
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
-        <nz-form-control nzErrorTip="'Please enter password!'">
+        <nz-form-control nzErrorTip="'请输入密码！'">
           <nz-input-group nzSize="large" nzPrefixIcon="lock">
             <input nz-input type="password" formControlName="password" placeholder="password: ng-alain.com" />
           </nz-input-group>

@@ -32,6 +32,7 @@ import {
   ProjectNewFileChildPath,
 } from '@shared';
 import { environment } from '@env/environment';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-project-new',
@@ -45,7 +46,7 @@ export class ProjectNewComponent implements OnInit {
   // 立项依据数组
   projectRoots$: Observable<ProjectRoot[]>;
   // 主项目数组
-  parentProjects$: Observable<Project[]>;
+  parentProjects: Project[];
   // 员工数组
   employees$: Observable<Employee[]>;
   // 合同类型数组
@@ -71,6 +72,10 @@ export class ProjectNewComponent implements OnInit {
     private msg: NzMessageService,
     private notify: NzNotificationService,
   ) {
+    // 读取项目立项路径配置参数
+    this.service.getParentProjects().subscribe((res: any) => {
+      this.parentProjects = res.data.parentProjects;
+    });
     // 读取项目立项路径配置参数
     this.service.getProjectNewPathParameter().subscribe((res: any) => {
       this.projectNewFilePaths = res.data.projectNewFilePaths;
@@ -114,7 +119,7 @@ export class ProjectNewComponent implements OnInit {
       productionSchedulingNoticeDir: [null],
     });
     this.projectRoots$ = this.service.getRoots();
-    this.parentProjects$ = this.service.getParentProjects();
+    // this.parentProjects$ = this.service.getParentProjects();
     this.employees$ = this.service.getEmployees();
     this.contractTypes$ = this.service.getContractTypes();
     // const userList = [
@@ -236,16 +241,14 @@ export class ProjectNewComponent implements OnInit {
   }
   // 关联项目太长时，下拉菜单显示不下，设置关联项目提示
   projectRelevanceChange($event): void {
-    this.parentProjects$.subscribe((relevanceProjects) => {
-      for (const item of relevanceProjects) {
-        if (item.id === $event) {
-          this.projectRelevanceObj = item;
-          this.projectProperty.markAsDirty();
-          this.projectProperty.updateValueAndValidity();
-          break;
-        }
+    for (const item of this.parentProjects) {
+      if (item.id === $event) {
+        this.projectRelevanceObj = item;
+        this.projectProperty.markAsDirty();
+        this.projectProperty.updateValueAndValidity();
+        break;
       }
-    });
+    }
   }
 
   // 分包

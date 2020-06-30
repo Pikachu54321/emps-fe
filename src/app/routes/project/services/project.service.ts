@@ -24,7 +24,7 @@ export class ProjectService {
   }
   // 获得所有主项目名
   getParentProjects() {
-    return this.http.get<Project[]>(`${environment.SERVER_URL}projects/parent-projects`);
+    return this.http.get(`${environment.SERVER_URL}projects/parent-projects`);
   }
   // 获得所有员工
   getEmployees() {
