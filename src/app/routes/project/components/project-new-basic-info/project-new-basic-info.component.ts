@@ -14,25 +14,10 @@ import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, Observer } from 'rxjs';
 import { NzModalService, NzModalRef, ModalButtonOptions, ModalOptions } from 'ng-zorro-antd/modal';
-import { UploadFile, UploadChangeParam, NzUploadComponent } from 'ng-zorro-antd/upload';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ProjectService } from '../../services';
-import {
-  ProjectRoot,
-  Project,
-  Employee,
-  ContractType,
-  FileManagerComponent,
-  FileSelectionComponent,
-  FileListPage,
-  FileInfo,
-  FileNewFolderComponent,
-  ProjectNewFilePath,
-  ProjectNewFileChildPath,
-} from '@shared';
-import { environment } from '@env/environment';
-import { map } from 'rxjs/operators';
+import { ProjectRoot, Project, Employee } from '@shared';
 
 @Component({
   selector: 'app-project-new-basic-info',
@@ -81,7 +66,6 @@ export class ProjectNewBasicInfoComponent implements OnInit {
       initDate: [null, [Validators.required]],
     });
     this.projectRoots$ = this.service.getRoots();
-    // this.parentProjects$ = this.service.getParentProjects();
     this.employees$ = this.service.getEmployees();
   }
 

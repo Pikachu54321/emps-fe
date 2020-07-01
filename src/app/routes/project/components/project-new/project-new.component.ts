@@ -43,6 +43,21 @@ import { map } from 'rxjs/operators';
 export class ProjectNewComponent implements OnInit {
   form: FormGroup;
 
+  // 步骤条当前步骤
+  currentStep = 0;
+
+  stepPre(): void {
+    this.currentStep -= 1;
+  }
+
+  stepNext(): void {
+    this.currentStep += 1;
+  }
+
+  done(): void {
+    console.log('done');
+  }
+
   // 立项依据数组
   projectRoots$: Observable<ProjectRoot[]>;
   // 主项目数组
@@ -89,12 +104,12 @@ export class ProjectNewComponent implements OnInit {
 
   ngOnInit() {
     this.form = this.fb.group({
-      projectName: [null, [Validators.required]],
-      initRoot: [null, [Validators.required]],
-      projectProperty: [null],
-      projectRelevance: [null],
-      projectManager: [null],
-      initDate: [null, [Validators.required]],
+      // projectName: [null, [Validators.required]],
+      // initRoot: [null, [Validators.required]],
+      // projectProperty: [null],
+      // projectRelevance: [null],
+      // projectManager: [null],
+      // initDate: [null, [Validators.required]],
       contractIDHD: [null],
       contractIDYZ: [null],
       contractName: [null],
@@ -150,24 +165,24 @@ export class ProjectNewComponent implements OnInit {
   }
 
   //#region get form fields
-  get projectName() {
-    return this.form.controls.projectName;
-  }
-  get initRoot() {
-    return this.form.controls.initRoot;
-  }
-  get projectProperty() {
-    return this.form.controls.projectProperty;
-  }
-  get projectRelevance() {
-    return this.form.controls.projectRelevance;
-  }
-  get projectManager() {
-    return this.form.controls.projectManager;
-  }
-  get initDate() {
-    return this.form.controls.initDate;
-  }
+  // get projectName() {
+  //   return this.form.controls.projectName;
+  // }
+  // get initRoot() {
+  //   return this.form.controls.initRoot;
+  // }
+  // get projectProperty() {
+  //   return this.form.controls.projectProperty;
+  // }
+  // get projectRelevance() {
+  //   return this.form.controls.projectRelevance;
+  // }
+  // get projectManager() {
+  //   return this.form.controls.projectManager;
+  // }
+  // get initDate() {
+  //   return this.form.controls.initDate;
+  // }
   get contractIDHD() {
     return this.form.controls.contractIDHD;
   }
@@ -226,30 +241,30 @@ export class ProjectNewComponent implements OnInit {
       return false;
     }
   }
-  // 项目属性改变。主项目、子项目
-  projectPropertyChange(value: string): void {
-    if (value === 'child') {
-      this.projectRelevanceDisabled = false;
-    } else {
-      // 当项目属性改变为主项目时，关联项目下拉菜单重置，提示关联项目文字清空
-      this.projectRelevanceDisabled = true;
-      this.projectRelevance.reset();
-      this.projectRelevanceObj = { id: undefined, name: null };
-    }
-    this.projectRelevance.markAsDirty();
-    this.projectRelevance.updateValueAndValidity();
-  }
-  // 关联项目太长时，下拉菜单显示不下，设置关联项目提示
-  projectRelevanceChange($event): void {
-    for (const item of this.parentProjects) {
-      if (item.id === $event) {
-        this.projectRelevanceObj = item;
-        this.projectProperty.markAsDirty();
-        this.projectProperty.updateValueAndValidity();
-        break;
-      }
-    }
-  }
+  // // 项目属性改变。主项目、子项目
+  // projectPropertyChange(value: string): void {
+  //   if (value === 'child') {
+  //     this.projectRelevanceDisabled = false;
+  //   } else {
+  //     // 当项目属性改变为主项目时，关联项目下拉菜单重置，提示关联项目文字清空
+  //     this.projectRelevanceDisabled = true;
+  //     this.projectRelevance.reset();
+  //     this.projectRelevanceObj = { id: undefined, name: null };
+  //   }
+  //   this.projectRelevance.markAsDirty();
+  //   this.projectRelevance.updateValueAndValidity();
+  // }
+  // // 关联项目太长时，下拉菜单显示不下，设置关联项目提示
+  // projectRelevanceChange($event): void {
+  //   for (const item of this.parentProjects) {
+  //     if (item.id === $event) {
+  //       this.projectRelevanceObj = item;
+  //       this.projectProperty.markAsDirty();
+  //       this.projectProperty.updateValueAndValidity();
+  //       break;
+  //     }
+  //   }
+  // }
 
   // 分包
   editIndex = -1;
