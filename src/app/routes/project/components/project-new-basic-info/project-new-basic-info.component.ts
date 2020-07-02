@@ -9,6 +9,7 @@ import {
   TemplateRef,
   QueryList,
   ViewChildren,
+  Input,
 } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
@@ -16,8 +17,9 @@ import { Observable, Observer } from 'rxjs';
 import { NzModalService, NzModalRef, ModalButtonOptions, ModalOptions } from 'ng-zorro-antd/modal';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { ProjectService } from '../../services';
-import { ProjectRoot, Project, Employee } from '@shared';
+import { NzSelectSizeType, NzSelectComponent, NzSelectOptionInterface, NzSelectItemInterface } from 'ng-zorro-antd/select';
+import { ProjectService, ProjectStepService } from '../../services';
+import { ProjectRoot, Project, User } from '@shared';
 
 @Component({
   selector: 'app-project-new-basic-info',
@@ -25,14 +27,18 @@ import { ProjectRoot, Project, Employee } from '@shared';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectNewBasicInfoComponent implements OnInit {
+  // 输入框尺寸设置
+  @Input() inputSize: NzSelectSizeType;
+
   form: FormGroup;
 
   // 立项依据数组
-  projectRoots$: Observable<ProjectRoot[]>;
+  projectRoots: ProjectRoot[];
+  // 用户数组
+  users: User[];
   // 主项目数组
   parentProjects: Project[];
-  // 员工数组
-  employees$: Observable<Employee[]>;
+
   // 关联项目下拉菜单是否禁用。项目属性为主项目或未选择时禁用
   projectRelevanceDisabled: boolean = true;
   // 关联项目下拉菜单值
@@ -49,7 +55,16 @@ export class ProjectNewBasicInfoComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private msg: NzMessageService,
     private notify: NzNotificationService,
+    public projectStepService: ProjectStepService,
   ) {
+    // 获取立项依据
+    this.service.getRoots().subscribe((res: any) => {
+      this.projectRoots = res.data.projectRoots;
+    });
+    // 获取全部用户信息
+    this.service.getUsers().subscribe((res: any) => {
+      this.users = res.data.users;
+    });
     // 获取主项目信息
     this.service.getParentProjects().subscribe((res: any) => {
       this.parentProjects = res.data.parentProjects;
@@ -62,11 +77,11 @@ export class ProjectNewBasicInfoComponent implements OnInit {
       initRoot: [null, [Validators.required]],
       projectProperty: [null],
       projectRelevance: [null],
-      projectManager: [null],
+      projectManager: [null, [Validators.required]],
+      projectMembers: [null],
       initDate: [null, [Validators.required]],
     });
-    this.projectRoots$ = this.service.getRoots();
-    this.employees$ = this.service.getEmployees();
+    // this.projectRoots$ = this.service.getRoots();
   }
 
   //#region get form fields
@@ -85,6 +100,9 @@ export class ProjectNewBasicInfoComponent implements OnInit {
   get projectManager() {
     return this.form.controls.projectManager;
   }
+  get projectMembers() {
+    return this.form.controls.projectMembers;
+  }
   get initDate() {
     return this.form.controls.initDate;
   }
@@ -96,6 +114,23 @@ export class ProjectNewBasicInfoComponent implements OnInit {
       // alert('you just clicked enter');
       // rest of your code
       return false;
+    }
+  }
+  // 项目经理改变
+  projectManagerChange(value: string): void {
+    let projectMembersValue = this.projectMembers.value as Array<string>;
+    // 如果项目成员不为空
+    if (projectMembersValue) {
+      for (let i = 0; i < projectMembersValue.length; i++) {
+        if (projectMembersValue[i] === value) {
+          // 从已选中的成员中成员删除项目经理
+          projectMembersValue.splice(i, 1);
+          break;
+        }
+      }
+      this.projectMembers.setValue(projectMembersValue);
+      this.projectMembers.markAsDirty();
+      this.projectMembers.updateValueAndValidity();
     }
   }
   // 项目属性改变。主项目、子项目
@@ -124,7 +159,6 @@ export class ProjectNewBasicInfoComponent implements OnInit {
   }
 
   _submitForm() {
-    // 对话框没有销毁
     // 验证上传文件重名、导入文件重名、文件没有上传完不可以提交
     Object.keys(this.form.controls).forEach((key) => {
       this.form.controls[key].markAsDirty();
@@ -132,6 +166,9 @@ export class ProjectNewBasicInfoComponent implements OnInit {
     });
     if (this.form.invalid) {
       return;
+    } else {
+      Object.assign(this.projectStepService, this.form.value);
+      this.projectStepService.step++;
     }
   }
 }

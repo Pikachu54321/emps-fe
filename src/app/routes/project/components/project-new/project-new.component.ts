@@ -17,11 +17,11 @@ import { NzModalService, NzModalRef, ModalButtonOptions, ModalOptions } from 'ng
 import { UploadFile, UploadChangeParam, NzUploadComponent } from 'ng-zorro-antd/upload';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { ProjectService } from '../../services';
+import { NzSelectSizeType } from 'ng-zorro-antd/select';
+import { ProjectService, ProjectStepService } from '../../services';
 import {
   ProjectRoot,
   Project,
-  Employee,
   ContractType,
   FileManagerComponent,
   FileSelectionComponent,
@@ -38,32 +38,21 @@ import { map } from 'rxjs/operators';
   selector: 'app-project-new',
   templateUrl: './project-new.component.html',
   styleUrls: ['./project-new.component.less'],
+  providers: [ProjectStepService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectNewComponent implements OnInit {
   form: FormGroup;
 
-  // 步骤条当前步骤
-  currentStep = 0;
-
-  stepPre(): void {
-    this.currentStep -= 1;
-  }
-
-  stepNext(): void {
-    this.currentStep += 1;
-  }
-
-  done(): void {
-    console.log('done');
-  }
+  // 输入框尺寸
+  inputSize: NzSelectSizeType = 'large';
 
   // 立项依据数组
   projectRoots$: Observable<ProjectRoot[]>;
   // 主项目数组
   parentProjects: Project[];
   // 员工数组
-  employees$: Observable<Employee[]>;
+  // employees$: Observable<Employee[]>;
   // 合同类型数组
   contractTypes$: Observable<ContractType[]>;
   // 关联项目下拉菜单是否禁用。项目属性为主项目或未选择时禁用
@@ -86,6 +75,7 @@ export class ProjectNewComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private msg: NzMessageService,
     private notify: NzNotificationService,
+    public projectStepService: ProjectStepService,
   ) {
     // 读取项目立项路径配置参数
     this.service.getParentProjects().subscribe((res: any) => {
@@ -135,7 +125,7 @@ export class ProjectNewComponent implements OnInit {
     });
     this.projectRoots$ = this.service.getRoots();
     // this.parentProjects$ = this.service.getParentProjects();
-    this.employees$ = this.service.getEmployees();
+    // this.employees$ = this.service.getEmployees();
     this.contractTypes$ = this.service.getContractTypes();
     // const userList = [
     //   {
@@ -163,6 +153,19 @@ export class ProjectNewComponent implements OnInit {
     //   this.items.push(field);
     // });
   }
+
+  // 步骤条函数
+  // stepPre(): void {
+  //   --this.projectStepService.step;
+  // }
+
+  // stepNext(): void {
+  //   ++this.projectStepService.step;
+  // }
+
+  // done(): void {
+  //   console.log('done');
+  // }
 
   //#region get form fields
   // get projectName() {

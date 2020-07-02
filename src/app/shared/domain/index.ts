@@ -7,8 +7,8 @@ export interface Project {
   id: number;
   name: string;
 }
-// Employee
-export interface Employee {
+// user 用户
+export interface User {
   id: number;
   name: string;
 }

@@ -1,83 +1,104 @@
-<form nz-form [formGroup]="form" (ngSubmit)="_submitForm()" [nzLayout]="'vertical'" (keydown)="formKeyDownFunction($event)">
-  <nz-card [nzBordered]="false" nzTitle="项目基础信息">
-    <nz-row nzGutter="16">
-      <nz-col nzLg="6" nzMd="12" nzSm="24" nzXs="24">
-        <nz-form-item>
-          <nz-form-label nzRequired>项目内部ID</nz-form-label>
-          <nz-form-control>
-            <input nz-input placeholder="自动生成无需填写" disabled />
-          </nz-form-control>
-        </nz-form-item>
-      </nz-col>
-      <nz-col [nzXl]="{ span: 6, offset: 2 }" [nzLg]="{ span: 8 }" [nzMd]="{ span: 12 }" nzSm="24" nzXs="24">
-        <nz-form-item>
-          <nz-form-label nzFor="projectName" nzRequired>项目名称</nz-form-label>
-          <nz-form-control nzErrorTip="请输入项目名称">
-            <input nz-input formControlName="projectName" placeholder="请输入项目名称【尽量与合同名称一致】" />
-          </nz-form-control>
-        </nz-form-item>
-      </nz-col>
-      <nz-col [nzXl]="{ span: 6, offset: 2 }" [nzLg]="{ span: 8 }" [nzMd]="{ span: 12 }" nzSm="24" nzXs="24">
-        <nz-form-item>
-          <nz-form-label nzRequired>立项依据</nz-form-label>
-          <nz-form-control nzErrorTip="请选择立项依据">
-            <nz-select formControlName="initRoot" [nzPlaceHolder]="'请选择立项依据'" [nzShowSearch]="true">
-              <nz-option *ngFor="let i of projectRoots$ | async as projectRoots" [nzLabel]="i.name" [nzValue]="i.id"></nz-option>
-            </nz-select>
-          </nz-form-control>
-        </nz-form-item>
-      </nz-col>
-    </nz-row>
-    <nz-row nzGutter="16">
-      <nz-col nzLg="6" nzMd="12" nzSm="24" nzXs="24">
-        <nz-form-item>
-          <nz-form-label>项目经理</nz-form-label>
-          <nz-form-control>
-            <nz-select formControlName="projectManager" [nzShowSearch]="true" [nzPlaceHolder]="'请选择项目经理'">
-              <nz-option *ngFor="let i of employees$ | async as employees" [nzLabel]="i.name" [nzValue]="i.id"></nz-option>
-            </nz-select>
-          </nz-form-control>
-        </nz-form-item>
-      </nz-col>
-      <nz-col [nzXl]="{ span: 6, offset: 2 }" [nzLg]="{ span: 8 }" [nzMd]="{ span: 12 }" nzSm="24" nzXs="24">
-        <nz-form-item>
-          <nz-form-label>项目属性</nz-form-label>
-          <nz-form-control>
-            <nz-input-group nzCompact style="display: flex; flex-wrap: nowrap;">
-              <nz-select
-                formControlName="projectProperty"
-                [nzPlaceHolder]="'请选择项目属性'"
-                (ngModelChange)="projectPropertyChange($event)"
-                style="flex: 0 0 100px;"
-              >
-                <nz-option [nzLabel]="'主项目'" [nzValue]="'parent'"></nz-option>
-                <nz-option [nzLabel]="'子项目'" [nzValue]="'child'"></nz-option>
-              </nz-select>
+<form nz-form [formGroup]="form" (keydown)="formKeyDownFunction($event)" (ngSubmit)="_submitForm()">
+  <nz-card [nzBordered]="false">
+    <nz-form-item>
+      <nz-form-label [nzMd]="4" [nzSm]="6" [nzXs]="24" nzRequired>项目内部ID</nz-form-label>
+      <nz-form-control [nzSm]="16" [nzXs]="24">
+        <input nz-input placeholder="自动生成无需填写" disabled [nzSize]="inputSize" />
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzMd]="4" [nzSm]="6" [nzXs]="24" nzRequired>
+        <span>
+          项目名称
+          <i nz-icon nz-tooltip nzTooltipTitle="尽量与合同名称一致" nzType="question-circle" nzTheme="outline"></i>
+        </span>
+      </nz-form-label>
+      <nz-form-control [nzSm]="16" [nzXs]="24" nzErrorTip="请输入项目名称">
+        <input nz-input formControlName="projectName" placeholder="请输入项目名称【尽量与合同名称一致】" [nzSize]="inputSize" />
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzMd]="4" [nzSm]="6" [nzXs]="24" nzRequired>立项依据</nz-form-label>
+      <nz-form-control [nzSm]="16" [nzXs]="24" nzErrorTip="请选择立项依据">
+        <nz-select formControlName="initRoot" [nzPlaceHolder]="'请选择立项依据'" [nzShowSearch]="true" [nzSize]="inputSize">
+          <nz-option *ngFor="let i of projectRoots" [nzLabel]="i.name" [nzValue]="i.id"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzMd]="4" [nzSm]="6" [nzXs]="24" nzRequired>项目经理</nz-form-label>
+      <nz-form-control [nzSm]="16" [nzXs]="24" nzErrorTip="请选择项目经理">
+        <nz-select
+          formControlName="projectManager"
+          [nzShowSearch]="true"
+          [nzPlaceHolder]="'请选择项目经理'"
+          [nzSize]="inputSize"
+          #projectManagerRef
+          (ngModelChange)="projectManagerChange($event)"
+        >
+          <nz-option *ngFor="let i of users" [nzLabel]="i.name" [nzValue]="i.id"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzMd]="4" [nzSm]="6" [nzXs]="24">项目主要成员</nz-form-label>
+      <nz-form-control [nzSm]="16" [nzXs]="24">
+        <nz-select
+          formControlName="projectMembers"
+          [nzShowSearch]="true"
+          [nzPlaceHolder]="'请选择项目主要成员'"
+          [nzSize]="inputSize"
+          nzMode="multiple"
+          #projectMembersRef
+        >
+          <nz-option
+            *ngFor="let i of users"
+            [nzDisabled]="i.id === projectManagerRef.activatedValue"
+            [nzLabel]="i.name"
+            [nzValue]="i.id"
+          ></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzMd]="4" [nzSm]="6" [nzXs]="24">项目属性</nz-form-label>
+      <nz-form-control [nzSm]="16" [nzXs]="24">
+        <nz-input-group nzCompact style="display: flex; flex-wrap: nowrap;">
+          <nz-select
+            formControlName="projectProperty"
+            [nzPlaceHolder]="'请选择项目属性'"
+            (ngModelChange)="projectPropertyChange($event)"
+            style="flex: 0 0 100px;"
+          >
+            <nz-option [nzLabel]="'主项目'" [nzValue]="'parent'"></nz-option>
+            <nz-option [nzLabel]="'子项目'" [nzValue]="'child'"></nz-option>
+          </nz-select>
 
-              <nz-select
-                formControlName="projectRelevance"
-                [nzPlaceHolder]="'请选择关联主项目'"
-                [nzShowSearch]="true"
-                [nzDisabled]="projectRelevanceDisabled"
-                (ngModelChange)="projectRelevanceChange($event)"
-                nz-tooltip
-                [nzTooltipTitle]="projectRelevanceObj.name"
-                style="flex: 1 1 auto; width: 100px;"
-              >
-                <nz-option *ngFor="let i of parentProjects" [nzLabel]="i.name" [nzValue]="i.id"></nz-option>
-              </nz-select>
-            </nz-input-group>
-          </nz-form-control>
-        </nz-form-item>
-      </nz-col>
-      <nz-col [nzXl]="{ span: 8, offset: 2 }" [nzLg]="{ span: 10 }" [nzMd]="{ span: 24 }" nzSm="24" nzXs="24">
-        <nz-form-item>
-          <nz-form-label nzRequired>立项时间</nz-form-label>
-          <nz-form-control>
-            <input nz-input placeholder="自动生成无需填写" disabled />
-          </nz-form-control>
-        </nz-form-item>
-      </nz-col>
-    </nz-row>
+          <nz-select
+            formControlName="projectRelevance"
+            [nzPlaceHolder]="'请选择关联主项目'"
+            [nzShowSearch]="true"
+            [nzDisabled]="projectRelevanceDisabled"
+            (ngModelChange)="projectRelevanceChange($event)"
+            nz-tooltip
+            [nzTooltipTitle]="projectRelevanceObj.name"
+            style="flex: 1 1 auto; width: 100px;"
+          >
+            <nz-option *ngFor="let i of parentProjects" [nzLabel]="i.name" [nzValue]="i.id"></nz-option>
+          </nz-select>
+        </nz-input-group>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzMd]="4" [nzSm]="6" [nzXs]="24" nzRequired>立项时间</nz-form-label>
+      <nz-form-control [nzSm]="16" [nzXs]="24">
+        <input nz-input placeholder="自动生成无需填写" disabled />
+      </nz-form-control>
+    </nz-form-item>
   </nz-card>
+  <footer-toolbar errorCollect>
+    <button nz-button nzType="primary">
+      <span>下一步：{{ projectStepService.stepTitles[projectStepService.step + 1] }}</span>
+    </button>
+  </footer-toolbar>
 </form>
