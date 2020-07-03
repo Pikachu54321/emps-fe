@@ -1,6 +1,6 @@
 <form nz-form [formGroup]="form" (keydown)="formKeyDownFunction($event)" (ngSubmit)="_submitForm()">
   <nz-card [nzBordered]="false">
-    <nz-form-item>
+    <nz-form-item [nzJustify]="'start'">
       <nz-form-label [nzMd]="4" [nzSm]="6" [nzXs]="24" nzRequired>项目内部ID</nz-form-label>
       <nz-form-control [nzSm]="16" [nzXs]="24">
         <input nz-input placeholder="自动生成无需填写" disabled [nzSize]="inputSize" />
@@ -68,6 +68,7 @@
             formControlName="projectProperty"
             [nzPlaceHolder]="'请选择项目属性'"
             (ngModelChange)="projectPropertyChange($event)"
+            [nzSize]="inputSize"
             style="flex: 0 0 100px;"
           >
             <nz-option [nzLabel]="'主项目'" [nzValue]="'parent'"></nz-option>
@@ -78,10 +79,11 @@
             formControlName="projectRelevance"
             [nzPlaceHolder]="'请选择关联主项目'"
             [nzShowSearch]="true"
-            [nzDisabled]="projectRelevanceDisabled"
+            [nzDisabled]="projectStepService.projectRelevanceDisabled"
             (ngModelChange)="projectRelevanceChange($event)"
             nz-tooltip
             [nzTooltipTitle]="projectRelevanceObj.name"
+            [nzSize]="inputSize"
             style="flex: 1 1 auto; width: 100px;"
           >
             <nz-option *ngFor="let i of parentProjects" [nzLabel]="i.name" [nzValue]="i.id"></nz-option>
@@ -92,12 +94,12 @@
     <nz-form-item>
       <nz-form-label [nzMd]="4" [nzSm]="6" [nzXs]="24" nzRequired>立项时间</nz-form-label>
       <nz-form-control [nzSm]="16" [nzXs]="24">
-        <input nz-input placeholder="自动生成无需填写" disabled />
+        <input nz-input placeholder="自动生成无需填写" disabled [nzSize]="inputSize" />
       </nz-form-control>
     </nz-form-item>
   </nz-card>
   <footer-toolbar errorCollect>
-    <button nz-button nzType="primary">
+    <button nz-button nzType="primary" [nzSize]="inputSize">
       <span>下一步：{{ projectStepService.stepTitles[projectStepService.step + 1] }}</span>
     </button>
   </footer-toolbar>

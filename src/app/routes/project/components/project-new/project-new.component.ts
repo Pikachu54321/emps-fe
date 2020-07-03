@@ -33,12 +33,13 @@ import {
 } from '@shared';
 import { environment } from '@env/environment';
 import { map } from 'rxjs/operators';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-project-new',
   templateUrl: './project-new.component.html',
   styleUrls: ['./project-new.component.less'],
-  providers: [ProjectStepService],
+  providers: [ProjectStepService, DatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectNewComponent implements OnInit {
@@ -75,6 +76,7 @@ export class ProjectNewComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private msg: NzMessageService,
     private notify: NzNotificationService,
+    private datePipe: DatePipe,
     public projectStepService: ProjectStepService,
   ) {
     // 读取项目立项路径配置参数
@@ -90,6 +92,9 @@ export class ProjectNewComponent implements OnInit {
         this.uploadFileLists[index] = [];
       }
     });
+    // this.initDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd HH:mm:ss');
+    // let a = this.datePipe.transform(new Date(), 'yyyy-MM-dd HH:mm:ss');
+    // console.log(a);
   }
 
   ngOnInit() {
@@ -123,6 +128,8 @@ export class ProjectNewComponent implements OnInit {
       settlementDir: [null],
       productionSchedulingNoticeDir: [null],
     });
+    console.log(this.datePipe.transform(new Date()));
+
     this.projectRoots$ = this.service.getRoots();
     // this.parentProjects$ = this.service.getParentProjects();
     // this.employees$ = this.service.getEmployees();

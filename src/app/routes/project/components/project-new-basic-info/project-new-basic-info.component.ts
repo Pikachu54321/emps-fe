@@ -40,11 +40,9 @@ export class ProjectNewBasicInfoComponent implements OnInit {
   parentProjects: Project[];
 
   // 关联项目下拉菜单是否禁用。项目属性为主项目或未选择时禁用
-  projectRelevanceDisabled: boolean = true;
+  // projectRelevanceDisabled: boolean = true;
   // 关联项目下拉菜单值
   projectRelevanceObj: Project = { id: undefined, name: null };
-  // 表单页面日期格式
-  dateFormat = 'yyyy/MM/dd';
 
   constructor(
     private fb: FormBuilder,
@@ -79,9 +77,8 @@ export class ProjectNewBasicInfoComponent implements OnInit {
       projectRelevance: [null],
       projectManager: [null, [Validators.required]],
       projectMembers: [null],
-      initDate: [null, [Validators.required]],
     });
-    // this.projectRoots$ = this.service.getRoots();
+    this.form.patchValue(this.projectStepService);
   }
 
   //#region get form fields
@@ -136,10 +133,10 @@ export class ProjectNewBasicInfoComponent implements OnInit {
   // 项目属性改变。主项目、子项目
   projectPropertyChange(value: string): void {
     if (value === 'child') {
-      this.projectRelevanceDisabled = false;
+      this.projectStepService.projectRelevanceDisabled = false;
     } else {
       // 当项目属性改变为主项目时，关联项目下拉菜单重置，提示关联项目文字清空
-      this.projectRelevanceDisabled = true;
+      this.projectStepService.projectRelevanceDisabled = true;
       this.projectRelevance.reset();
       this.projectRelevanceObj = { id: undefined, name: null };
     }

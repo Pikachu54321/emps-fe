@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, Input } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { NzSelectSizeType } from 'ng-zorro-antd/select';
 import { Observable, Observer } from 'rxjs';
-import { ProjectService } from '../../services';
+import { ProjectService, ProjectStepService } from '../../services';
 import { ContractType } from '@shared';
 
 @Component({
@@ -10,33 +11,34 @@ import { ContractType } from '@shared';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectNewContractInfoComponent implements OnInit {
+  // 输入框尺寸设置
+  @Input() inputSize: NzSelectSizeType;
   form: FormGroup;
   // 合同类型数组
   contractTypes$: Observable<ContractType[]>;
-  // 表单页面日期格式
-  dateFormat = 'yyyy/MM/dd';
 
-  constructor(private fb: FormBuilder, private service: ProjectService) {}
+  constructor(private fb: FormBuilder, private service: ProjectService, public projectStepService: ProjectStepService) {}
 
   ngOnInit() {
+    // proprietorName
     this.form = this.fb.group({
       contractIDHD: [null],
       contractIDYZ: [null],
       contractName: [null],
-      proprietorName: [null],
+      partyAName: [null],
       projectDateRange: [null],
       contractDate: [null],
       warranty: [null],
       projectContent: [null],
       contractType: [null],
-      linkmanNameSW: [null],
-      linkmanPhoneSW: [null],
-      linkmanNameJS: [null],
-      linkmanPhoneJS: [null],
+      partyALinkmanName: [null],
+      partyALinkmanPhone: [null],
       projectAddress: [null],
-      proprietorAddress: [null],
+      partyAAddress: [null],
     });
     this.contractTypes$ = this.service.getContractTypes();
+    this.form.patchValue(this.projectStepService);
+    // Object.assign(this.projectStepService, this.form.value);
   }
 
   //#region get form fields
@@ -50,8 +52,8 @@ export class ProjectNewContractInfoComponent implements OnInit {
   get contractName() {
     return this.form.controls.contractName;
   }
-  get proprietorName() {
-    return this.form.controls.proprietorName;
+  get partyAName() {
+    return this.form.controls.partyAName;
   }
   get projectDateRange() {
     return this.form.controls.projectDateRange;
@@ -68,17 +70,11 @@ export class ProjectNewContractInfoComponent implements OnInit {
   get contractType() {
     return this.form.controls.contractType;
   }
-  get linkmanNameSW() {
-    return this.form.controls.linkmanNameSW;
+  get partyALinkmanName() {
+    return this.form.controls.partyALinkmanName;
   }
-  get linkmanPhoneSW() {
-    return this.form.controls.linkmanPhoneSW;
-  }
-  get linkmanNameJS() {
-    return this.form.controls.linkmanNameJS;
-  }
-  get linkmanPhoneJS() {
-    return this.form.controls.linkmanPhoneJS;
+  get partyALinkmanPhone() {
+    return this.form.controls.partyALinkmanPhone;
   }
   get projectAddress() {
     return this.form.controls.projectAddress;
@@ -96,9 +92,11 @@ export class ProjectNewContractInfoComponent implements OnInit {
       return false;
     }
   }
-
+  // 上一步
+  prev() {
+    --this.projectStepService.step;
+  }
   _submitForm() {
-    // 对话框没有销毁
     // 验证上传文件重名、导入文件重名、文件没有上传完不可以提交
     Object.keys(this.form.controls).forEach((key) => {
       this.form.controls[key].markAsDirty();
@@ -106,6 +104,9 @@ export class ProjectNewContractInfoComponent implements OnInit {
     });
     if (this.form.invalid) {
       return;
+    } else {
+      Object.assign(this.projectStepService, this.form.value);
+      this.projectStepService.step++;
     }
   }
 }
