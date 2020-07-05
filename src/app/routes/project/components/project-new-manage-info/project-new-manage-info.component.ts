@@ -6,11 +6,11 @@ import { ProjectService, ProjectStepService } from '../../services';
 import { ContractType } from '@shared';
 
 @Component({
-  selector: 'app-project-new-contract-info',
-  templateUrl: './project-new-contract-info.component.html',
+  selector: 'app-project-new-manage-info',
+  templateUrl: './project-new-manage-info.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProjectNewContractInfoComponent implements OnInit {
+export class ProjectNewManageInfoComponent implements OnInit {
   // 输入框尺寸设置
   @Input() inputSize: NzSelectSizeType;
   form: FormGroup;

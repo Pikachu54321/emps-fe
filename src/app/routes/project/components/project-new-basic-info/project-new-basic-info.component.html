@@ -1,4 +1,4 @@
-<form nz-form [formGroup]="form" (keydown)="formKeyDownFunction($event)" (ngSubmit)="_submitForm()">
+<form nz-form [formGroup]="form" (keydown.enter)="(false)" (ngSubmit)="_submitForm()">
   <nz-card [nzBordered]="false">
     <nz-form-item [nzJustify]="'start'">
       <nz-form-label [nzMd]="4" [nzSm]="6" [nzXs]="24" nzRequired>项目内部ID</nz-form-label>
@@ -21,7 +21,7 @@
       <nz-form-label [nzMd]="4" [nzSm]="6" [nzXs]="24" nzRequired>立项依据</nz-form-label>
       <nz-form-control [nzSm]="16" [nzXs]="24" nzErrorTip="请选择立项依据">
         <nz-select formControlName="initRoot" [nzPlaceHolder]="'请选择立项依据'" [nzShowSearch]="true" [nzSize]="inputSize">
-          <nz-option *ngFor="let i of projectRoots" [nzLabel]="i.name" [nzValue]="i.id"></nz-option>
+          <nz-option *ngFor="let i of projectStepService.projectRoots" [nzLabel]="i.name" [nzValue]="i.id"></nz-option>
         </nz-select>
       </nz-form-control>
     </nz-form-item>
@@ -36,7 +36,7 @@
           #projectManagerRef
           (ngModelChange)="projectManagerChange($event)"
         >
-          <nz-option *ngFor="let i of users" [nzLabel]="i.name" [nzValue]="i.id"></nz-option>
+          <nz-option *ngFor="let i of projectStepService.users" [nzLabel]="i.name" [nzValue]="i.id"></nz-option>
         </nz-select>
       </nz-form-control>
     </nz-form-item>
@@ -52,7 +52,7 @@
           #projectMembersRef
         >
           <nz-option
-            *ngFor="let i of users"
+            *ngFor="let i of projectStepService.users"
             [nzDisabled]="i.id === projectManagerRef.activatedValue"
             [nzLabel]="i.name"
             [nzValue]="i.id"
@@ -86,7 +86,7 @@
             [nzSize]="inputSize"
             style="flex: 1 1 auto; width: 100px;"
           >
-            <nz-option *ngFor="let i of parentProjects" [nzLabel]="i.name" [nzValue]="i.id"></nz-option>
+            <nz-option *ngFor="let i of projectStepService.parentProjects" [nzLabel]="i.name" [nzValue]="i.id"></nz-option>
           </nz-select>
         </nz-input-group>
       </nz-form-control>

@@ -20,7 +20,7 @@ export class ProjectService {
   // 获得立项依据
   getRoots() {
     // `${environment.baseUrl}/profile`
-    return this.http.get<ProjectRoot[]>(`${environment.SERVER_URL}project/roots`);
+    return this.http.get(`${environment.SERVER_URL}project/roots`);
   }
   // 获得所有主项目名
   getParentProjects() {
@@ -32,7 +32,7 @@ export class ProjectService {
   }
   // 获得所有合同类型
   getContractTypes() {
-    return this.http.get<ContractType[]>(`${environment.SERVER_URL}contract/types`);
+    return this.http.get(`${environment.SERVER_URL}project/contract-types`);
   }
   // 获得项目立项路径配置参数
   getProjectNewPathParameter() {

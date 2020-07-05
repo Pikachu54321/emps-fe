@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { ProjectRoot, User, Project, ContractType } from '@shared';
 
 @Injectable()
 export class ProjectStepService {
@@ -8,6 +9,12 @@ export class ProjectStepService {
   dateFormat: string = 'yyyy-MM-dd';
 
   // 步骤1参数
+  // 立项依据数组
+  projectRoots: ProjectRoot[] = null;
+  // 用户数组
+  users: User[] = null;
+  // 主项目数组
+  parentProjects: Project[] = null;
   // 关联项目下拉菜单是否禁用。项目属性为主项目或未选择时禁用
   projectRelevanceDisabled: boolean = true;
 
@@ -20,5 +27,23 @@ export class ProjectStepService {
   projectMembers: string[];
   initDate: string;
 
+  // 步骤2参数
+  // 合同类型数组
+  contractTypes: ContractType[];
+
+  // 步骤2要提交后台数据
+  contractIDHD: string;
+  contractIDYZ: string;
+  contractName: string;
+  partyAName: string;
+  projectDateRange: [Date, Date];
+  contractDate: string;
+  warranty: string;
+  projectContent: string;
+  contractType: string;
+  partyALinkmanName: string;
+  partyALinkmanPhone: string;
+  projectAddress: string;
+  partyAAddress: string;
   constructor() {}
 }

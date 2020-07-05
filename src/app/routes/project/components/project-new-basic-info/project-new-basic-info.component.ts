@@ -10,10 +10,11 @@ import {
   QueryList,
   ViewChildren,
   Input,
+  NgZone,
 } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { Observable, Observer } from 'rxjs';
+import { Observable, Observer, zip } from 'rxjs';
 import { NzModalService, NzModalRef, ModalButtonOptions, ModalOptions } from 'ng-zorro-antd/modal';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
@@ -32,12 +33,12 @@ export class ProjectNewBasicInfoComponent implements OnInit {
 
   form: FormGroup;
 
-  // 立项依据数组
-  projectRoots: ProjectRoot[];
-  // 用户数组
-  users: User[];
-  // 主项目数组
-  parentProjects: Project[];
+  // // 立项依据数组
+  // projectRoots: ProjectRoot[];
+  // // 用户数组
+  // users: User[];
+  // // 主项目数组
+  // parentProjects: Project[];
 
   // 关联项目下拉菜单是否禁用。项目属性为主项目或未选择时禁用
   // projectRelevanceDisabled: boolean = true;
@@ -54,20 +55,7 @@ export class ProjectNewBasicInfoComponent implements OnInit {
     private msg: NzMessageService,
     private notify: NzNotificationService,
     public projectStepService: ProjectStepService,
-  ) {
-    // 获取立项依据
-    this.service.getRoots().subscribe((res: any) => {
-      this.projectRoots = res.data.projectRoots;
-    });
-    // 获取全部用户信息
-    this.service.getUsers().subscribe((res: any) => {
-      this.users = res.data.users;
-    });
-    // 获取主项目信息
-    this.service.getParentProjects().subscribe((res: any) => {
-      this.parentProjects = res.data.parentProjects;
-    });
-  }
+  ) {}
 
   ngOnInit() {
     this.form = this.fb.group({
@@ -78,7 +66,14 @@ export class ProjectNewBasicInfoComponent implements OnInit {
       projectManager: [null, [Validators.required]],
       projectMembers: [null],
     });
-    this.form.patchValue(this.projectStepService);
+
+    // 获取立项依据、全部用户信息、主项目信息
+    zip(this.service.getRoots(), this.service.getUsers(), this.service.getParentProjects()).subscribe((res: [any, any, any]) => {
+      this.projectStepService.projectRoots = res[0].data.projectRoots;
+      this.projectStepService.users = res[1].data.users;
+      this.projectStepService.parentProjects = res[2].data.parentProjects;
+      this.form.patchValue(this.projectStepService);
+    });
   }
 
   //#region get form fields
@@ -106,10 +101,8 @@ export class ProjectNewBasicInfoComponent implements OnInit {
   //#endregion
 
   // 防止按下回车表单提交
-  formKeyDownFunction(event) {
+  formKeyDownFunction(event: KeyboardEvent) {
     if (event.keyCode == 13) {
-      // alert('you just clicked enter');
-      // rest of your code
       return false;
     }
   }
@@ -145,7 +138,7 @@ export class ProjectNewBasicInfoComponent implements OnInit {
   }
   // 关联项目太长时，下拉菜单显示不下，设置关联项目提示
   projectRelevanceChange($event): void {
-    for (const item of this.parentProjects) {
+    for (const item of this.projectStepService.parentProjects) {
       if (item.id === $event) {
         this.projectRelevanceObj = item;
         this.projectProperty.markAsDirty();

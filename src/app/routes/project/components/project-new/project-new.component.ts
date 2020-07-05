@@ -130,10 +130,10 @@ export class ProjectNewComponent implements OnInit {
     });
     console.log(this.datePipe.transform(new Date()));
 
-    this.projectRoots$ = this.service.getRoots();
+    // this.projectRoots$ = this.service.getRoots();
     // this.parentProjects$ = this.service.getParentProjects();
     // this.employees$ = this.service.getEmployees();
-    this.contractTypes$ = this.service.getContractTypes();
+    // this.contractTypes$ = this.service.getContractTypes();
     // const userList = [
     //   {
     //     key: '1',
