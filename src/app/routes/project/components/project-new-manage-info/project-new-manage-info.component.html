@@ -1,104 +1,106 @@
 <form nz-form [formGroup]="form" (keydown)="formKeyDownFunction($event)" (ngSubmit)="_submitForm()">
-  <nz-card [nzBordered]="false">
-    <nz-form-item>
-      <nz-form-label [nzMd]="4" [nzSm]="6" [nzXs]="24">合同编号（惠东）</nz-form-label>
-      <nz-form-control [nzSm]="16" [nzXs]="24">
-        <input nz-input formControlName="contractIDHD" placeholder="请输入合同编号（惠东）" [nzSize]="inputSize" />
-      </nz-form-control>
-    </nz-form-item>
-    <nz-form-item>
-      <nz-form-label [nzMd]="4" [nzSm]="6" [nzXs]="24">合同编号（业主）</nz-form-label>
-      <nz-form-control [nzSm]="16" [nzXs]="24">
-        <input nz-input formControlName="contractIDYZ" placeholder="合同编号（业主）" [nzSize]="inputSize" />
-      </nz-form-control>
-    </nz-form-item>
-    <nz-form-item>
-      <nz-form-label [nzMd]="4" [nzSm]="6" [nzXs]="24">
-        <span>
-          合同名称
-          <i nz-icon nz-tooltip nzTooltipTitle="请输入合同全称" nzType="question-circle" nzTheme="outline"></i>
-        </span>
-      </nz-form-label>
-      <nz-form-control [nzSm]="16" [nzXs]="24">
-        <input nz-input formControlName="contractName" placeholder="请输入合同名称【合同全称】" [nzSize]="inputSize" />
-      </nz-form-control>
-    </nz-form-item>
-    <nz-form-item>
-      <nz-form-label [nzMd]="4" [nzSm]="6" [nzXs]="24">合同类型</nz-form-label>
-      <nz-form-control [nzSm]="16" [nzXs]="24">
-        <nz-select formControlName="contractType" [nzPlaceHolder]="'请选择合同类型'" [nzShowSearch]="true" [nzSize]="inputSize">
-          <nz-option *ngFor="let i of projectStepService.contractTypes" [nzLabel]="i.name" [nzValue]="i.id"> </nz-option>
-        </nz-select>
-      </nz-form-control>
-    </nz-form-item>
-    <nz-form-item>
-      <nz-form-label [nzMd]="4" [nzSm]="6" [nzXs]="24">甲方名称</nz-form-label>
-      <nz-form-control [nzSm]="16" [nzXs]="24">
-        <input nz-input formControlName="partyAName" placeholder="请输入甲方名称" [nzSize]="inputSize" />
-      </nz-form-control>
-    </nz-form-item>
-    <nz-form-item>
-      <nz-form-label [nzMd]="4" [nzSm]="6" [nzXs]="24">
-        <span>
-          工期
-          <i nz-icon nz-tooltip nzTooltipTitle="起始时间、结束时间" nzType="question-circle" nzTheme="outline"></i>
-        </span>
-      </nz-form-label>
-      <nz-form-control [nzSm]="16" [nzXs]="24">
-        <nz-range-picker formControlName="projectDateRange" [nzFormat]="projectStepService.dateFormat"></nz-range-picker>
-      </nz-form-control>
-    </nz-form-item>
-    <nz-form-item>
-      <nz-form-label [nzMd]="4" [nzSm]="6" [nzXs]="24">签订日期</nz-form-label>
-      <nz-form-control [nzSm]="16" [nzXs]="24">
-        <nz-date-picker formControlName="contractDate" [nzFormat]="projectStepService.dateFormat"></nz-date-picker>
-      </nz-form-control>
-    </nz-form-item>
-    <nz-form-item>
-      <nz-form-label [nzMd]="4" [nzSm]="6" [nzXs]="24">质保期</nz-form-label>
-      <nz-form-control [nzSm]="16" [nzXs]="24">
-        <nz-input-group nzAddOnAfter="月">
-          <nz-input-number [nzMin]="1" [nzMax]="240" [nzStep]="1" formControlName="warranty" placeholder="请输入质保期"></nz-input-number>
-        </nz-input-group>
-      </nz-form-control>
-    </nz-form-item>
-    <nz-form-item>
-      <nz-form-label [nzMd]="4" [nzSm]="6" [nzXs]="24">项目地址</nz-form-label>
-      <nz-form-control [nzSm]="16" [nzXs]="24">
-        <input nz-input formControlName="projectAddress" placeholder="请输入项目地址" [nzSize]="inputSize" />
-      </nz-form-control>
-    </nz-form-item>
-    <nz-form-item>
-      <nz-form-label [nzMd]="4" [nzSm]="6" [nzXs]="24">甲方单位地址</nz-form-label>
-      <nz-form-control [nzSm]="16" [nzXs]="24">
-        <input nz-input formControlName="partyAAddress" placeholder="请输入甲方单位地址" [nzSize]="inputSize" />
-      </nz-form-control>
-    </nz-form-item>
-    <nz-form-item>
-      <nz-form-label [nzMd]="4" [nzSm]="6" [nzXs]="24">甲方联系人姓名</nz-form-label>
-      <nz-form-control [nzSm]="16" [nzXs]="24">
-        <input nz-input formControlName="partyALinkmanName" placeholder="请输入甲方联系人姓名" [nzSize]="inputSize" />
-      </nz-form-control>
-    </nz-form-item>
-    <nz-form-item>
-      <nz-form-label [nzMd]="4" [nzSm]="6" [nzXs]="24">甲方联系人电话</nz-form-label>
-      <nz-form-control [nzSm]="16" [nzXs]="24">
-        <input nz-input formControlName="partyALinkmanPhone" placeholder="请输入甲方联系人电话" [nzSize]="inputSize" />
-      </nz-form-control>
-    </nz-form-item>
-    <nz-form-item>
-      <nz-form-label [nzMd]="4" [nzSm]="6" [nzXs]="24">工程内容</nz-form-label>
-      <nz-form-control [nzMd]="20" [nzSm]="18" [nzXs]="24">
-        <textarea
-          nz-input
-          formControlName="projectContent"
-          [nzAutosize]="{ minRows: 4 }"
-          placeholder="请输入工程内容"
-          [nzSize]="inputSize"
-        ></textarea>
-      </nz-form-control>
-    </nz-form-item>
+  <nz-card [nzBordered]="false" nzTitle="甲方联系人信息">
+    <nz-table formArrayName="partyALinkmanInfo" [nzShowPagination]="false" [nzData]="partyALinkmanInfo.value">
+      <thead>
+        <tr>
+          <th>姓名</th>
+          <th>手机</th>
+          <th>电话</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of partyALinkmanInfo.controls; let i = index" [formGroupName]="i">
+          <td>
+            <span *ngIf="partyALinkmanEditIndex !== i">{{ partyALinkmanInfo.value[i].partyALinkmanName }}</span>
+            <span *ngIf="partyALinkmanEditIndex === i" nz-form-control>
+              <input nz-input formControlName="partyALinkmanName" placeholder="请输入甲方联系人姓名" [nzSize]="inputSize" />
+            </span>
+          </td>
+          <td>
+            <span *ngIf="partyALinkmanEditIndex !== i">{{ partyALinkmanInfo.value[i].partyALinkmanCellphone }}</span>
+            <span *ngIf="partyALinkmanEditIndex === i" nz-form-control>
+              <input nz-input formControlName="partyALinkmanCellphone" placeholder="请输入甲方联系人手机" [nzSize]="inputSize" />
+            </span>
+          </td>
+          <td>
+            <span *ngIf="partyALinkmanEditIndex !== i">{{ partyALinkmanInfo.value[i].partyALinkmanPhone }}</span>
+            <span *ngIf="partyALinkmanEditIndex === i" nz-form-control>
+              <input nz-input formControlName="partyALinkmanPhone" placeholder="请输入甲方联系人电话" [nzSize]="inputSize" />
+            </span>
+          </td>
+          <td>
+            <span *ngIf="partyALinkmanEditIndex !== i">
+              <a (click)="editPartyALinkman(i)">编辑</a>
+              <nz-divider nzType="vertical"></nz-divider>
+              <a nz-popconfirm nzPopconfirmTitle="是否要删除此行？" (nzOnConfirm)="delPartyALinkman(i)">删除</a>
+            </span>
+            <span *ngIf="partyALinkmanEditIndex === i">
+              <a (click)="savePartyALinkman(i)">保存</a>
+              <nz-divider nzType="vertical"></nz-divider>
+              <a nz-popconfirm nzPopconfirmTitle="是否要取消操作？" (nzOnConfirm)="cancelPartyALinkman(i)">取消</a>
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+    <button *ngIf="partyALinkmanEditIndex === -1" nz-button [nzType]="'dashed'" (click)="addPartyALinkman()" nzBlock class="mt-md">
+      <i nz-icon nzType="plus"></i>
+      <span>新增甲方联系人</span>
+    </button>
   </nz-card>
+
+  <nz-card [nzBordered]="false" nzTitle="业主联系人信息">
+    <nz-table formArrayName="proprietorLinkmanInfo" [nzShowPagination]="false" [nzData]="proprietorLinkmanInfo.value">
+      <thead>
+        <tr>
+          <th>姓名</th>
+          <th>手机</th>
+          <th>电话</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of proprietorLinkmanInfo.controls; let i = index" [formGroupName]="i">
+          <td>
+            <span *ngIf="proprietorLinkmanEditIndex !== i">{{ proprietorLinkmanInfo.value[i].proprietorLinkmanName }}</span>
+            <span *ngIf="proprietorLinkmanEditIndex === i" nz-form-control>
+              <input nz-input formControlName="proprietorLinkmanName" placeholder="请输入甲方联系人姓名" [nzSize]="inputSize" />
+            </span>
+          </td>
+          <td>
+            <span *ngIf="proprietorLinkmanEditIndex !== i">{{ proprietorLinkmanInfo.value[i].proprietorLinkmanCellphone }}</span>
+            <span *ngIf="proprietorLinkmanEditIndex === i" nz-form-control>
+              <input nz-input formControlName="proprietorLinkmanCellphone" placeholder="请输入甲方联系人手机" [nzSize]="inputSize" />
+            </span>
+          </td>
+          <td>
+            <span *ngIf="proprietorLinkmanEditIndex !== i">{{ proprietorLinkmanInfo.value[i].proprietorLinkmanPhone }}</span>
+            <span *ngIf="proprietorLinkmanEditIndex === i" nz-form-control>
+              <input nz-input formControlName="proprietorLinkmanPhone" placeholder="请输入甲方联系人电话" [nzSize]="inputSize" />
+            </span>
+          </td>
+          <td>
+            <span *ngIf="proprietorLinkmanEditIndex !== i">
+              <a (click)="editProprietorLinkman(i)">编辑</a>
+              <nz-divider nzType="vertical"></nz-divider>
+              <a nz-popconfirm nzPopconfirmTitle="是否要删除此行？" (nzOnConfirm)="delProprietorLinkman(i)">删除</a>
+            </span>
+            <span *ngIf="proprietorLinkmanEditIndex === i">
+              <a (click)="saveProprietorLinkman(i)">保存</a>
+              <nz-divider nzType="vertical"></nz-divider>
+              <a nz-popconfirm nzPopconfirmTitle="是否要取消操作？" (nzOnConfirm)="cancelProprietorLinkman(i)">取消</a>
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+    <button *ngIf="proprietorLinkmanEditIndex === -1" nz-button [nzType]="'dashed'" (click)="addProprietorLinkman()" nzBlock class="mt-md">
+      <i nz-icon nzType="plus"></i>
+      <span>新增业主联系人</span>
+    </button>
+  </nz-card>
+
   <footer-toolbar errorCollect>
     <button nz-button (click)="prev()" [nzSize]="inputSize">
       <span>上一步：{{ projectStepService.stepTitles[projectStepService.step - 1] }}</span>

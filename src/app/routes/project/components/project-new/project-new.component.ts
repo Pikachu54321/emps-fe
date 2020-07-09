@@ -79,19 +79,6 @@ export class ProjectNewComponent implements OnInit {
     private datePipe: DatePipe,
     public projectStepService: ProjectStepService,
   ) {
-    // 读取项目立项路径配置参数
-    this.service.getParentProjects().subscribe((res: any) => {
-      this.parentProjects = res.data.parentProjects;
-    });
-    // 读取项目立项路径配置参数
-    this.service.getProjectNewPathParameter().subscribe((res: any) => {
-      this.projectNewFilePaths = res.data.projectNewFilePaths;
-      // 设定有几个上传文件列表 new Array<UploadFile[]>(this.projectNewFilePaths[0].children.length)
-      for (let index = 0; index < this.projectNewFilePaths[0].children.length; index++) {
-        // this.uploadFileLists[index] = this.uploadFileList;
-        this.uploadFileLists[index] = [];
-      }
-    });
     // this.initDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd HH:mm:ss');
     // let a = this.datePipe.transform(new Date(), 'yyyy-MM-dd HH:mm:ss');
     // console.log(a);
@@ -130,6 +117,19 @@ export class ProjectNewComponent implements OnInit {
     });
     console.log(this.datePipe.transform(new Date()));
 
+    // 读取项目立项路径配置参数
+    this.service.getParentProjects().subscribe((res: any) => {
+      this.projectStepService.parentProjects = res.data.parentProjects;
+    });
+    // 读取项目立项路径配置参数
+    this.service.getProjectNewPathParameter().subscribe((res: any) => {
+      this.projectStepService.projectNewFilePaths = res.data.projectNewFilePaths;
+      // 设定有几个上传文件列表 new Array<UploadFile[]>(this.projectNewFilePaths[0].children.length)
+      for (let index = 0; index < this.projectStepService.projectNewFilePaths[0].children.length; index++) {
+        // this.uploadFileLists[index] = this.uploadFileList;
+        this.projectStepService.uploadFileLists[index] = [];
+      }
+    });
     // this.projectRoots$ = this.service.getRoots();
     // this.parentProjects$ = this.service.getParentProjects();
     // this.employees$ = this.service.getEmployees();

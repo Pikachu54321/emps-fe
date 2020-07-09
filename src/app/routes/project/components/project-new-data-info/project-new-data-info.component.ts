@@ -26,8 +26,6 @@ export class ProjectNewDataInfoComponent implements OnInit {
   // 输入框尺寸设置
   @Input() inputSize: NzSelectSizeType;
   form: FormGroup;
-  // 主项目数组
-  parentProjects: Project[];
 
   constructor(
     private fb: FormBuilder,
@@ -40,11 +38,11 @@ export class ProjectNewDataInfoComponent implements OnInit {
   ngOnInit() {
     this.form = this.fb.group({
       rootDir: new FormControl({ value: null, disabled: true }),
-      // technologyAgreementDir: new FormControl({ value: null, disabled: true }),
-      // technologySchemeDir: new FormControl({ value: null, disabled: true }),
-      // budgetDir: new FormControl({ value: null, disabled: true }),
-      // settlementDir: new FormControl({ value: null, disabled: true }),
-      // productionSchedulingNoticeDir: new FormControl({ value: null, disabled: true }),
+      technologyAgreementDir: new FormControl({ value: null, disabled: true }),
+      technologySchemeDir: new FormControl({ value: null, disabled: true }),
+      budgetDir: new FormControl({ value: null, disabled: true }),
+      settlementDir: new FormControl({ value: null, disabled: true }),
+      productionSchedulingNoticeDir: new FormControl({ value: null, disabled: true }),
     });
   }
 

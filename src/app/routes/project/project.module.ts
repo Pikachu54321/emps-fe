@@ -7,10 +7,21 @@ import {
   ProjectNewBasicInfoComponent,
   ProjectNewContractInfoComponent,
   ProjectNewManageInfoComponent,
+  ProjectNewSubcontractInfoComponent,
+  ProjectNewDataInfoComponent,
+  ProjectNewConfirmationInfoComponent,
 } from './components';
 
 @NgModule({
   imports: [SharedModule, ProjectInitialRoutingModule],
-  declarations: [ProjectNewComponent, ProjectNewBasicInfoComponent, ProjectNewContractInfoComponent, ProjectNewManageInfoComponent],
+  declarations: [
+    ProjectNewComponent,
+    ProjectNewBasicInfoComponent,
+    ProjectNewContractInfoComponent,
+    ProjectNewManageInfoComponent,
+    ProjectNewSubcontractInfoComponent,
+    ProjectNewDataInfoComponent,
+    ProjectNewConfirmationInfoComponent,
+  ],
 })
 export class ProjectModule {}

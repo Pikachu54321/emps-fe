@@ -136,7 +136,7 @@ export class ProjectNewBasicInfoComponent implements OnInit {
     this.projectRelevance.markAsDirty();
     this.projectRelevance.updateValueAndValidity();
   }
-  // 关联项目太长时，下拉菜单显示不下，设置关联项目提示
+  // 设置关联项目提示。目的：关联项目太长时，下拉菜单显示不下
   projectRelevanceChange($event): void {
     for (const item of this.projectStepService.parentProjects) {
       if (item.id === $event) {

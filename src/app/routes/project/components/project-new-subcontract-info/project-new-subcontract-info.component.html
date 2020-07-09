@@ -1,0 +1,75 @@
+<form nz-form [formGroup]="form" (keydown)="formKeyDownFunction($event)" (ngSubmit)="_submitForm()">
+  <nz-card [nzBordered]="false" nzTitle="分包信息">
+    <nz-table formArrayName="subcontractInfo" [nzShowPagination]="false" [nzData]="subcontractInfo.value">
+      <thead>
+        <tr>
+          <th>分包商名称</th>
+          <th>合同金额（元）</th>
+          <th>工作内容</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of subcontractInfo.controls; let i = index" [formGroupName]="i">
+          <td>
+            <span *ngIf="subcontractEditIndex !== i">{{ subcontractInfo.value[i].subcontractName }}</span>
+            <span *ngIf="subcontractEditIndex === i" nz-form-control>
+              <input nz-input formControlName="subcontractName" placeholder="请输入分包商名称" [nzSize]="inputSize" />
+            </span>
+          </td>
+          <td>
+            <span *ngIf="subcontractEditIndex !== i">{{ subcontractInfo.value[i].subcontractSum | _currency }}</span>
+            <span *ngIf="subcontractEditIndex === i" nz-form-control>
+              <input
+                nz-input
+                formControlName="subcontractSum"
+                placeholder="请输入合同金额"
+                (input)="subcontractSumOnChange($event, i)"
+                [value]="subcontractSumValue"
+                (blur)="subcontractSumOnBlur($event.target.value, i)"
+                [nzSize]="inputSize"
+              />
+            </span>
+          </td>
+          <td>
+            <span *ngIf="subcontractEditIndex !== i">{{ subcontractInfo.value[i].subcontractDetails }}</span>
+            <span *ngIf="subcontractEditIndex === i" nz-form-control>
+              <textarea
+                nz-input
+                formControlName="subcontractDetails"
+                [nzAutosize]="{ minRows: 3 }"
+                [nzSize]="inputSize"
+                placeholder="请输入工作内容"
+              ></textarea>
+            </span>
+          </td>
+          <td>
+            <span *ngIf="subcontractEditIndex !== i">
+              <a (click)="editSubcontract(i)">编辑</a>
+              <nz-divider nzType="vertical"></nz-divider>
+              <a nz-popconfirm nzPopconfirmTitle="是否要删除此行？" (nzOnConfirm)="delSubcontract(i)">删除</a>
+            </span>
+            <span *ngIf="subcontractEditIndex === i">
+              <a (click)="saveSubcontract(i)">保存</a>
+              <nz-divider nzType="vertical"></nz-divider>
+              <a nz-popconfirm nzPopconfirmTitle="是否要取消操作？" (nzOnConfirm)="cancelSubcontract(i)">取消</a>
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+    <button *ngIf="subcontractEditIndex === -1" nz-button [nzType]="'dashed'" (click)="addSubcontract()" nzBlock class="mt-md">
+      <i nz-icon nzType="plus"></i>
+      <span>新增分包</span>
+    </button>
+  </nz-card>
+
+  <footer-toolbar errorCollect>
+    <button nz-button (click)="prev()" [nzSize]="inputSize">
+      <span>上一步：{{ projectStepService.stepTitles[projectStepService.step - 1] }}</span>
+    </button>
+    <button nz-button nzType="primary" [nzSize]="inputSize">
+      <span>下一步：{{ projectStepService.stepTitles[projectStepService.step + 1] }}</span>
+    </button>
+  </footer-toolbar>
+</form>

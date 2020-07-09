@@ -93,9 +93,15 @@ export class ProjectNewContractInfoComponent implements OnInit {
   }
   // 上一步
   prev() {
+    this.verificationSave();
     --this.projectStepService.step;
   }
   _submitForm() {
+    this.verificationSave();
+    ++this.projectStepService.step;
+  }
+
+  verificationSave() {
     // 验证上传文件重名、导入文件重名、文件没有上传完不可以提交
     Object.keys(this.form.controls).forEach((key) => {
       this.form.controls[key].markAsDirty();
@@ -105,7 +111,6 @@ export class ProjectNewContractInfoComponent implements OnInit {
       return;
     } else {
       Object.assign(this.projectStepService, this.form.value);
-      this.projectStepService.step++;
     }
   }
 }

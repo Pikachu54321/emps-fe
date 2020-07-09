@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
-import { ProjectRoot, User, Project, ContractType } from '@shared';
+import { FormArray } from '@angular/forms';
+import { UploadFile } from 'ng-zorro-antd/upload';
+import { ProjectRoot, User, Project, ContractType, ProjectNewFilePath } from '@shared';
 
 @Injectable()
 export class ProjectStepService {
-  step: 0 | 1 | 2 | 3 | 4 = 0;
-  stepTitles: string[] = ['项目基础信息', '合同信息（选填）', '项目管理信息（选填）', '分包信息（选填）', '项目资料信息（选填）'];
+  step: 0 | 1 | 2 | 3 | 4 | 5 = 0;
+  stepTitles: string[] = ['基础信息', '合同信息(选填)', '管理信息(选填)', '分包信息(选填)', '项目资料(选填)', '确认信息'];
   // 表单页面日期格式
   dateFormat: string = 'yyyy-MM-dd';
 
@@ -19,31 +21,48 @@ export class ProjectStepService {
   projectRelevanceDisabled: boolean = true;
 
   // 步骤1要提交后台数据
-  projectName: string;
-  initRoot: string;
-  projectProperty: string;
-  projectRelevance: string;
-  projectManager: string;
-  projectMembers: string[];
-  initDate: string;
+  projectName: string = null;
+  initRoot: string = null;
+  projectProperty: string = null;
+  projectRelevance: string = null;
+  projectManager: string = null;
+  projectMembers: string[] = null;
+  initDate: string = null;
 
   // 步骤2参数
   // 合同类型数组
-  contractTypes: ContractType[];
+  contractTypes: ContractType[] = null;
 
   // 步骤2要提交后台数据
-  contractIDHD: string;
-  contractIDYZ: string;
-  contractName: string;
-  partyAName: string;
-  projectDateRange: [Date, Date];
-  contractDate: string;
-  warranty: string;
-  projectContent: string;
-  contractType: string;
-  partyALinkmanName: string;
-  partyALinkmanPhone: string;
-  projectAddress: string;
-  partyAAddress: string;
+  contractIDHD: string = null;
+  contractIDYZ: string = null;
+  contractName: string = null;
+  partyAName: string = null;
+  projectDateRange: [Date, Date] = null;
+  contractDate: Date = null;
+  warranty: string = null;
+  projectContent: string = null;
+  contractType: string = null;
+  partyALinkmanName: string = null;
+  partyALinkmanPhone: string = null;
+  projectAddress: string = null;
+  partyAAddress: string = null;
+
+  // 步骤3要提交后台数据
+  partyALinkmanInfo: Array<{ partyALinkmanName: string; partyALinkmanCellphone: string; partyALinkmanPhone: string }> = null;
+  proprietorLinkmanInfo: Array<{
+    proprietorLinkmanName: string;
+    proprietorLinkmanCellphone: string;
+    proprietorLinkmanPhone: string;
+  }> = null;
+  // 步骤4要提交后台数据
+  subcontractInfo: Array<{ subcontractName: string; subcontractSum: string; subcontractDetails: string }> = null;
+
+  // 步骤5参数
+  // 项目立项路径配置参数
+  projectNewFilePaths: ProjectNewFilePath[] = null;
+  // 上传文件的列表的列表，总表
+  uploadFileLists: Array<UploadFile[]> = [];
+
   constructor() {}
 }

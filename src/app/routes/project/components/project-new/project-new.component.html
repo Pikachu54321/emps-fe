@@ -10,3 +10,6 @@
 <app-project-new-basic-info [inputSize]="inputSize" *ngIf="projectStepService.step == 0"></app-project-new-basic-info>
 <app-project-new-contract-info [inputSize]="inputSize" *ngIf="projectStepService.step == 1"></app-project-new-contract-info>
 <app-project-new-manage-info [inputSize]="inputSize" *ngIf="projectStepService.step == 2"></app-project-new-manage-info>
+<app-project-new-subcontract-info [inputSize]="inputSize" *ngIf="projectStepService.step == 3"></app-project-new-subcontract-info>
+<app-project-new-data-info [inputSize]="inputSize" *ngIf="projectStepService.step == 4"></app-project-new-data-info>
+<app-project-new-confirmation-info [inputSize]="inputSize" *ngIf="projectStepService.step == 5"></app-project-new-confirmation-info>
