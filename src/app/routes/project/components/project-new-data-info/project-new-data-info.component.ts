@@ -44,6 +44,7 @@ export class ProjectNewDataInfoComponent implements OnInit {
       settlementDir: new FormControl({ value: null, disabled: true }),
       productionSchedulingNoticeDir: new FormControl({ value: null, disabled: true }),
     });
+    this.form.patchValue(this.projectStepService);
   }
 
   //#region get form fields
@@ -129,22 +130,23 @@ export class ProjectNewDataInfoComponent implements OnInit {
       // 是否显示右上角的关闭按钮。
       nzClosable: false,
       nzFooter: [
-        {
-          label: '新建文件夹',
-          type: 'default',
-          style: 'float:right;',
-          disabled: (FileSelectionComponent) => {
-            if (FileSelectionComponent.nodeSelected === null) {
-              return true;
-            } else {
-              return false;
-            }
-          },
-          onClick: (FileSelectionComponent) => {
-            // 创建输入新建文件夹名的对话框
-            this.createFileNewFolderModal(FileSelectionComponent, this.service);
-          },
-        },
+        // 2020-6-24不允许网页端新建文件夹
+        // {
+        //   label: '新建文件夹',
+        //   type: 'default',
+        //   style: 'float:right;',
+        //   disabled: (FileSelectionComponent) => {
+        //     if (FileSelectionComponent.nodeSelected === null) {
+        //       return true;
+        //     } else {
+        //       return false;
+        //     }
+        //   },
+        //   onClick: (FileSelectionComponent) => {
+        //     // 创建输入新建文件夹名的对话框
+        //     this.createFileNewFolderModal(FileSelectionComponent, this.service);
+        //   },
+        // },
         {
           label: '确定',
           type: 'primary',
@@ -184,67 +186,67 @@ export class ProjectNewDataInfoComponent implements OnInit {
     });
   }
 
-  // 创建输入文件夹名对话框
-  createFileNewFolderModal(FileSelectionComponent: FileSelectionComponent, service: ProjectService): void {
-    // 创建输入新建文件夹名的对话框
-    const modal: NzModalRef = this.modalSrv.create({
-      nzTitle: '新建文件夹',
-      nzContent: FileNewFolderComponent,
-      // 点击蒙层是否允许关闭
-      nzMaskClosable: false,
-      // 是否显示右上角的关闭按钮。
-      nzClosable: false,
-      nzFooter: [
-        {
-          label: '确定',
-          type: 'primary',
-          loading: false,
-          disabled(this, fileNewFoldercomponentInstance): boolean {
-            return fileNewFoldercomponentInstance.isFolderNameError;
-          },
-          // 新建文件夹提交
-          onClick(this, fileNewFoldercomponentInstance): void {
-            // 异步关闭
-            this.loading = true;
-            // 文件名错误，返回
-            if (fileNewFoldercomponentInstance.isFolderNameError) {
-              return;
-            } else {
-              let parentFolderPath = FileSelectionComponent.nodeSelected[0].key;
-              let newFoldername = fileNewFoldercomponentInstance.folderNameValue;
-              // 新建文件夹
-              service.postNewFolder(parentFolderPath, newFoldername).subscribe((res: any) => {
-                // 如果文件夹创建成功或文件夹已存在，向服务器发送请求获取目录下所有文件、文件夹
-                if (res.msg === 'ok' || res.msg === '文件夹已存在') {
-                  service.getFileListPage(parentFolderPath, 'name', 'ASC').subscribe((res: any) => {
-                    // 如果服务器出现错误，返回
-                    if (res.msg !== 'ok') {
-                      return;
-                    }
-                    // 显示新建文件夹
-                    FileSelectionComponent.newFolderOkOnClick(res.data.fileList, parentFolderPath, parentFolderPath + '/' + newFoldername);
-                    // 异步关闭
-                    this.loading = false;
-                    modal.destroy();
-                  });
-                } else {
-                  // 如果服务器出现错误，返回
-                  return;
-                }
-              });
-            }
-          },
-        },
-        {
-          label: '取消',
-          type: 'default',
-          onClick: () => {
-            modal.destroy();
-          },
-        },
-      ],
-    });
-  }
+  // // 创建输入文件夹名对话框
+  // createFileNewFolderModal(FileSelectionComponent: FileSelectionComponent, service: ProjectService): void {
+  //   // 创建输入新建文件夹名的对话框
+  //   const modal: NzModalRef = this.modalSrv.create({
+  //     nzTitle: '新建文件夹',
+  //     nzContent: FileNewFolderComponent,
+  //     // 点击蒙层是否允许关闭
+  //     nzMaskClosable: false,
+  //     // 是否显示右上角的关闭按钮。
+  //     nzClosable: false,
+  //     nzFooter: [
+  //       {
+  //         label: '确定',
+  //         type: 'primary',
+  //         loading: false,
+  //         disabled(this, fileNewFoldercomponentInstance): boolean {
+  //           return fileNewFoldercomponentInstance.isFolderNameError;
+  //         },
+  //         // 新建文件夹提交
+  //         onClick(this, fileNewFoldercomponentInstance): void {
+  //           // 异步关闭
+  //           this.loading = true;
+  //           // 文件名错误，返回
+  //           if (fileNewFoldercomponentInstance.isFolderNameError) {
+  //             return;
+  //           } else {
+  //             let parentFolderPath = FileSelectionComponent.nodeSelected[0].key;
+  //             let newFoldername = fileNewFoldercomponentInstance.folderNameValue;
+  //             // 新建文件夹
+  //             service.postNewFolder(parentFolderPath, newFoldername).subscribe((res: any) => {
+  //               // 如果文件夹创建成功或文件夹已存在，向服务器发送请求获取目录下所有文件、文件夹
+  //               if (res.msg === 'ok' || res.msg === '文件夹已存在') {
+  //                 service.getFileListPage(parentFolderPath, 'name', 'ASC').subscribe((res: any) => {
+  //                   // 如果服务器出现错误，返回
+  //                   if (res.msg !== 'ok') {
+  //                     return;
+  //                   }
+  //                   // 显示新建文件夹
+  //                   FileSelectionComponent.newFolderOkOnClick(res.data.fileList, parentFolderPath, parentFolderPath + '/' + newFoldername);
+  //                   // 异步关闭
+  //                   this.loading = false;
+  //                   modal.destroy();
+  //                 });
+  //               } else {
+  //                 // 如果服务器出现错误，返回
+  //                 return;
+  //               }
+  //             });
+  //           }
+  //         },
+  //       },
+  //       {
+  //         label: '取消',
+  //         type: 'default',
+  //         onClick: () => {
+  //           modal.destroy();
+  //         },
+  //       },
+  //     ],
+  //   });
+  // }
 
   // 上传
   @ViewChildren(NzUploadComponent) uploadComponents: QueryList<NzUploadComponent>;
@@ -289,13 +291,15 @@ export class ProjectNewDataInfoComponent implements OnInit {
     this.currentUploadTabID = id;
   }
   // 导入按钮【服务器文件导入上传列表】
-  importFileOnclick() {
+  importFileOnclick(i: string) {
     // 读取指定目录下文件、文件夹(并且排序)
-    this.service.getFileListPage('', 'name', 'ASC').subscribe((res: any) => {
-      let fileList: FileInfo[] = res.data.fileList;
+    this.service
+      .getFileListPage(this.form.get(this.projectStepService.projectNewFilePaths[0].children[i].key).value, 'name', 'ASC')
+      .subscribe((res: any) => {
+        let fileList: FileInfo[] = res.data.fileList;
 
-      this.createImportFileModal(fileList);
-    });
+        this.createImportFileModal(fileList);
+      });
   }
 
   // 创建导入文件对话框
@@ -308,6 +312,7 @@ export class ProjectNewDataInfoComponent implements OnInit {
         isDisplayFile: true,
         isMultiple: true,
         isFolderSelectable: false,
+        isFolderExpandable: false,
       },
       // 点击蒙层是否允许关闭
       nzMaskClosable: false,
@@ -407,13 +412,34 @@ export class ProjectNewDataInfoComponent implements OnInit {
   // };
 
   handleChange(uploadChangeParam: UploadChangeParam, i: number): void {
-    const { file, fileList } = uploadChangeParam;
+    let { file, fileList } = uploadChangeParam;
     const status = file.status;
     if (status !== 'uploading') {
       console.log(file, fileList);
     }
     if (status === 'done') {
-      this.msg.success(`${file.name} file uploaded successfully.`);
+      // {
+      //   uid: '3',
+      //   name: 'zzz.png',
+      //   status: 'error',
+      //   response: 'Server Error 500', // custom error message to show
+      //   url: 'http://www.baidu.com/zzz.png',
+      // }
+      let fileObj = {
+        uid: file.uid,
+        name: file.name,
+        status: file.response.status,
+        response: file.response.msg,
+      };
+
+      this.projectStepService.uploadFileLists[i] = fileList.map((file) => {
+        if (file.response) {
+          file.url = file.response.data.file.url;
+          file.status = file.response.data.file.status;
+          // file.response = file.response.msg;
+        }
+        return file;
+      });
     } else if (status === 'error') {
       this.msg.error(`${file.name} file upload failed.`);
     }

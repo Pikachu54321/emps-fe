@@ -18,6 +18,8 @@ export class FileSelectionComponent implements OnInit {
   @Input() isMultiple: boolean;
   // 是否文件夹可被选中
   @Input() isFolderSelectable: boolean;
+  // 是否文件夹可展开[默认true可展开]
+  @Input() isFolderExpandable: boolean = true;
   nodeSelected: NzTreeNode[] = null;
   @ViewChild('fileTreeComponent', { static: false }) fileTreeComponent!: NzTreeComponent;
   // 初始化[nzData]="nodes"
@@ -95,8 +97,15 @@ export class FileSelectionComponent implements OnInit {
   // 点击节点或点击节点图标事件
   nzEvent(event: NzFormatEmitEvent): void {
     // load child async
+    const node = event.node;
     if (event.eventName === 'expand') {
-      const node = event.node;
+      // 如果文件夹不可展开
+      if (this.isFolderExpandable === false) {
+        node.isExpanded = false;
+        node.isLoading = false;
+        return;
+      }
+
       if (node?.getChildren().length === 0 && node?.isExpanded) {
         // 读取指定目录下文件、文件夹(并且排序)
         this.projectService.getFileListPage(node.key, 'name', 'ASC').subscribe((res: any) => {

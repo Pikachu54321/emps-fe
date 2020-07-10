@@ -63,6 +63,12 @@ export class ProjectStepService {
   projectNewFilePaths: ProjectNewFilePath[] = null;
   // 上传文件的列表的列表，总表
   uploadFileLists: Array<UploadFile[]> = [];
-
+  // 步骤5要提交后台数据
+  rootDir: string;
+  technologyAgreementDir: string;
+  technologySchemeDir: string;
+  budgetDir: string;
+  settlementDir: string;
+  productionSchedulingNoticeDir: string;
   constructor() {}
 }

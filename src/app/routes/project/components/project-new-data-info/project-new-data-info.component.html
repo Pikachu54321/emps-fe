@@ -1,5 +1,5 @@
 <form nz-form [formGroup]="form" (keydown)="formKeyDownFunction($event)" (ngSubmit)="_submitForm()">
-  <nz-card [nzBordered]="false" nzTitle="项目资料">
+  <nz-card [nzBordered]="false">
     <!-- 标签页 -->
     <nz-tabset nzSize="large">
       <nz-tab nzTitle="路径配置" (nzSelect)="getCurrentUploadTabID(-1)">
@@ -7,7 +7,7 @@
         <nz-row nzGutter="16">
           <nz-col [nzSpan]="24">
             <nz-form-item>
-              <nz-form-label>{{ projectStepService.projectNewFilePaths[0].text }}</nz-form-label>
+              <nz-form-label [nzMd]="4" [nzSm]="6" [nzXs]="24">{{ projectStepService.projectNewFilePaths[0].text }}</nz-form-label>
               <nz-form-control>
                 <nz-row style="flex-wrap: nowrap;">
                   <nz-col nzFlex="auto">
@@ -49,17 +49,17 @@
           </nz-col>
         </nz-row>
         <!-- 2020-6-24不能修改根目录下各个子目录 -->
-        <!-- <nz-row nzGutter="16" *ngFor="let childPathConfig of projectStepService.projectNewFilePaths[0].children; let i = index">
+        <nz-row nzGutter="16" *ngFor="let childPathConfig of projectStepService.projectNewFilePaths[0].children; let i = index">
           <nz-col [nzSpan]="24">
             <nz-form-item>
-              <nz-form-label>{{ childPathConfig.text }}</nz-form-label>
+              <nz-form-label [nzMd]="4" [nzSm]="6" [nzXs]="24">{{ childPathConfig.text }}</nz-form-label>
               <nz-form-control>
                 <nz-row style="flex-wrap: nowrap;">
-                  <nz-col nzFlex="auto">                    
-                    <input nz-input [formControlName]="childPathConfig.key" />
+                  <nz-col nzFlex="auto">
+                    <input nz-input [formControlName]="childPathConfig.key" [nzSize]="inputSize" />
                   </nz-col>
                   <nz-col nzFlex="120px">
-                    <button nz-button nzType="primary" type="button" (click)="selectDirOnclick(childPathConfig.key)">
+                    <!-- <button nz-button nzType="primary" type="button" (click)="selectDirOnclick(childPathConfig.key)">
                       ...
                     </button>
                     <button
@@ -72,13 +72,13 @@
                       [disabled]="form.get(childPathConfig.key).value === null"
                     >
                       清除
-                    </button>
+                    </button> -->
                   </nz-col>
                 </nz-row>
               </nz-form-control>
             </nz-form-item>
           </nz-col>
-        </nz-row> -->
+        </nz-row>
       </nz-tab>
       <nz-tab
         *ngFor="let childPathConfig of projectStepService.projectNewFilePaths[0].children; let i = index"
@@ -87,14 +87,14 @@
       >
         <!-- 按钮模板 -->
         <ng-template #extraTemplate>
-          <button nz-button nzType="primary" type="button" (click)="selectDirOnclick(childPathConfig.key)">
+          <button nz-button nzType="primary" type="button" (click)="selectDirOnclick(projectStepService.projectNewFilePaths[0].key)">
             更改根目录
           </button>
           <button
             nz-button
             nzType="primary"
             type="button"
-            (click)="importFileOnclick()"
+            (click)="importFileOnclick(i)"
             [disabled]="form.get(childPathConfig.key).value === null"
           >
             导入
