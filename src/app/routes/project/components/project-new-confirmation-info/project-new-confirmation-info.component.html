@@ -1,27 +1,27 @@
 <nz-card [nzBordered]="false" [nzTitle]="projectStepService.stepTitles[0]">
-  <nz-descriptions nzBordered [nzColumn]="{ xxl: 4, xl: 3, lg: 3, md: 3, sm: 2, xs: 1 }">
+  <nz-descriptions nzBordered [nzColumn]="1" nzLayout="vertical">
     <nz-descriptions-item nzTitle="项目内部ID">自动生成</nz-descriptions-item>
     <nz-descriptions-item nzTitle="项目名称">{{ projectStepService.projectName }}</nz-descriptions-item>
-    <nz-descriptions-item nzTitle="立项依据">{{ initRootName }}</nz-descriptions-item>
-    <nz-descriptions-item nzTitle="项目经理">{{ projectManagerName }}</nz-descriptions-item>
+    <nz-descriptions-item nzTitle="立项依据">{{ projectStepService.initRoot.name }}</nz-descriptions-item>
+    <nz-descriptions-item nzTitle="项目经理">{{ projectStepService.projectManager.name }}</nz-descriptions-item>
     <nz-descriptions-item nzTitle="项目主要成员">{{ projectMembers }}</nz-descriptions-item>
     <nz-descriptions-item nzTitle="项目属性"
       >{{ projectStepService.projectProperty === 'child' ? '子项目' : ''
       }}{{ projectStepService.projectProperty === 'parent' ? '主项目' : '' }}</nz-descriptions-item
     >
     <nz-descriptions-item nzTitle="关联主项目" *ngIf="projectStepService.projectProperty === 'child'">{{
-      projectRelevanceName
+      projectStepService.projectRelevance.name
     }}</nz-descriptions-item>
     <nz-descriptions-item nzTitle="立项时间">自动生成</nz-descriptions-item>
   </nz-descriptions>
 </nz-card>
 <nz-card [nzBordered]="false" [nzTitle]="projectStepService.stepTitles[1]">
-  <nz-descriptions nzBordered [nzColumn]="{ xxl: 4, xl: 3, lg: 3, md: 3, sm: 2, xs: 1 }">
+  <nz-descriptions nzBordered [nzColumn]="1" nzLayout="vertical">
     <nz-descriptions-item nzTitle="合同编号（惠东）">{{ projectStepService.contractIDHD }}</nz-descriptions-item>
     <nz-descriptions-item nzTitle="合同编号（甲方）">{{ projectStepService.contractIDYZ }}</nz-descriptions-item>
     <nz-descriptions-item nzTitle="合同名称">{{ projectStepService.contractName }}</nz-descriptions-item>
-    <nz-descriptions-item nzTitle="合同类型">{{ contractTypeName }}</nz-descriptions-item>
     <nz-descriptions-item nzTitle="甲方名称">{{ projectStepService.partyAName }}</nz-descriptions-item>
+    <nz-descriptions-item nzTitle="合同类型">{{ projectStepService.contractType.name }}</nz-descriptions-item>
     <nz-descriptions-item [nzTitle]="projectDateRangeTemp"
       >{{ (projectStepService.projectDateRange === null ? null : projectStepService.projectDateRange[0]) | date: 'yyyy-MM-dd' }}
       <i nz-icon nzType="swap-right" nzTheme="outline"></i>
@@ -30,10 +30,10 @@
       }}</nz-descriptions-item
     >
     <ng-template #projectDateRangeTemp>
-      <td class="ant-descriptions-item-label ng-star-inserted" colspan="1">
-        工期
-        <i nz-icon nz-tooltip nzTooltipTitle="起始时间、结束时间" nzType="question-circle" nzTheme="outline"></i>
-      </td>
+      <!-- <td class="ant-descriptions-item-label ng-star-inserted"> -->
+      工期
+      <i nz-icon nz-tooltip nzTooltipTitle="起始时间、结束时间" nzType="question-circle" nzTheme="outline"></i>
+      <!-- </td> -->
     </ng-template>
     <nz-descriptions-item nzTitle="签订日期">{{ projectStepService.contractDate | date: 'yyyy-MM-dd' }} </nz-descriptions-item>
     <nz-descriptions-item nzTitle="质保期">{{
@@ -139,15 +139,6 @@
       *ngFor="let childPathConfig of projectStepService.projectNewFilePaths[0].children; let i = index"
       [nzTitle]="childPathConfig.text"
     >
-      <!-- 标题模板 -->
-      <ng-template #cardTitleTemplate>
-        <div
-          nz-tooltip
-          [nzTooltipTitle]="projectStepService[childPathConfig.key] === null ? '无' : projectStepService[childPathConfig.key]"
-        >
-          {{ projectStepService[childPathConfig.key] === null ? '上传目录：无' : '上传目录：' + projectStepService[childPathConfig.key] }}
-        </div>
-      </ng-template>
       <nz-card nzType="inner">
         <h3
           [ngStyle]="{ margin: '16px 0' }"

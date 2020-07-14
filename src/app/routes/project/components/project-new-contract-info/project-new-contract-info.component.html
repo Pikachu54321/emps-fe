@@ -27,7 +27,7 @@
       <nz-form-label [nzMd]="4" [nzSm]="6" [nzXs]="24">合同类型</nz-form-label>
       <nz-form-control [nzSm]="16" [nzXs]="24">
         <nz-select formControlName="contractType" [nzPlaceHolder]="'请选择合同类型'" [nzShowSearch]="true" [nzSize]="inputSize">
-          <nz-option *ngFor="let i of projectStepService.contractTypes" [nzLabel]="i.name" [nzValue]="i.id"> </nz-option>
+          <nz-option *ngFor="let i of projectStepService.contractTypes" [nzLabel]="i.name" [nzValue]="i"> </nz-option>
         </nz-select>
       </nz-form-control>
     </nz-form-item>

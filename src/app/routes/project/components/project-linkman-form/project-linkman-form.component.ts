@@ -92,7 +92,7 @@ export class ProjectLinkmanFormComponent implements OnInit {
       return false;
     }
   }
-  //
+  // nz-select获得选项的对象，照官网写的不懂原理
   compareFn = (o1: any, o2: any) => (o1 && o2 ? o1.id === o2.id : o1 === o2);
   cancel() {
     this.modalRef.destroy();

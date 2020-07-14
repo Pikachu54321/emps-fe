@@ -33,27 +33,14 @@ export class ProjectNewBasicInfoComponent implements OnInit {
 
   form: FormGroup;
 
-  // // 立项依据数组
-  // projectRoots: ProjectRoot[];
-  // // 用户数组
-  // users: User[];
-  // // 主项目数组
-  // parentProjects: Project[];
-
-  // 关联项目下拉菜单是否禁用。项目属性为主项目或未选择时禁用
-  // projectRelevanceDisabled: boolean = true;
   // 关联项目下拉菜单值
   projectRelevanceObj: Project = { id: undefined, name: null };
 
   constructor(
     private fb: FormBuilder,
-    private route: ActivatedRoute,
-    private modalSrv: NzModalService,
+
     private service: ProjectService,
-    private rd2: Renderer2,
-    private cdr: ChangeDetectorRef,
-    private msg: NzMessageService,
-    private notify: NzNotificationService,
+
     public projectStepService: ProjectStepService,
   ) {}
 
@@ -107,12 +94,12 @@ export class ProjectNewBasicInfoComponent implements OnInit {
     }
   }
   // 项目经理改变
-  projectManagerChange(value: string): void {
-    let projectMembersValue = this.projectMembers.value as Array<string>;
+  projectManagerChange(value: User): void {
+    let projectMembersValue = this.projectMembers.value as Array<User>;
     // 如果项目成员不为空
     if (projectMembersValue) {
       for (let i = 0; i < projectMembersValue.length; i++) {
-        if (projectMembersValue[i] === value) {
+        if (projectMembersValue[i].id === value.id) {
           // 从已选中的成员中成员删除项目经理
           projectMembersValue.splice(i, 1);
           break;
@@ -138,16 +125,12 @@ export class ProjectNewBasicInfoComponent implements OnInit {
   }
   // 设置关联项目提示。目的：关联项目太长时，下拉菜单显示不下
   projectRelevanceChange($event): void {
-    for (const item of this.projectStepService.parentProjects) {
-      if (item.id === $event) {
-        this.projectRelevanceObj = item;
-        this.projectProperty.markAsDirty();
-        this.projectProperty.updateValueAndValidity();
-        break;
-      }
+    if ($event) {
+      this.projectRelevanceObj = $event;
     }
   }
-
+  // nz-select获得选项的对象，照官网写的不懂原理
+  compareFn = (o1: any, o2: any) => (o1 && o2 ? o1.id === o2.id : o1 === o2);
   _submitForm() {
     // 如果验证成功
     if (this.verificationSave()) {

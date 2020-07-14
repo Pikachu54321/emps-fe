@@ -22,11 +22,11 @@ export class ProjectStepService {
 
   // 步骤0要提交后台数据
   projectName: string = null;
-  initRoot: string = null;
+  initRoot: ProjectRoot = null;
   projectProperty: string = null;
-  projectRelevance: string = null;
-  projectManager: string = null;
-  projectMembers: string[] = null;
+  projectRelevance: Project = null;
+  projectManager: User = null;
+  projectMembers: User[] = null;
   initDate: string = null;
 
   // 步骤1参数
@@ -42,7 +42,7 @@ export class ProjectStepService {
   contractDate: Date = null;
   warranty: string = null;
   projectContent: string = null;
-  contractType: string = null;
+  contractType: ContractType = null;
   partyALinkmanName: string = null;
   partyALinkmanPhone: string = null;
   projectAddress: string = null;
@@ -74,11 +74,11 @@ export class ProjectStepService {
   // 上传状态
   uploadStatus: UploadFileStatus;
   // 步骤4要提交后台数据
-  rootDir: string;
-  technologyAgreementDir: string;
-  technologySchemeDir: string;
-  budgetDir: string;
-  settlementDir: string;
-  productionSchedulingNoticeDir: string;
+  rootDir: string = null;
+  technologyAgreementDir: string = null;
+  technologySchemeDir: string = null;
+  budgetDir: string = null;
+  settlementDir: string = null;
+  productionSchedulingNoticeDir: string = null;
   constructor() {}
 }
