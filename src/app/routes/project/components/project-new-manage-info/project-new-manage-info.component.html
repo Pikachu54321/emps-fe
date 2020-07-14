@@ -1,112 +1,79 @@
-<form nz-form [formGroup]="form" (keydown)="formKeyDownFunction($event)" (ngSubmit)="_submitForm()">
-  <nz-card [nzBordered]="false" nzTitle="甲方联系人信息">
-    <nz-table formArrayName="partyALinkmanInfo" [nzShowPagination]="false" [nzData]="partyALinkmanInfo.value">
-      <thead>
-        <tr>
-          <th>姓名</th>
-          <th>手机</th>
-          <th>电话</th>
-          <th>操作</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let item of partyALinkmanInfo.controls; let i = index" [formGroupName]="i">
-          <td>
-            <span *ngIf="partyALinkmanEditIndex !== i">{{ partyALinkmanInfo.value[i].partyALinkmanName }}</span>
-            <span *ngIf="partyALinkmanEditIndex === i" nz-form-control>
-              <input nz-input formControlName="partyALinkmanName" placeholder="请输入甲方联系人姓名" [nzSize]="inputSize" />
-            </span>
-          </td>
-          <td>
-            <span *ngIf="partyALinkmanEditIndex !== i">{{ partyALinkmanInfo.value[i].partyALinkmanCellphone }}</span>
-            <span *ngIf="partyALinkmanEditIndex === i" nz-form-control>
-              <input nz-input formControlName="partyALinkmanCellphone" placeholder="请输入甲方联系人手机" [nzSize]="inputSize" />
-            </span>
-          </td>
-          <td>
-            <span *ngIf="partyALinkmanEditIndex !== i">{{ partyALinkmanInfo.value[i].partyALinkmanPhone }}</span>
-            <span *ngIf="partyALinkmanEditIndex === i" nz-form-control>
-              <input nz-input formControlName="partyALinkmanPhone" placeholder="请输入甲方联系人电话" [nzSize]="inputSize" />
-            </span>
-          </td>
-          <td>
-            <span *ngIf="partyALinkmanEditIndex !== i">
-              <a (click)="editPartyALinkman(i)">编辑</a>
-              <nz-divider nzType="vertical"></nz-divider>
-              <a nz-popconfirm nzPopconfirmTitle="是否要删除此行？" (nzOnConfirm)="delPartyALinkman(i)">删除</a>
-            </span>
-            <span *ngIf="partyALinkmanEditIndex === i">
-              <a (click)="savePartyALinkman(i)">保存</a>
-              <nz-divider nzType="vertical"></nz-divider>
-              <a nz-popconfirm nzPopconfirmTitle="是否要取消操作？" (nzOnConfirm)="cancelPartyALinkman(i)">取消</a>
-            </span>
-          </td>
-        </tr>
-      </tbody>
-    </nz-table>
-    <button *ngIf="partyALinkmanEditIndex === -1" nz-button [nzType]="'dashed'" (click)="addPartyALinkman()" nzBlock class="mt-md">
-      <i nz-icon nzType="plus"></i>
-      <span>新增甲方联系人</span>
-    </button>
-  </nz-card>
+<nz-card [nzBordered]="false" nzTitle="联系人信息">
+  <div class="table-operations">
+    <button nz-button (click)="addLinkman(linkmanFormModalContent)"><i nz-icon nzType="plus"></i> <span>新增联系人</span></button>
+  </div>
+  <nz-table [nzShowPagination]="false" [nzData]="projectStepService.linkmenInfo" [nzScroll]="{ x: '1100px' }" #linkmenInfoTable>
+    <thead>
+      <tr>
+        <th>姓名</th>
+        <th>类别</th>
+        <th>单位名称</th>
+        <th>职务</th>
+        <th>手机</th>
+        <th>电话</th>
+        <th>QQ号码</th>
+        <th>微信号码</th>
+        <th>电子邮箱</th>
+        <th nzRight>操作</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of projectStepService.linkmenInfo; let i = index">
+        <td>
+          <span>{{ item.linkmanName }}</span>
+        </td>
+        <td>
+          <span>{{ item.linkmanType.name }}</span>
+        </td>
+        <td>
+          <span>{{ item.linkmanCompanyName }}</span>
+        </td>
+        <td>
+          <span>{{ item.linkmanDuty }}</span>
+        </td>
+        <td>
+          <span>{{ item.linkmanCellphone }}</span>
+        </td>
+        <td>
+          <span>{{ item.linkmanPhone }}</span>
+        </td>
+        <td>
+          <span>{{ item.linkmanQQ }}</span>
+        </td>
+        <td>
+          <span>{{ item.linkmanWeChat }}</span>
+        </td>
+        <td>
+          <span>{{ item.linkmanEmail }}</span>
+        </td>
+        <td nzRight>
+          <span>
+            <a (click)="editLinkman(i, linkmanFormModalContent)">编辑</a>
+            <nz-divider nzType="vertical"></nz-divider>
+            <a nz-popconfirm nzPopconfirmTitle="是否要删除此行？" (nzOnConfirm)="delLinkman(i)">删除</a>
+          </span>
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>
+</nz-card>
+<!-- 使用模版作为内容时上下文为 { $implicit: nzComponentParams, modalRef: NzModalRef } -->
+<ng-template #linkmanFormModalContent let-params let-ref="modalRef">
+  <app-project-linkman-form
+    [inputSize]="params.inputSize"
+    [linkmanTypes]="params.linkmanTypes"
+    [modalRef]="ref"
+    [linkmanEditIndex]="params.linkmanEditIndex"
+    [linkmanInfo]="params.linkmanInfo"
+    (linkmanForm)="linkmanFormSubmit($event)"
+  ></app-project-linkman-form>
+</ng-template>
 
-  <nz-card [nzBordered]="false" nzTitle="业主联系人信息">
-    <nz-table formArrayName="proprietorLinkmanInfo" [nzShowPagination]="false" [nzData]="proprietorLinkmanInfo.value">
-      <thead>
-        <tr>
-          <th>姓名</th>
-          <th>手机</th>
-          <th>电话</th>
-          <th>操作</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let item of proprietorLinkmanInfo.controls; let i = index" [formGroupName]="i">
-          <td>
-            <span *ngIf="proprietorLinkmanEditIndex !== i">{{ proprietorLinkmanInfo.value[i].proprietorLinkmanName }}</span>
-            <span *ngIf="proprietorLinkmanEditIndex === i" nz-form-control>
-              <input nz-input formControlName="proprietorLinkmanName" placeholder="请输入甲方联系人姓名" [nzSize]="inputSize" />
-            </span>
-          </td>
-          <td>
-            <span *ngIf="proprietorLinkmanEditIndex !== i">{{ proprietorLinkmanInfo.value[i].proprietorLinkmanCellphone }}</span>
-            <span *ngIf="proprietorLinkmanEditIndex === i" nz-form-control>
-              <input nz-input formControlName="proprietorLinkmanCellphone" placeholder="请输入甲方联系人手机" [nzSize]="inputSize" />
-            </span>
-          </td>
-          <td>
-            <span *ngIf="proprietorLinkmanEditIndex !== i">{{ proprietorLinkmanInfo.value[i].proprietorLinkmanPhone }}</span>
-            <span *ngIf="proprietorLinkmanEditIndex === i" nz-form-control>
-              <input nz-input formControlName="proprietorLinkmanPhone" placeholder="请输入甲方联系人电话" [nzSize]="inputSize" />
-            </span>
-          </td>
-          <td>
-            <span *ngIf="proprietorLinkmanEditIndex !== i">
-              <a (click)="editProprietorLinkman(i)">编辑</a>
-              <nz-divider nzType="vertical"></nz-divider>
-              <a nz-popconfirm nzPopconfirmTitle="是否要删除此行？" (nzOnConfirm)="delProprietorLinkman(i)">删除</a>
-            </span>
-            <span *ngIf="proprietorLinkmanEditIndex === i">
-              <a (click)="saveProprietorLinkman(i)">保存</a>
-              <nz-divider nzType="vertical"></nz-divider>
-              <a nz-popconfirm nzPopconfirmTitle="是否要取消操作？" (nzOnConfirm)="cancelProprietorLinkman(i)">取消</a>
-            </span>
-          </td>
-        </tr>
-      </tbody>
-    </nz-table>
-    <button *ngIf="proprietorLinkmanEditIndex === -1" nz-button [nzType]="'dashed'" (click)="addProprietorLinkman()" nzBlock class="mt-md">
-      <i nz-icon nzType="plus"></i>
-      <span>新增业主联系人</span>
-    </button>
-  </nz-card>
-
-  <footer-toolbar errorCollect>
-    <button nz-button (click)="prev()" [nzSize]="inputSize">
-      <span>上一步：{{ projectStepService.stepTitles[projectStepService.step - 1] }}</span>
-    </button>
-    <button nz-button nzType="primary" [nzSize]="inputSize">
-      <span>下一步：{{ projectStepService.stepTitles[projectStepService.step + 1] }}</span>
-    </button>
-  </footer-toolbar>
-</form>
+<footer-toolbar>
+  <button nz-button (click)="prev()" [nzSize]="inputSize">
+    <span>上一步：{{ projectStepService.stepTitles[projectStepService.step - 1] }}</span>
+  </button>
+  <button nz-button (click)="next()" nzType="primary" [nzSize]="inputSize">
+    <span>下一步：{{ projectStepService.stepTitles[projectStepService.step + 1] }}</span>
+  </button>
+</footer-toolbar>

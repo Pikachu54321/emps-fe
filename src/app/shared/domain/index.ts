@@ -13,6 +13,11 @@ export interface User {
   name: string;
 }
 // 合同类型
+export interface LinkmanType {
+  id: number;
+  name: string;
+}
+// 联系人类型
 export interface ContractType {
   id: number;
   name: string;

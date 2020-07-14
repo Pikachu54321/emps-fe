@@ -149,16 +149,23 @@ export class ProjectNewBasicInfoComponent implements OnInit {
   }
 
   _submitForm() {
+    // 如果验证成功
+    if (this.verificationSave()) {
+      ++this.projectStepService.step;
+    }
+  }
+
+  verificationSave(): boolean {
     // 验证上传文件重名、导入文件重名、文件没有上传完不可以提交
     Object.keys(this.form.controls).forEach((key) => {
       this.form.controls[key].markAsDirty();
       this.form.controls[key].updateValueAndValidity();
     });
     if (this.form.invalid) {
-      return;
+      return false;
     } else {
       Object.assign(this.projectStepService, this.form.value);
-      this.projectStepService.step++;
+      return true;
     }
   }
 }

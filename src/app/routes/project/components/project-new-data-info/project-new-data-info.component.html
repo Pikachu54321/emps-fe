@@ -125,7 +125,7 @@
           <nz-upload
             [nzMultiple]="true"
             [(nzFileList)]="projectStepService.uploadFileLists[i]"
-            [nzShowUploadList]="true"
+            [nzShowUploadList]="{ showPreviewIcon: false, showRemoveIcon: true, showDownloadIcon: false }"
             nzType="drag"
             [nzAction]="uploadAction"
             (nzChange)="handleChange($event, i)"
@@ -146,10 +146,10 @@
     </nz-tabset>
   </nz-card>
   <footer-toolbar errorCollect>
-    <button nz-button (click)="prev()" [nzSize]="inputSize">
+    <button nz-button (click)="prev()" [nzSize]="inputSize" [disabled]="projectStepService.uploadStatus === 'uploading'">
       <span>上一步：{{ projectStepService.stepTitles[projectStepService.step - 1] }}</span>
     </button>
-    <button nz-button nzType="primary" [nzSize]="inputSize">
+    <button nz-button nzType="primary" [nzSize]="inputSize" [disabled]="projectStepService.uploadStatus === 'uploading'">
       <span>下一步：{{ projectStepService.stepTitles[projectStepService.step + 1] }}</span>
     </button>
   </footer-toolbar>

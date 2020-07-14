@@ -1,181 +1,146 @@
-import { ChangeDetectionStrategy, Component, OnInit, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, Input, ViewChild, TemplateRef, ElementRef, ChangeDetectorRef } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NzSelectSizeType } from 'ng-zorro-antd/select';
 import { Observable, Observer } from 'rxjs';
 import { ProjectService, ProjectStepService } from '../../services';
 import { ContractType } from '@shared';
+import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
+import { ProjectLinkmanFormComponent } from '../project-linkman-form';
 
 @Component({
   selector: 'app-project-new-manage-info',
   templateUrl: './project-new-manage-info.component.html',
+  styleUrls: ['./project-new-manage-info.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectNewManageInfoComponent implements OnInit {
   // 输入框尺寸设置
   @Input() inputSize: NzSelectSizeType;
-  form: FormGroup;
+  // form: FormGroup;
 
-  constructor(private fb: FormBuilder, private service: ProjectService, public projectStepService: ProjectStepService) {}
+  constructor(
+    // private fb: FormBuilder,
+    private service: ProjectService,
+    public projectStepService: ProjectStepService,
+    private modalSrv: NzModalService,
+    private cdr: ChangeDetectorRef,
+  ) {}
 
   ngOnInit() {
-    // proprietorName
-    this.form = this.fb.group({
-      partyALinkmanInfo: this.fb.array([]),
-      proprietorLinkmanInfo: this.fb.array([]),
+    // this.form = this.fb.group({
+    //   linkmanInfo: this.fb.array([]),
+    // });
+    // 获取联系人类型信息
+    this.service.getLinkmanTypes().subscribe((res: any) => {
+      this.projectStepService.linkmanTypes = res.data.linkmanTypes;
+      // this.form.patchValue(this.projectStepService);
     });
-    // 如果partyALinkmanInfo不为空，赋值
-    if (this.projectStepService.partyALinkmanInfo) {
-      for (let index = 0; index < this.projectStepService.partyALinkmanInfo?.length; index++) {
-        this.partyALinkmanInfo.push(this.createPartyALinkman());
+    // 如果linkmanInfo不为空，赋值
+    if (this.projectStepService.linkmenInfo) {
+      for (let index = 0; index < this.projectStepService.linkmenInfo?.length; index++) {
+        // this.linkmanInfo.push(this.createLinkman());
       }
-      this.form.patchValue(this.projectStepService);
-    }
-    // 如果proprietorLinkmanInfo不为空，赋值
-    if (this.projectStepService.proprietorLinkmanInfo) {
-      for (let index = 0; index < this.projectStepService.proprietorLinkmanInfo?.length; index++) {
-        this.proprietorLinkmanInfo.push(this.createProprietorLinkman());
-      }
-      this.form.patchValue(this.projectStepService);
+      // this.form.patchValue(this.projectStepService);
     }
   }
 
   //#region get form fields
 
-  get partyALinkmanInfo() {
-    return this.form.controls.partyALinkmanInfo as FormArray;
-  }
-  get proprietorLinkmanInfo() {
-    return this.form.controls.proprietorLinkmanInfo as FormArray;
-  }
-  // //#endregion
+  //#endregion
 
-  // // 防止按下回车表单提交
+  // 防止按下回车表单提交
   formKeyDownFunction(event) {
     if (event.keyCode == 13) {
       return false;
     }
   }
 
-  partyALinkmanEditIndex: number = -1;
-  partyALinkmanEditObj = {};
-  createPartyALinkman(): FormGroup {
-    return this.fb.group({
-      partyALinkmanName: [null],
-      partyALinkmanCellphone: [null],
-      partyALinkmanPhone: [null],
+  linkmanEditIndex: number = -1;
+  linkmanEditObj = {};
+
+  addLinkman(linkmanFormModalContent: TemplateRef<{}>) {
+    // 创建联系人表单对话框
+    const modal: NzModalRef = this.modalSrv.create({
+      nzTitle: '新建联系人',
+      nzContent: linkmanFormModalContent,
+      nzComponentParams: {
+        inputSize: 'large',
+        linkmanTypes: this.projectStepService.linkmanTypes,
+        linkmanEditIndex: this.linkmanEditIndex,
+        linkmanInfo: null,
+      },
+      // 点击蒙层是否允许关闭
+      nzMaskClosable: false,
+      // 是否显示右上角的关闭按钮。
+      // nzClosable: false,
+      nzFooter: null,
     });
   }
-  addPartyALinkman() {
-    this.partyALinkmanInfo.push(this.createPartyALinkman());
-    this.editPartyALinkman(this.partyALinkmanInfo.length - 1);
-  }
 
-  delPartyALinkman(index: number) {
-    // 表示有条目在编辑状态
-    if (this.partyALinkmanEditIndex !== -1) {
-      // 如果删除条目索引小于当前编辑条目索引，当前编辑条目索引-1
-      if (index < this.partyALinkmanEditIndex) {
-        this.partyALinkmanEditIndex -= 1;
-      }
-    }
-    this.partyALinkmanInfo.removeAt(index);
-  }
-
-  editPartyALinkman(index: number) {
-    if (this.partyALinkmanEditIndex !== -1 && this.partyALinkmanEditObj) {
-      this.partyALinkmanInfo.at(this.partyALinkmanEditIndex).patchValue(this.partyALinkmanEditObj);
-    }
-    this.partyALinkmanEditObj = { ...this.partyALinkmanInfo.at(index).value };
-    this.partyALinkmanEditIndex = index;
-  }
-
-  savePartyALinkman(index: number) {
-    this.partyALinkmanInfo.at(index).markAsDirty();
-    if (this.partyALinkmanInfo.at(index).invalid) {
-      return;
-    }
-    this.partyALinkmanEditIndex = -1;
-  }
-
-  cancelPartyALinkman(index: number) {
-    if (!this.partyALinkmanInfo.at(index).value.subcontractName) {
-      this.delPartyALinkman(index);
+  // 联系人表单提交成功
+  linkmanFormSubmit(linkmanForm: FormGroup) {
+    // 没有联系人信息被编辑，直接push到最后数组1个
+    if (this.linkmanEditIndex === -1) {
+      this.projectStepService.linkmenInfo = [...this.projectStepService.linkmenInfo, linkmanForm.value];
+      // this.projectStepService.linkmenInfo.push(linkmanForm.value);
     } else {
-      this.partyALinkmanInfo.at(index).patchValue(this.partyALinkmanEditObj);
+      // 有联系人被编辑
+      this.projectStepService.linkmenInfo[this.linkmanEditIndex] = linkmanForm.value;
     }
-    this.partyALinkmanEditIndex = -1;
+    // this.linkmenInfoTable.;
+    this.cdr.markForCheck();
+    this.linkmanEditIndex = -1;
   }
 
-  proprietorLinkmanEditIndex: number = -1;
-  proprietorLinkmanEditObj = {};
-  createProprietorLinkman(): FormGroup {
-    return this.fb.group({
-      proprietorLinkmanName: [null],
-      proprietorLinkmanCellphone: [null],
-      proprietorLinkmanPhone: [null],
+  delLinkman(index: number) {
+    this.projectStepService.linkmenInfo = this.projectStepService.linkmenInfo.filter((d, i) => i !== index);
+  }
+
+  editLinkman(index: number, linkmanFormModalContent: TemplateRef<{}>) {
+    this.linkmanEditIndex = index;
+    const modal: NzModalRef = this.modalSrv.create({
+      nzTitle: '新建联系人',
+      nzContent: linkmanFormModalContent,
+      nzComponentParams: {
+        inputSize: 'large',
+        linkmanTypes: this.projectStepService.linkmanTypes,
+        linkmanEditIndex: index,
+        linkmanInfo: this.projectStepService.linkmenInfo[index],
+      },
+      // 点击蒙层是否允许关闭
+      nzMaskClosable: false,
+      // 是否显示右上角的关闭按钮。
+      nzClosable: false,
+      nzFooter: null,
     });
-  }
-  addProprietorLinkman() {
-    this.proprietorLinkmanInfo.push(this.createProprietorLinkman());
-    this.editProprietorLinkman(this.proprietorLinkmanInfo.length - 1);
-  }
-
-  delProprietorLinkman(index: number) {
-    // 表示有条目在编辑状态
-    if (this.proprietorLinkmanEditIndex !== -1) {
-      // 如果删除条目索引小于当前编辑条目索引，当前编辑条目索引-1
-      if (index < this.proprietorLinkmanEditIndex) {
-        this.proprietorLinkmanEditIndex -= 1;
-      }
-    }
-    this.proprietorLinkmanInfo.removeAt(index);
-  }
-
-  editProprietorLinkman(index: number) {
-    if (this.proprietorLinkmanEditIndex !== -1 && this.proprietorLinkmanEditObj) {
-      this.proprietorLinkmanInfo.at(this.proprietorLinkmanEditIndex).patchValue(this.proprietorLinkmanEditObj);
-    }
-    this.proprietorLinkmanEditObj = { ...this.proprietorLinkmanInfo.at(index).value };
-    this.proprietorLinkmanEditIndex = index;
-  }
-
-  saveProprietorLinkman(index: number) {
-    this.proprietorLinkmanInfo.at(index).markAsDirty();
-    if (this.proprietorLinkmanInfo.at(index).invalid) {
-      return;
-    }
-    this.proprietorLinkmanEditIndex = -1;
-  }
-
-  cancelProprietorLinkman(index: number) {
-    if (!this.proprietorLinkmanInfo.at(index).value.subcontractName) {
-      this.delProprietorLinkman(index);
-    } else {
-      this.proprietorLinkmanInfo.at(index).patchValue(this.proprietorLinkmanEditObj);
-    }
-    this.proprietorLinkmanEditIndex = -1;
   }
 
   // 上一步
   prev() {
-    this.verificationSave();
+    // // 如果验证成功
+    // if (this.verificationSave()) {
+    //   ++this.projectStepService.step;
+    // }
     --this.projectStepService.step;
   }
-  _submitForm() {
-    this.verificationSave();
+  next() {
+    // // 如果验证成功
+    // if (this.verificationSave()) {
+    //   ++this.projectStepService.step;
+    // }
     ++this.projectStepService.step;
   }
-
-  verificationSave() {
-    // 验证上传文件重名、导入文件重名、文件没有上传完不可以提交
-    Object.keys(this.form.controls).forEach((key) => {
-      this.form.controls[key].markAsDirty();
-      this.form.controls[key].updateValueAndValidity();
-    });
-    if (this.form.invalid) {
-      return;
-    } else {
-      Object.assign(this.projectStepService, this.form.value);
-    }
-  }
+  // verificationSave(): boolean {
+  //   // 验证上传文件重名、导入文件重名、文件没有上传完不可以提交
+  //   Object.keys(this.form.controls).forEach((key) => {
+  //     this.form.controls[key].markAsDirty();
+  //     this.form.controls[key].updateValueAndValidity();
+  //   });
+  //   if (this.form.invalid) {
+  //     return false;
+  //   } else {
+  //     Object.assign(this.projectStepService, this.form.value);
+  //     return true;
+  //   }
+  // }
 }

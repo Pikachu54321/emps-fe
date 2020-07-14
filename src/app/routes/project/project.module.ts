@@ -10,6 +10,7 @@ import {
   ProjectNewSubcontractInfoComponent,
   ProjectNewDataInfoComponent,
   ProjectNewConfirmationInfoComponent,
+  ProjectLinkmanFormComponent,
 } from './components';
 
 @NgModule({
@@ -22,6 +23,7 @@ import {
     ProjectNewSubcontractInfoComponent,
     ProjectNewDataInfoComponent,
     ProjectNewConfirmationInfoComponent,
+    ProjectLinkmanFormComponent,
   ],
 })
 export class ProjectModule {}

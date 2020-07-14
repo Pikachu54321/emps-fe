@@ -34,6 +34,11 @@ import {
 import { environment } from '@env/environment';
 import { map } from 'rxjs/operators';
 import { DatePipe } from '@angular/common';
+import { ProjectNewBasicInfoComponent } from '../project-new-basic-info';
+import { ProjectNewContractInfoComponent } from '../project-new-contract-info';
+import { ProjectNewManageInfoComponent } from '../project-new-manage-info';
+import { ProjectNewSubcontractInfoComponent } from '../project-new-subcontract-info';
+import { ProjectNewDataInfoComponent } from '../project-new-data-info';
 
 @Component({
   selector: 'app-project-new',
@@ -160,11 +165,44 @@ export class ProjectNewComponent implements OnInit {
     //   this.items.push(field);
     // });
   }
+  // 步骤0-4组件对象
+  @ViewChild(ProjectNewBasicInfoComponent) projectNewBasicInfoComponent!: ProjectNewBasicInfoComponent;
+  @ViewChild(ProjectNewContractInfoComponent) projectNewContractInfoComponent!: ProjectNewContractInfoComponent;
+  @ViewChild(ProjectNewManageInfoComponent) projectNewManageInfoComponent!: ProjectNewManageInfoComponent;
+  @ViewChild(ProjectNewSubcontractInfoComponent) projectNewSubcontractInfoComponent!: ProjectNewSubcontractInfoComponent;
+  @ViewChild(ProjectNewDataInfoComponent) projectNewDataInfoComponent!: ProjectNewDataInfoComponent;
+  // 点击单个步骤时触发的事件
+  onStepIndexChange(index: 0 | 1 | 2 | 3 | 4 | 5): void {
+    if (this.projectStepService.step === 0) {
+      // 如果验证成功
+      if (this.projectNewBasicInfoComponent.verificationSave()) {
+        this.projectStepService.step = index;
+      }
+    } else if (this.projectStepService.step === 1) {
+      // 如果验证成功
+      if (this.projectNewContractInfoComponent.verificationSave()) {
+        this.projectStepService.step = index;
+      }
+    } else if (this.projectStepService.step === 2) {
+      // // 如果验证成功
+      // if (this.projectNewManageInfoComponent.verificationSave()) {
 
-  // 步骤条函数
-  // stepPre(): void {
-  //   --this.projectStepService.step;
-  // }
+      // }
+      this.projectStepService.step = index;
+    } else if (this.projectStepService.step === 3) {
+      // 如果验证成功
+      if (this.projectNewSubcontractInfoComponent.verificationSave()) {
+        this.projectStepService.step = index;
+      }
+    } else if (this.projectStepService.step === 4) {
+      // 如果验证成功，且不在上传中状态
+      if (this.projectNewDataInfoComponent.verificationSave() && this.projectStepService.uploadStatus !== 'uploading') {
+        this.projectStepService.step = index;
+      }
+    } else if (this.projectStepService.step === 5) {
+      this.projectStepService.step = index;
+    }
+  }
 
   // stepNext(): void {
   //   ++this.projectStepService.step;

@@ -93,24 +93,28 @@ export class ProjectNewContractInfoComponent implements OnInit {
   }
   // 上一步
   prev() {
-    this.verificationSave();
-    --this.projectStepService.step;
+    // 如果验证成功
+    if (this.verificationSave()) {
+      --this.projectStepService.step;
+    }
   }
   _submitForm() {
-    this.verificationSave();
-    ++this.projectStepService.step;
+    // 如果验证成功
+    if (this.verificationSave()) {
+      ++this.projectStepService.step;
+    }
   }
-
-  verificationSave() {
+  verificationSave(): boolean {
     // 验证上传文件重名、导入文件重名、文件没有上传完不可以提交
     Object.keys(this.form.controls).forEach((key) => {
       this.form.controls[key].markAsDirty();
       this.form.controls[key].updateValueAndValidity();
     });
     if (this.form.invalid) {
-      return;
+      return false;
     } else {
       Object.assign(this.projectStepService, this.form.value);
+      return true;
     }
   }
 }

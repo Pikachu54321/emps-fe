@@ -34,6 +34,10 @@ export class ProjectService {
   getContractTypes() {
     return this.http.get(`${environment.SERVER_URL}project/contract-types`);
   }
+  // 获得所有联系人类型
+  getLinkmanTypes() {
+    return this.http.get(`${environment.SERVER_URL}project/linkman-types`);
+  }
   // 获得项目立项路径配置参数
   getProjectNewPathParameter() {
     return this.http.get(`${environment.SERVER_URL}project/project-new-path-parameters`);

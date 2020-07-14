@@ -340,9 +340,9 @@ export class ProjectNewDataInfoComponent implements OnInit {
                 let item: UploadFile = {
                   uid: Math.random().toString(36).substring(2),
                   name: element.title,
-                  status: 'done',
+                  status: 'success',
                   response: `由"${element.key}/${element.title}"导入`,
-                  url: `${element.key}/${element.title}`,
+                  importUrl: `${element.key}/${element.title}`,
                 };
 
                 this.projectStepService.uploadFileLists[this.currentUploadTabID].push(item);
@@ -414,10 +414,15 @@ export class ProjectNewDataInfoComponent implements OnInit {
   handleChange(uploadChangeParam: UploadChangeParam, i: number): void {
     let { file, fileList } = uploadChangeParam;
     const status = file.status;
+
+    if (status === 'uploading') {
+      this.projectStepService.uploadStatus = status;
+    }
     if (status !== 'uploading') {
       console.log(file, fileList);
     }
     if (status === 'done') {
+      this.projectStepService.uploadStatus = status;
       // {
       //   uid: '3',
       //   name: 'zzz.png',
@@ -425,21 +430,11 @@ export class ProjectNewDataInfoComponent implements OnInit {
       //   response: 'Server Error 500', // custom error message to show
       //   url: 'http://www.baidu.com/zzz.png',
       // }
-      let fileObj = {
-        uid: file.uid,
-        name: file.name,
-        status: file.response.status,
-        response: file.response.msg,
-      };
 
-      this.projectStepService.uploadFileLists[i] = fileList.map((file) => {
-        if (file.response) {
-          file.url = file.response.data.file.url;
-          file.status = file.response.data.file.status;
-          // file.response = file.response.msg;
-        }
-        return file;
-      });
+      // 修改上传列表最后1个上传文件的临时url和上传状态
+      fileList[fileList.length - 1].tempUrl = file.response.data.file.url;
+      fileList[fileList.length - 1].status = file.response.data.file.status;
+      this.projectStepService.uploadFileLists[i] = fileList;
     } else if (status === 'error') {
       this.msg.error(`${file.name} file upload failed.`);
     }
@@ -447,24 +442,28 @@ export class ProjectNewDataInfoComponent implements OnInit {
 
   // 上一步
   prev() {
-    this.verificationSave();
-    --this.projectStepService.step;
+    // 如果验证成功
+    if (this.verificationSave()) {
+      --this.projectStepService.step;
+    }
   }
   _submitForm() {
-    this.verificationSave();
-    ++this.projectStepService.step;
+    // 如果验证成功
+    if (this.verificationSave()) {
+      ++this.projectStepService.step;
+    }
   }
-
-  verificationSave() {
+  verificationSave(): boolean {
     // 验证上传文件重名、导入文件重名、文件没有上传完不可以提交
     Object.keys(this.form.controls).forEach((key) => {
       this.form.controls[key].markAsDirty();
       this.form.controls[key].updateValueAndValidity();
     });
     if (this.form.invalid) {
-      return;
+      return false;
     } else {
       Object.assign(this.projectStepService, this.form.value);
+      return true;
     }
   }
 }

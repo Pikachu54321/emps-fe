@@ -47,47 +47,48 @@
   </nz-descriptions>
 </nz-card>
 <nz-card [nzBordered]="false" [nzTitle]="projectStepService.stepTitles[2]">
-  <nz-table [nzShowPagination]="false" [nzData]="projectStepService.partyALinkmanInfo" nzTitle="甲方联系人信息">
+  <nz-table [nzShowPagination]="false" [nzData]="projectStepService.linkmenInfo" nzTitle="甲方联系人信息" [nzScroll]="{ x: '1100px' }">
     <thead>
       <tr>
         <th>姓名</th>
+        <th>类别</th>
+        <th>单位名称</th>
+        <th>职务</th>
         <th>手机</th>
         <th>电话</th>
+        <th>QQ号码</th>
+        <th>微信号码</th>
+        <th>电子邮箱</th>
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let item of projectStepService.partyALinkmanInfo; let i = index">
+      <tr *ngFor="let item of projectStepService.linkmenInfo; let i = index">
         <td>
-          <span>{{ item.partyALinkmanName }}</span>
+          <span>{{ item.linkmanName }}</span>
         </td>
         <td>
-          <span>{{ item.partyALinkmanCellphone }}</span>
+          <span>{{ item.linkmanType.name }}</span>
         </td>
         <td>
-          <span>{{ item.partyALinkmanPhone }}</span>
-        </td>
-      </tr>
-    </tbody>
-  </nz-table>
-  <nz-divider></nz-divider>
-  <nz-table [nzShowPagination]="false" [nzData]="projectStepService.proprietorLinkmanInfo" nzTitle="业主联系人信息">
-    <thead>
-      <tr>
-        <th>姓名</th>
-        <th>手机</th>
-        <th>电话</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let item of projectStepService.proprietorLinkmanInfo; let i = index">
-        <td>
-          <span>{{ item.proprietorLinkmanName }}</span>
+          <span>{{ item.linkmanCompanyName }}</span>
         </td>
         <td>
-          <span>{{ item.proprietorLinkmanCellphone }}</span>
+          <span>{{ item.linkmanDuty }}</span>
         </td>
         <td>
-          <span>{{ item.proprietorLinkmanPhone }}</span>
+          <span>{{ item.linkmanCellphone }}</span>
+        </td>
+        <td>
+          <span>{{ item.linkmanPhone }}</span>
+        </td>
+        <td>
+          <span>{{ item.linkmanQQ }}</span>
+        </td>
+        <td>
+          <span>{{ item.linkmanWeChat }}</span>
+        </td>
+        <td>
+          <span>{{ item.linkmanEmail }}</span>
         </td>
       </tr>
     </tbody>
@@ -117,7 +118,54 @@
     </tbody>
   </nz-table>
 </nz-card>
-<nz-card [nzBordered]="false" [nzTitle]="projectStepService.stepTitles[4]"> </nz-card>
+<nz-card [nzBordered]="false" [nzTitle]="projectStepService.stepTitles[4]">
+  <!-- 标签页 -->
+  <nz-tabset nzSize="large">
+    <nz-tab nzTitle="路径配置">
+      <nz-descriptions [nzColumn]="1" nzBordered nzLayout="vertical">
+        <!-- 根目录 -->
+        <nz-descriptions-item [nzTitle]="projectStepService.projectNewFilePaths[0].text">{{
+          projectStepService.rootDir
+        }}</nz-descriptions-item>
+        <!-- 其他子目录 -->
+        <nz-descriptions-item
+          *ngFor="let childPathConfig of projectStepService.projectNewFilePaths[0].children"
+          [nzTitle]="childPathConfig.text"
+          >{{ projectStepService[childPathConfig.key] }}</nz-descriptions-item
+        >
+      </nz-descriptions>
+    </nz-tab>
+    <nz-tab
+      *ngFor="let childPathConfig of projectStepService.projectNewFilePaths[0].children; let i = index"
+      [nzTitle]="childPathConfig.text"
+    >
+      <!-- 标题模板 -->
+      <ng-template #cardTitleTemplate>
+        <div
+          nz-tooltip
+          [nzTooltipTitle]="projectStepService[childPathConfig.key] === null ? '无' : projectStepService[childPathConfig.key]"
+        >
+          {{ projectStepService[childPathConfig.key] === null ? '上传目录：无' : '上传目录：' + projectStepService[childPathConfig.key] }}
+        </div>
+      </ng-template>
+      <nz-card nzType="inner">
+        <h3
+          [ngStyle]="{ margin: '16px 0' }"
+          nz-tooltip
+          [nzTooltipTitle]="projectStepService[childPathConfig.key] === null ? '无' : projectStepService[childPathConfig.key]"
+        >
+          {{ projectStepService[childPathConfig.key] === null ? '上传目录：无' : '上传目录：' + projectStepService[childPathConfig.key] }}
+        </h3>
+        <nz-list nzBordered nzSize="large">
+          <nz-list-header>文件列表</nz-list-header>
+          <nz-list-item *ngFor="let uploadFile of projectStepService.uploadFileLists[i]">
+            <span><i nz-icon nzType="paper-clip" nzTheme="outline"></i>{{ uploadFile.name }}</span>
+          </nz-list-item>
+        </nz-list>
+      </nz-card>
+    </nz-tab>
+  </nz-tabset>
+</nz-card>
 <footer-toolbar>
   <button nz-button (click)="prev()" [nzSize]="inputSize">
     <span>上一步：{{ projectStepService.stepTitles[projectStepService.step - 1] }}</span>
