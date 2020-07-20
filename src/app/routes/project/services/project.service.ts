@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '@env/environment';
-import { ProjectRoot, Project, ContractType, FileListPage, ProjectNewFilePath } from '@shared';
+import { ProjectRoot, Project, ContractType, FileListPage, ProjectNewFilePath, ProjectFormValue } from '@shared';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -9,12 +9,6 @@ import { Observable } from 'rxjs';
 })
 export class ProjectService {
   constructor(private http: HttpClient) {}
-  // 获得立项依据数组
-  // [{
-  //   // 立项依据编号
-  //   id: '1',
-  //   name: '合同',
-  // }];
 
   // 项目立项页 project-new
   // 获得立项依据
@@ -56,5 +50,9 @@ export class ProjectService {
       parentFolderPath: parentFolderPath,
       newFoldername: newFoldername,
     });
+  }
+  // 项目立项提交
+  postNewProject(formValue: ProjectFormValue) {
+    return this.http.post(`${environment.SERVER_URL}project`, formValue);
   }
 }

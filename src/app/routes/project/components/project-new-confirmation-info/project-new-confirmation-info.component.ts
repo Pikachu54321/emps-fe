@@ -3,7 +3,7 @@ import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NzSelectSizeType } from 'ng-zorro-antd/select';
 import { Observable, Observer } from 'rxjs';
 import { ProjectService, ProjectStepService } from '../../services';
-import { ContractType } from '@shared';
+import { ContractType, ProjectFormValue } from '@shared';
 
 @Component({
   selector: 'app-project-new-confirmation-info',
@@ -69,21 +69,48 @@ export class ProjectNewConfirmationInfoComponent implements OnInit {
     // this.verificationSave();
     --this.projectStepService.step;
   }
-  _submitForm() {
-    // this.verificationSave();
-    ++this.projectStepService.step;
+  submitForm() {
+    // 要提交的数据
+    let formValue: ProjectFormValue = {
+      basicInfo: {
+        projectName: this.projectStepService.projectName,
+        initRoot: this.projectStepService.initRoot,
+        projectProperty: this.projectStepService.projectProperty,
+        projectRelevance: this.projectStepService.projectRelevance,
+        projectManager: this.projectStepService.projectManager,
+        projectMembers: this.projectStepService.projectMembers,
+        initDate: new Date(),
+      },
+      contractInfo: {
+        contractIDHD: this.projectStepService.contractIDHD,
+        contractIDJF: this.projectStepService.contractIDJF,
+        contractName: this.projectStepService.contractName,
+        partyAName: this.projectStepService.partyAName,
+        projectDateRange: this.projectStepService.projectDateRange,
+        contractDate: this.projectStepService.contractDate,
+        warranty: this.projectStepService.warranty,
+        projectContent: this.projectStepService.projectContent,
+        contractType: this.projectStepService.contractType,
+        partyALinkmanName: this.projectStepService.partyAName,
+        partyALinkmanPhone: this.projectStepService.partyALinkmanPhone,
+        projectAddress: this.projectStepService.projectAddress,
+        partyAAddress: this.projectStepService.partyAAddress,
+      },
+      manageInfo: {
+        linkmenInfo: this.projectStepService.linkmenInfo,
+      },
+      subcontractInfo: this.projectStepService.subcontractInfo,
+      dataInfo: {
+        rootDir: this.projectStepService.rootDir,
+        technologyAgreementDir: this.projectStepService.technologyAgreementDir,
+        technologySchemeDir: this.projectStepService.technologySchemeDir,
+        budgetDir: this.projectStepService.budgetDir,
+        settlementDir: this.projectStepService.settlementDir,
+        productionSchedulingNoticeDir: this.projectStepService.productionSchedulingNoticeDir,
+        uploadFileLists: this.projectStepService.uploadFileLists,
+      },
+    };
+    // 提交表单
+    this.service.postNewProject(formValue).subscribe((res: any) => {});
   }
-
-  // verificationSave() {
-  //   // 验证上传文件重名、导入文件重名、文件没有上传完不可以提交
-  //   Object.keys(this.form.controls).forEach((key) => {
-  //     this.form.controls[key].markAsDirty();
-  //     this.form.controls[key].updateValueAndValidity();
-  //   });
-  //   if (this.form.invalid) {
-  //     return;
-  //   } else {
-  //     Object.assign(this.projectStepService, this.form.value);
-  //   }
-  // }
 }

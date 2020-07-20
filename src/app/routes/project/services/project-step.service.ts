@@ -35,7 +35,7 @@ export class ProjectStepService {
 
   // 步骤1要提交后台数据
   contractIDHD: string = null;
-  contractIDYZ: string = null;
+  contractIDJF: string = null;
   contractName: string = null;
   partyAName: string = null;
   projectDateRange: [Date, Date] = null;
@@ -48,8 +48,10 @@ export class ProjectStepService {
   projectAddress: string = null;
   partyAAddress: string = null;
 
-  // 步骤2要提交后台数据
+  // 步骤2参数
+  // 联系人类型数组
   linkmanTypes: LinkmanType[] = null;
+  // 步骤2要提交后台数据
   // 联系人信息
   linkmenInfo: Array<{
     linkmanName: string;

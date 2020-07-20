@@ -18,10 +18,10 @@
 <nz-card [nzBordered]="false" [nzTitle]="projectStepService.stepTitles[1]">
   <nz-descriptions nzBordered [nzColumn]="1" nzLayout="vertical">
     <nz-descriptions-item nzTitle="合同编号（惠东）">{{ projectStepService.contractIDHD }}</nz-descriptions-item>
-    <nz-descriptions-item nzTitle="合同编号（甲方）">{{ projectStepService.contractIDYZ }}</nz-descriptions-item>
+    <nz-descriptions-item nzTitle="合同编号（甲方）">{{ projectStepService.contractIDJF }}</nz-descriptions-item>
     <nz-descriptions-item nzTitle="合同名称">{{ projectStepService.contractName }}</nz-descriptions-item>
     <nz-descriptions-item nzTitle="甲方名称">{{ projectStepService.partyAName }}</nz-descriptions-item>
-    <nz-descriptions-item nzTitle="合同类型">{{ projectStepService.contractType.name }}</nz-descriptions-item>
+    <nz-descriptions-item nzTitle="合同类型">{{ projectStepService.contractType?.name }}</nz-descriptions-item>
     <nz-descriptions-item [nzTitle]="projectDateRangeTemp"
       >{{ (projectStepService.projectDateRange === null ? null : projectStepService.projectDateRange[0]) | date: 'yyyy-MM-dd' }}
       <i nz-icon nzType="swap-right" nzTheme="outline"></i>
@@ -161,7 +161,7 @@
   <button nz-button (click)="prev()" [nzSize]="inputSize">
     <span>上一步：{{ projectStepService.stepTitles[projectStepService.step - 1] }}</span>
   </button>
-  <button nz-button nzType="primary" [nzSize]="inputSize">
-    <span>下一步：{{ projectStepService.stepTitles[projectStepService.step + 1] }}</span>
+  <button nz-button (click)="submitForm()" nzType="primary" [nzSize]="inputSize">
+    <span>提交</span>
   </button>
 </footer-toolbar>

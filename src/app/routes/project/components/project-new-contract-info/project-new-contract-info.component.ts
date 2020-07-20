@@ -21,7 +21,7 @@ export class ProjectNewContractInfoComponent implements OnInit {
     // proprietorName
     this.form = this.fb.group({
       contractIDHD: [null],
-      contractIDYZ: [null],
+      contractIDJF: [null],
       contractName: [null],
       partyAName: [null],
       projectDateRange: [null],
@@ -45,8 +45,8 @@ export class ProjectNewContractInfoComponent implements OnInit {
   get contractIDHD() {
     return this.form.controls.contractIDHD;
   }
-  get contractIDYZ() {
-    return this.form.controls.contractIDYZ;
+  get contractIDJF() {
+    return this.form.controls.contractIDJF;
   }
   get contractName() {
     return this.form.controls.contractName;
