@@ -45,20 +45,31 @@
         </span>
       </nz-form-label>
       <nz-form-control [nzSm]="16" [nzXs]="24">
-        <nz-range-picker formControlName="projectDateRange" [nzFormat]="projectStepService.dateFormat"></nz-range-picker>
+        <nz-range-picker
+          formControlName="projectDateRange"
+          [nzFormat]="projectStepService.dateFormat"
+          [nzSize]="inputSize"
+        ></nz-range-picker>
       </nz-form-control>
     </nz-form-item>
     <nz-form-item>
       <nz-form-label [nzMd]="4" [nzSm]="6" [nzXs]="24">签订日期</nz-form-label>
       <nz-form-control [nzSm]="16" [nzXs]="24">
-        <nz-date-picker formControlName="contractDate" [nzFormat]="projectStepService.dateFormat"></nz-date-picker>
+        <nz-date-picker formControlName="contractDate" [nzFormat]="projectStepService.dateFormat" [nzSize]="inputSize"></nz-date-picker>
       </nz-form-control>
     </nz-form-item>
     <nz-form-item>
       <nz-form-label [nzMd]="4" [nzSm]="6" [nzXs]="24">质保期</nz-form-label>
       <nz-form-control [nzSm]="16" [nzXs]="24">
         <nz-input-group nzAddOnAfter="月">
-          <nz-input-number [nzMin]="1" [nzMax]="240" [nzStep]="1" formControlName="warranty" placeholder="请输入质保期"></nz-input-number>
+          <nz-input-number
+            [nzMin]="1"
+            [nzMax]="240"
+            [nzStep]="1"
+            formControlName="warranty"
+            placeholder="请输入质保期"
+            [nzSize]="inputSize"
+          ></nz-input-number>
         </nz-input-group>
       </nz-form-control>
     </nz-form-item>
@@ -92,7 +103,7 @@
         <textarea
           nz-input
           formControlName="projectContent"
-          [nzAutosize]="{ minRows: 4 }"
+          [nzAutosize]="{ minRows: 8 }"
           placeholder="请输入工程内容"
           [nzSize]="inputSize"
         ></textarea>

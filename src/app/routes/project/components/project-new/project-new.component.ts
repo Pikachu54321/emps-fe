@@ -34,15 +34,19 @@ export class ProjectNewComponent implements OnInit {
   ngOnInit() {
     console.log(this.datePipe.transform(new Date()));
 
-    // 读取项目立项路径配置参数
-    this.service.getParentProjects().subscribe((res: any) => {
-      this.projectStepService.parentProjects = res.data.parentProjects;
-    });
+    // 读取项目主项目
+    // this.service.getParentProjects().subscribe((res: any) => {
+    //   this.projectStepService.parentProjects = res.data.parentProjects;
+    // });
     // 读取项目立项路径配置参数
     this.service.getProjectNewPathParameter().subscribe((res: any) => {
       this.projectStepService.projectNewFilePaths = res.data.projectNewFilePaths;
+      // 设置上传路径对象的根目录参数
+      this.projectStepService.uploadPath[this.projectStepService.projectNewFilePaths[0].key] = null;
       // 设定有几个上传文件列表 new Array<UploadFile[]>(this.projectNewFilePaths[0].children.length)
       for (let index = 0; index < this.projectStepService.projectNewFilePaths[0].children.length; index++) {
+        // 设置上传路径对象的子目录参数
+        this.projectStepService.uploadPath[this.projectStepService.projectNewFilePaths[0].children[index].key] = null;
         this.projectStepService.uploadFileLists[index] = [];
       }
     });

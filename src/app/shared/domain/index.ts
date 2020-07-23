@@ -6,6 +6,8 @@ export interface ProjectFormValue {
   basicInfo: {
     projectName: string;
     initRoot: ProjectRoot;
+    initRootDate: Date;
+    initRootMessage: string;
     projectProperty: string;
     projectRelevance: Project;
     projectManager: User;
@@ -46,12 +48,7 @@ export interface ProjectFormValue {
   subcontractInfo: Array<{ subcontractName: string; subcontractSum: string; subcontractDetails: string }>;
   // 立项步骤4，项目资料数据
   dataInfo: {
-    rootDir: string;
-    technologyAgreementDir: string;
-    technologySchemeDir: string;
-    budgetDir: string;
-    settlementDir: string;
-    productionSchedulingNoticeDir: string;
+    uploadPath: ProjectNewFilePath;
     uploadFileLists: Array<UploadFile[]>;
   };
 }
@@ -83,6 +80,7 @@ export interface ContractType {
 export interface ProjectNewFilePath {
   text: string;
   path: string;
+  absolutePath?: string;
   key: string;
   children: ProjectNewFileChildPath[];
 }
@@ -90,6 +88,7 @@ export interface ProjectNewFilePath {
 export interface ProjectNewFileChildPath {
   text: string;
   path: string;
+  absolutePath?: string;
   key: string;
 }
 // 文件

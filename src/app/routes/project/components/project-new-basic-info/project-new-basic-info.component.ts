@@ -1,24 +1,7 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  OnInit,
-  ViewChild,
-  ElementRef,
-  Renderer2,
-  ChangeDetectorRef,
-  TemplateRef,
-  QueryList,
-  ViewChildren,
-  Input,
-  NgZone,
-} from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
-import { Observable, Observer, zip } from 'rxjs';
-import { NzModalService, NzModalRef, ModalButtonOptions, ModalOptions } from 'ng-zorro-antd/modal';
-import { NzMessageService } from 'ng-zorro-antd/message';
-import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { NzSelectSizeType, NzSelectComponent, NzSelectOptionInterface, NzSelectItemInterface } from 'ng-zorro-antd/select';
+import { ChangeDetectionStrategy, Component, OnInit, Input } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { zip } from 'rxjs';
+import { NzSelectSizeType } from 'ng-zorro-antd/select';
 import { ProjectService, ProjectStepService } from '../../services';
 import { ProjectRoot, Project, User } from '@shared';
 
@@ -48,6 +31,8 @@ export class ProjectNewBasicInfoComponent implements OnInit {
     this.form = this.fb.group({
       projectName: [null, [Validators.required]],
       initRoot: [null, [Validators.required]],
+      initRootDate: [null],
+      initRootMessage: [null],
       projectProperty: [null],
       projectRelevance: [null],
       projectManager: [null, [Validators.required]],
@@ -69,6 +54,12 @@ export class ProjectNewBasicInfoComponent implements OnInit {
   }
   get initRoot() {
     return this.form.controls.initRoot;
+  }
+  get initRootDate() {
+    return this.form.controls.initRootDate;
+  }
+  get initRootMessage() {
+    return this.form.controls.initRootMessage;
   }
   get projectProperty() {
     return this.form.controls.projectProperty;
@@ -93,6 +84,7 @@ export class ProjectNewBasicInfoComponent implements OnInit {
       return false;
     }
   }
+
   // 项目经理改变
   projectManagerChange(value: User): void {
     let projectMembersValue = this.projectMembers.value as Array<User>;

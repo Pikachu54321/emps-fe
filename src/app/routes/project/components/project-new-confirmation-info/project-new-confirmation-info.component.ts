@@ -64,17 +64,30 @@ export class ProjectNewConfirmationInfoComponent implements OnInit {
       return false;
     }
   }
+  // 跳转回表单页
+  stepEditJump(index: 0 | 1 | 2 | 3 | 4 | 5) {
+    this.projectStepService.step = index;
+  }
   // 上一步
   prev() {
     // this.verificationSave();
     --this.projectStepService.step;
   }
   submitForm() {
+    // 整理上传路径对象
+    // 添加projectNewFilePaths根目录绝对路径
+    this.projectStepService.projectNewFilePaths[0].absolutePath = this.projectStepService.uploadPath[0];
+    // 添加projectNewFilePaths子目录绝对路径
+    for (let i = 0; i < this.projectStepService.projectNewFilePaths[0].children.length; i++) {
+      this.projectStepService.projectNewFilePaths[0].children[i].absolutePath = this.projectStepService.uploadPath[i + 1];
+    }
     // 要提交的数据
     let formValue: ProjectFormValue = {
       basicInfo: {
         projectName: this.projectStepService.projectName,
         initRoot: this.projectStepService.initRoot,
+        initRootDate: this.projectStepService.initRootDate,
+        initRootMessage: this.projectStepService.initRootMessage,
         projectProperty: this.projectStepService.projectProperty,
         projectRelevance: this.projectStepService.projectRelevance,
         projectManager: this.projectStepService.projectManager,
@@ -101,12 +114,7 @@ export class ProjectNewConfirmationInfoComponent implements OnInit {
       },
       subcontractInfo: this.projectStepService.subcontractInfo,
       dataInfo: {
-        rootDir: this.projectStepService.rootDir,
-        technologyAgreementDir: this.projectStepService.technologyAgreementDir,
-        technologySchemeDir: this.projectStepService.technologySchemeDir,
-        budgetDir: this.projectStepService.budgetDir,
-        settlementDir: this.projectStepService.settlementDir,
-        productionSchedulingNoticeDir: this.projectStepService.productionSchedulingNoticeDir,
+        uploadPath: this.projectStepService.projectNewFilePaths[0],
         uploadFileLists: this.projectStepService.uploadFileLists,
       },
     };

@@ -1,4 +1,14 @@
-import { ChangeDetectionStrategy, Component, OnInit, Input, ViewChildren, QueryList, ViewChild, ElementRef } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  Input,
+  ViewChildren,
+  QueryList,
+  ViewChild,
+  ElementRef,
+  ChangeDetectorRef,
+} from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { NzSelectSizeType } from 'ng-zorro-antd/select';
 import { Observable, Observer } from 'rxjs';
@@ -26,25 +36,45 @@ export class ProjectNewDataInfoComponent implements OnInit {
   // 输入框尺寸设置
   @Input() inputSize: NzSelectSizeType;
   form: FormGroup;
-
+  // 是否旋转，true表示旋转，旋转表示还没初始化完成
+  isSpinning: boolean = true;
   constructor(
     private fb: FormBuilder,
     private modalSrv: NzModalService,
     private msg: NzMessageService,
     private service: ProjectService,
     public projectStepService: ProjectStepService,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit() {
+    // // 读取项目立项路径配置参数
+    // this.service.getProjectNewPathParameter().subscribe((res: any) => {
+    //   this.projectStepService.projectNewFilePaths = res.data.projectNewFilePaths;
+    //   // 设置上传路径对象的根目录参数
+    //   this.projectStepService.uploadPath[this.projectStepService.projectNewFilePaths[0].key] = null;
+    //   // 设定有几个上传文件列表 new Array<UploadFile[]>(this.projectNewFilePaths[0].children.length)
+    //   for (let index = 0; index < this.projectStepService.projectNewFilePaths[0].children.length; index++) {
+    //     // 设置上传路径对象的子目录参数
+    //     this.projectStepService.uploadPath[this.projectStepService.projectNewFilePaths[0].children[index].key] = null;
+    //     this.projectStepService.uploadFileLists[index] = [];
+    //   }
+
+    //   // 初始化完成
+    //   // this.isSpinning = false;
+    //   // this.cdr.markForCheck();
+    // });
     this.form = this.fb.group({
-      rootDir: new FormControl({ value: null, disabled: true }),
-      technologyAgreementDir: new FormControl({ value: null, disabled: true }),
-      technologySchemeDir: new FormControl({ value: null, disabled: true }),
-      budgetDir: new FormControl({ value: null, disabled: true }),
-      settlementDir: new FormControl({ value: null, disabled: true }),
-      productionSchedulingNoticeDir: new FormControl({ value: null, disabled: true }),
+      [this.projectStepService.projectNewFilePaths[0].key]: new FormControl({ value: null, disabled: true }),
     });
-    this.form.patchValue(this.projectStepService);
+    // this.form.patchValue(this.projectStepService.uploadPath);
+    for (let index = 0; index < this.projectStepService.projectNewFilePaths[0].children.length; index++) {
+      this.form.addControl(
+        this.projectStepService.projectNewFilePaths[0].children[index].key,
+        new FormControl({ value: null, disabled: true }),
+      );
+    }
+    this.form.patchValue(this.projectStepService.uploadPath);
   }
 
   //#region get form fields
@@ -462,7 +492,7 @@ export class ProjectNewDataInfoComponent implements OnInit {
     if (this.form.invalid) {
       return false;
     } else {
-      Object.assign(this.projectStepService, this.form.value);
+      Object.assign(this.projectStepService.uploadPath, this.form.value);
       return true;
     }
   }

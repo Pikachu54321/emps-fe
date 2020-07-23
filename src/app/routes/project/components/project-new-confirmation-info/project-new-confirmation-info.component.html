@@ -1,8 +1,12 @@
-<nz-card [nzBordered]="false" [nzTitle]="projectStepService.stepTitles[0]">
+<nz-card [nzBordered]="false" [nzTitle]="step0Edit">
   <nz-descriptions nzBordered [nzColumn]="1" nzLayout="vertical">
     <nz-descriptions-item nzTitle="项目内部ID">自动生成</nz-descriptions-item>
     <nz-descriptions-item nzTitle="项目名称">{{ projectStepService.projectName }}</nz-descriptions-item>
     <nz-descriptions-item nzTitle="立项依据">{{ projectStepService.initRoot.name }}</nz-descriptions-item>
+    <nz-descriptions-item nzTitle="收到时间">{{ projectStepService.initRootDate | date: 'yyyy-MM-dd' }}</nz-descriptions-item>
+    <nz-descriptions-item *ngIf="projectStepService.initRoot.name === '内部通知'" nzTitle="{{ projectStepService.initRoot.name }}备注">{{
+      projectStepService.initRootMessage
+    }}</nz-descriptions-item>
     <nz-descriptions-item nzTitle="项目经理">{{ projectStepService.projectManager.name }}</nz-descriptions-item>
     <nz-descriptions-item nzTitle="项目主要成员">{{ projectMembers }}</nz-descriptions-item>
     <nz-descriptions-item nzTitle="项目属性"
@@ -15,7 +19,12 @@
     <nz-descriptions-item nzTitle="立项时间">自动生成</nz-descriptions-item>
   </nz-descriptions>
 </nz-card>
-<nz-card [nzBordered]="false" [nzTitle]="projectStepService.stepTitles[1]">
+<ng-template #step0Edit>
+  <span
+    >{{ projectStepService.stepTitles[0] }} <i nz-icon nzType="edit" (click)="stepEditJump(0)" nz-tooltip nzTooltipTitle="去修改"></i
+  ></span>
+</ng-template>
+<nz-card [nzBordered]="false" [nzTitle]="step1Edit">
   <nz-descriptions nzBordered [nzColumn]="1" nzLayout="vertical">
     <nz-descriptions-item nzTitle="合同编号（惠东）">{{ projectStepService.contractIDHD }}</nz-descriptions-item>
     <nz-descriptions-item nzTitle="合同编号（甲方）">{{ projectStepService.contractIDJF }}</nz-descriptions-item>
@@ -46,7 +55,12 @@
     <nz-descriptions-item nzTitle="工程内容">{{ projectStepService.projectContent }}</nz-descriptions-item>
   </nz-descriptions>
 </nz-card>
-<nz-card [nzBordered]="false" [nzTitle]="projectStepService.stepTitles[2]">
+<ng-template #step1Edit>
+  <span
+    >{{ projectStepService.stepTitles[1] }} <i nz-icon nzType="edit" (click)="stepEditJump(1)" nz-tooltip nzTooltipTitle="去修改"></i
+  ></span>
+</ng-template>
+<nz-card [nzBordered]="false" [nzTitle]="step2Edit">
   <nz-table [nzShowPagination]="false" [nzData]="projectStepService.linkmenInfo" nzTitle="甲方联系人信息" [nzScroll]="{ x: '1100px' }">
     <thead>
       <tr>
@@ -94,7 +108,12 @@
     </tbody>
   </nz-table>
 </nz-card>
-<nz-card [nzBordered]="false" [nzTitle]="projectStepService.stepTitles[3]">
+<ng-template #step2Edit>
+  <span
+    >{{ projectStepService.stepTitles[2] }} <i nz-icon nzType="edit" (click)="stepEditJump(2)" nz-tooltip nzTooltipTitle="去修改"></i
+  ></span>
+</ng-template>
+<nz-card [nzBordered]="false" [nzTitle]="step3Edit">
   <nz-table [nzShowPagination]="false" [nzData]="projectStepService.subcontractInfo" nzTitle="业主联系人信息">
     <thead>
       <tr>
@@ -118,20 +137,25 @@
     </tbody>
   </nz-table>
 </nz-card>
-<nz-card [nzBordered]="false" [nzTitle]="projectStepService.stepTitles[4]">
+<ng-template #step3Edit>
+  <span
+    >{{ projectStepService.stepTitles[3] }} <i nz-icon nzType="edit" (click)="stepEditJump(3)" nz-tooltip nzTooltipTitle="去修改"></i
+  ></span>
+</ng-template>
+<nz-card [nzBordered]="false" [nzTitle]="step4Edit">
   <!-- 标签页 -->
   <nz-tabset nzSize="large">
     <nz-tab nzTitle="路径配置">
       <nz-descriptions [nzColumn]="1" nzBordered nzLayout="vertical">
         <!-- 根目录 -->
         <nz-descriptions-item [nzTitle]="projectStepService.projectNewFilePaths[0].text">{{
-          projectStepService.rootDir
+          projectStepService.uploadPath[projectStepService.projectNewFilePaths[0].key]
         }}</nz-descriptions-item>
         <!-- 其他子目录 -->
         <nz-descriptions-item
-          *ngFor="let childPathConfig of projectStepService.projectNewFilePaths[0].children"
+          *ngFor="let childPathConfig of projectStepService.projectNewFilePaths[0].children; let i = index"
           [nzTitle]="childPathConfig.text"
-          >{{ projectStepService[childPathConfig.key] }}</nz-descriptions-item
+          >{{ projectStepService.uploadPath[projectStepService.projectNewFilePaths[0].children[i].key] }}</nz-descriptions-item
         >
       </nz-descriptions>
     </nz-tab>
@@ -143,9 +167,17 @@
         <h3
           [ngStyle]="{ margin: '16px 0' }"
           nz-tooltip
-          [nzTooltipTitle]="projectStepService[childPathConfig.key] === null ? '无' : projectStepService[childPathConfig.key]"
+          [nzTooltipTitle]="
+            projectStepService.uploadPath[projectStepService.projectNewFilePaths[0].children[i].key] === null
+              ? '无'
+              : projectStepService.uploadPath[projectStepService.projectNewFilePaths[0].children[i].key]
+          "
         >
-          {{ projectStepService[childPathConfig.key] === null ? '上传目录：无' : '上传目录：' + projectStepService[childPathConfig.key] }}
+          {{
+            projectStepService.uploadPath[projectStepService.projectNewFilePaths[0].children[i].key] === null
+              ? '上传目录：无'
+              : '上传目录：' + projectStepService.uploadPath[projectStepService.projectNewFilePaths[0].children[i].key]
+          }}
         </h3>
         <nz-list nzBordered nzSize="large">
           <nz-list-header>文件列表</nz-list-header>
@@ -157,6 +189,11 @@
     </nz-tab>
   </nz-tabset>
 </nz-card>
+<ng-template #step4Edit>
+  <span
+    >{{ projectStepService.stepTitles[4] }} <i nz-icon nzType="edit" (click)="stepEditJump(4)" nz-tooltip nzTooltipTitle="去修改"></i
+  ></span>
+</ng-template>
 <footer-toolbar>
   <button nz-button (click)="prev()" [nzSize]="inputSize">
     <span>上一步：{{ projectStepService.stepTitles[projectStepService.step - 1] }}</span>

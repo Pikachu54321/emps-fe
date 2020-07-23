@@ -1,3 +1,5 @@
+<!-- <nz-spin [nzSize]="'large'" [nzSpinning]="isSpinning"> -->
+<!-- <form nz-form [formGroup]="form" (keydown)="formKeyDownFunction($event)" (ngSubmit)="_submitForm()" *ngIf="!isSpinning"> -->
 <form nz-form [formGroup]="form" (keydown)="formKeyDownFunction($event)" (ngSubmit)="_submitForm()">
   <nz-card [nzBordered]="false">
     <!-- 标签页 -->
@@ -7,7 +9,7 @@
         <nz-row nzGutter="16">
           <nz-col [nzSpan]="24">
             <nz-form-item>
-              <nz-form-label [nzMd]="4" [nzSm]="6" [nzXs]="24">{{ projectStepService.projectNewFilePaths[0].text }}</nz-form-label>
+              <nz-form-label [nzMd]="4" [nzSm]="6" [nzXs]="24">{{ projectStepService.projectNewFilePaths[0]?.text }}</nz-form-label>
               <nz-form-control>
                 <nz-row style="flex-wrap: nowrap;">
                   <nz-col nzFlex="auto">
@@ -154,3 +156,4 @@
     </button>
   </footer-toolbar>
 </form>
+<!-- </nz-spin> -->

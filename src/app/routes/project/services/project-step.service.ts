@@ -23,6 +23,8 @@ export class ProjectStepService {
   // 步骤0要提交后台数据
   projectName: string = null;
   initRoot: ProjectRoot = null;
+  initRootDate: Date = null;
+  initRootMessage: string = null;
   projectProperty: string = null;
   projectRelevance: Project = null;
   projectManager: User = null;
@@ -76,11 +78,14 @@ export class ProjectStepService {
   // 上传状态
   uploadStatus: UploadFileStatus;
   // 步骤4要提交后台数据
-  rootDir: string = null;
-  technologyAgreementDir: string = null;
-  technologySchemeDir: string = null;
-  budgetDir: string = null;
-  settlementDir: string = null;
-  productionSchedulingNoticeDir: string = null;
+
+  uploadPath: {} = {};
+
+  // rootDir: string = null;
+  // technologyAgreementDir: string = null;
+  // technologySchemeDir: string = null;
+  // budgetDir: string = null;
+  // settlementDir: string = null;
+  // productionSchedulingNoticeDir: string = null;
   constructor() {}
 }

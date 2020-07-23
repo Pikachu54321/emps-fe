@@ -20,17 +20,49 @@
     <nz-form-item>
       <nz-form-label [nzMd]="4" [nzSm]="6" [nzXs]="24" nzRequired>立项依据</nz-form-label>
       <nz-form-control [nzSm]="16" [nzXs]="24" nzErrorTip="请选择立项依据">
+        <!-- <nz-radio-group nzName="initRoot" formControlName="initRoot">
+          <label nz-radio *ngFor="let i of projectStepService.projectRoots" [nzValue]="i.id">{{ i.name }}</label>
+        </nz-radio-group> -->
         <nz-select
           formControlName="initRoot"
           [nzPlaceHolder]="'请选择立项依据'"
           [nzShowSearch]="true"
           [nzSize]="inputSize"
           [compareWith]="compareFn"
+          #initRootSelect
         >
           <nz-option *ngFor="let i of projectStepService.projectRoots" [nzLabel]="i.name" [nzValue]="i"></nz-option>
         </nz-select>
       </nz-form-control>
     </nz-form-item>
+    <div nz-row *ngIf="initRootSelect.activatedValue">
+      <div nz-col [nzMd]="4" [nzSm]="6" [nzXs]="24"></div>
+      <div nz-col [nzSm]="16" [nzXs]="24">
+        <nz-form-item>
+          <nz-form-label style="width: 80px;">收到时间</nz-form-label>
+          <nz-form-control>
+            <nz-date-picker formControlName="initRootDate" [nzFormat]="projectStepService.dateFormat" [nzSize]="inputSize"></nz-date-picker>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+    <div nz-row *ngIf="initRootSelect.activatedValue?.name === '内部通知'">
+      <div nz-col [nzMd]="4" [nzSm]="6" [nzXs]="24"></div>
+      <div nz-col [nzSm]="16" [nzXs]="24">
+        <nz-form-item>
+          <nz-form-label style="width: 80px;">备注</nz-form-label>
+          <nz-form-control>
+            <textarea
+              nz-input
+              formControlName="initRootMessage"
+              [nzAutosize]="{ minRows: 4 }"
+              placeholder="请输入{{ initRootSelect.activatedValue?.name }}备注"
+              [nzSize]="inputSize"
+            ></textarea>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
     <nz-form-item>
       <nz-form-label [nzMd]="4" [nzSm]="6" [nzXs]="24" nzRequired>项目经理</nz-form-label>
       <nz-form-control [nzSm]="16" [nzXs]="24" nzErrorTip="请选择项目经理">
