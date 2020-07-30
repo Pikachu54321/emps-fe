@@ -280,28 +280,6 @@ export class ProjectNewDataInfoComponent implements OnInit {
 
   // 上传
   @ViewChildren(NzUploadComponent) uploadComponents: QueryList<NzUploadComponent>;
-  uploadFileList: UploadFile[] = [
-    {
-      uid: '1',
-      name: 'xxx.png',
-      status: 'done',
-      response: 'Server Error 500', // custom error message to show
-      url: 'http://www.baidu.com/xxx.png',
-    },
-    {
-      uid: '2',
-      name: 'yyy.png',
-      status: 'done',
-      url: 'http://www.baidu.com/yyy.png',
-    },
-    {
-      uid: '3',
-      name: 'zzz.png',
-      status: 'error',
-      response: 'Server Error 500', // custom error message to show
-      url: 'http://www.baidu.com/zzz.png',
-    },
-  ];
 
   // 上传
   // 上传的地址
@@ -397,49 +375,50 @@ export class ProjectNewDataInfoComponent implements OnInit {
   }
 
   // 上传前验证。屏蔽了，如果中途切换上传路径，之前上传的文件也可能和新目录下文件重名，所有取消了
-  // beforeUpload = (file: UploadFile, fileList: UploadFile[]): Observable<boolean> => {
-  //   let path = this.form.get(this.projectStepService.projectNewFilePaths[0].children[this.currentUploadTabID].key).value;
+  beforeUpload = (file: UploadFile, fileList: UploadFile[]): Observable<boolean> => {
+    let path = this.form.get(this.projectStepService.projectNewFilePaths[0].children[this.currentUploadTabID].key).value;
 
-  //   return new Observable((observer: Observer<boolean>) => {
-  //     // 查找是否和已上传文件重名，
-  //     // 控制不了，如果1个大文件上传很慢，这期间又再次上传，上传列表没有这个正在上传的文件
-  //     // 2个文件还是会重名
-  //     // for (let index = 0; index < this.projectStepService.uploadFileLists[this.currentUploadTabID].length; index++) {
-  //     //   if (this.projectStepService.uploadFileLists[this.currentUploadTabID][index]?.name === file.name) {
-  //     //     const suffix = file.name.slice(file.name.lastIndexOf('.'));
-  //     //     // 如果重名添加file.filename，file.name无法修改只读属性
-  //     //     file.filename = file.name.slice(0, file.name.lastIndexOf('.')) + '_' + Date.now() + suffix;
-  //     //     console.log(file.filename);
-  //     //     break;
-  //     //   }
-  //     // }
-  //     // 读取指定目录下文件、文件夹(并且排序)
-  //     this.service.getFileListPage(path, 'name', 'ASC').subscribe((res: any) => {
-  //       let fileList: FileInfo[] = res?.data?.fileList;
+    return new Observable((observer: Observer<boolean>) => {
+      // 查找是否和已上传文件重名，
+      // 控制不了，如果1个大文件上传很慢，这期间又再次上传，上传列表没有这个正在上传的文件
+      // 2个文件还是会重名
+      // for (let index = 0; index < this.projectStepService.uploadFileLists[this.currentUploadTabID].length; index++) {
+      //   if (this.projectStepService.uploadFileLists[this.currentUploadTabID][index]?.name === file.name) {
+      //     const suffix = file.name.slice(file.name.lastIndexOf('.'));
+      //     // 如果重名添加file.filename，file.name无法修改只读属性
+      //     file.filename = file.name.slice(0, file.name.lastIndexOf('.')) + '_' + Date.now() + suffix;
+      //     console.log(file.filename);
+      //     break;
+      //   }
+      // }
+      // 检查文件夹是否可写
+      this.service.postCheckFolder(path).subscribe((res: any) => {
+        // 如果文件夹可写
+        if (res?.msg === 'ok') {
+          observer.next(true);
+          observer.complete();
+        } else {
+          observer.next(false);
+          observer.complete();
+        }
 
-  //       // 表示文件夹不存在，可以上传
-  //       if (res?.msg.substr(0, 33) == 'ENOENT: no such file or directory') {
-  //         observer.next(true);
-  //         observer.complete();
-  //       }
-
-  //       // 文件夹存在，查找是否和上传目录下的文件重名
-  //       for (let index = 0; index < fileList.length; index++) {
-  //         if (fileList[index].name === file.name) {
-  //           // const suffix = file.name.slice(file.name.lastIndexOf('.'));
-  //           // // 如果重名添加file.filename，file.name无法修改只读属性
-  //           // file.filename = file.name.slice(0, file.name.lastIndexOf('.')) + '_' + Date.now() + suffix;
-  //           this.notify.error('文件名已存在', `文件"${file.name}"在目录"${path}"下已存在`);
-  //           observer.next(false);
-  //           observer.complete();
-  //           // break;
-  //         }
-  //       }
-  //       observer.next(true);
-  //       observer.complete();
-  //     });
-  //   });
-  // };
+        // // 文件夹存在，查找是否和上传目录下的文件重名
+        // for (let index = 0; index < fileList.length; index++) {
+        //   if (fileList[index].name === file.name) {
+        //     // const suffix = file.name.slice(file.name.lastIndexOf('.'));
+        //     // // 如果重名添加file.filename，file.name无法修改只读属性
+        //     // file.filename = file.name.slice(0, file.name.lastIndexOf('.')) + '_' + Date.now() + suffix;
+        //     this.notify.error('文件名已存在', `文件"${file.name}"在目录"${path}"下已存在`);
+        //     observer.next(false);
+        //     observer.complete();
+        //     // break;
+        //   }
+        // }
+        // observer.next(true);
+        // observer.complete();
+      });
+    });
+  };
 
   handleChange(uploadChangeParam: UploadChangeParam, i: number): void {
     let { file, fileList } = uploadChangeParam;

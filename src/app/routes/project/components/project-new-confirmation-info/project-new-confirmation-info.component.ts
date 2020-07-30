@@ -1,7 +1,6 @@
-import { ChangeDetectionStrategy, Component, OnInit, Input } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, OnInit, Input, ChangeDetectorRef } from '@angular/core';
+import { Router } from '@angular/router';
 import { NzSelectSizeType } from 'ng-zorro-antd/select';
-import { Observable, Observer } from 'rxjs';
 import { ProjectService, ProjectStepService } from '../../services';
 import { ContractType, ProjectFormValue } from '@shared';
 
@@ -30,7 +29,12 @@ export class ProjectNewConfirmationInfoComponent implements OnInit {
   // 工期字符串数组
   projectDateRangeString: string[] = [];
 
-  constructor(private fb: FormBuilder, private service: ProjectService, public projectStepService: ProjectStepService) {}
+  constructor(
+    private service: ProjectService,
+    public projectStepService: ProjectStepService,
+    private router: Router,
+    private cdr: ChangeDetectorRef,
+  ) {}
 
   ngOnInit() {
     // 项目成员对象数组转换为成员名数组，为了显示
@@ -74,12 +78,18 @@ export class ProjectNewConfirmationInfoComponent implements OnInit {
     --this.projectStepService.step;
   }
   submitForm() {
+    // 提交按钮禁用disabled
+    this.projectStepService.submitButtonIsLoading = true;
     // 整理上传路径对象
     // 添加projectNewFilePaths根目录绝对路径
-    this.projectStepService.projectNewFilePaths[0].absolutePath = this.projectStepService.uploadPath[0];
+    this.projectStepService.projectNewFilePaths[0].absolutePath = this.projectStepService.uploadPath[
+      this.projectStepService.projectNewFilePaths[0].key
+    ];
     // 添加projectNewFilePaths子目录绝对路径
     for (let i = 0; i < this.projectStepService.projectNewFilePaths[0].children.length; i++) {
-      this.projectStepService.projectNewFilePaths[0].children[i].absolutePath = this.projectStepService.uploadPath[i + 1];
+      this.projectStepService.projectNewFilePaths[0].children[i].absolutePath = this.projectStepService.uploadPath[
+        this.projectStepService.projectNewFilePaths[0].children[i].key
+      ];
     }
     // 要提交的数据
     let formValue: ProjectFormValue = {
@@ -119,6 +129,16 @@ export class ProjectNewConfirmationInfoComponent implements OnInit {
       },
     };
     // 提交表单
-    this.service.postNewProject(formValue).subscribe((res: any) => {});
+    this.service.postNewProject(formValue).subscribe((res: any) => {
+      // 提交按钮取消loading状态
+      this.projectStepService.submitButtonIsLoading = false;
+      this.cdr.markForCheck();
+      // 如果有错误返回
+      if (res.msg !== 'ok') {
+        return;
+      }
+      // 如果成功，展示结果页
+      this.projectStepService.isShowResult = true;
+    });
   }
 }

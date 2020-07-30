@@ -133,6 +133,7 @@
             (nzChange)="handleChange($event, i)"
             [nzDisabled]="form.get(childPathConfig.key).value === null"
             [nzData]="uploadData"
+            [nzBeforeUpload]="beforeUpload"
           >
             <p class="ant-upload-drag-icon">
               <i nz-icon nzType="inbox"></i>

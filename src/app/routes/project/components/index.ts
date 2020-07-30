@@ -6,4 +6,5 @@ export * from './project-new-subcontract-info';
 export * from './project-new-data-info';
 export * from './project-new-confirmation-info';
 export * from './project-linkman-form';
+export * from './project-new-success';
 export * from './project-overview';

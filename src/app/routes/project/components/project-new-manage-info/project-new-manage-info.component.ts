@@ -1,9 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit, Input, ViewChild, TemplateRef, ElementRef, ChangeDetectorRef } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NzSelectSizeType } from 'ng-zorro-antd/select';
-import { Observable, Observer } from 'rxjs';
 import { ProjectService, ProjectStepService } from '../../services';
-import { ContractType } from '@shared';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { ProjectLinkmanFormComponent } from '../project-linkman-form';
 
@@ -92,6 +90,11 @@ export class ProjectNewManageInfoComponent implements OnInit {
     this.linkmanEditIndex = -1;
   }
 
+  // 取消提交
+  cancelSubmit() {
+    // 没有联系人被编辑，所以置为-1
+    this.linkmanEditIndex = -1;
+  }
   delLinkman(index: number) {
     this.projectStepService.linkmenInfo = this.projectStepService.linkmenInfo.filter((d, i) => i !== index);
   }

@@ -11,6 +11,8 @@ import {
   ProjectNewDataInfoComponent,
   ProjectNewConfirmationInfoComponent,
   ProjectLinkmanFormComponent,
+  ProjectNewSuccessComponent,
+  ProjectOverviewComponent,
 } from './components';
 
 @NgModule({
@@ -24,6 +26,8 @@ import {
     ProjectNewDataInfoComponent,
     ProjectNewConfirmationInfoComponent,
     ProjectLinkmanFormComponent,
+    ProjectNewSuccessComponent,
+    ProjectOverviewComponent,
   ],
 })
 export class ProjectModule {}

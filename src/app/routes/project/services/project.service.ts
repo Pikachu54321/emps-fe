@@ -14,11 +14,11 @@ export class ProjectService {
   // 获得立项依据
   getRoots() {
     // `${environment.baseUrl}/profile`
-    return this.http.get(`${environment.SERVER_URL}project/roots`);
+    return this.http.get(`${environment.SERVER_URL}projects/roots`);
   }
   // 获得所有主项目名
   getParentProjects() {
-    return this.http.get(`${environment.SERVER_URL}project/parent-projects`);
+    return this.http.get(`${environment.SERVER_URL}projects/parent-projects`);
   }
   // 获得所有员工
   getUsers() {
@@ -26,15 +26,15 @@ export class ProjectService {
   }
   // 获得所有合同类型
   getContractTypes() {
-    return this.http.get(`${environment.SERVER_URL}project/contract-types`);
+    return this.http.get(`${environment.SERVER_URL}projects/contract-types`);
   }
   // 获得所有联系人类型
   getLinkmanTypes() {
-    return this.http.get(`${environment.SERVER_URL}project/linkman-types`);
+    return this.http.get(`${environment.SERVER_URL}projects/linkman-types`);
   }
   // 获得项目立项路径配置参数
   getProjectNewPathParameter() {
-    return this.http.get(`${environment.SERVER_URL}project/project-new-path-parameters`);
+    return this.http.get(`${environment.SERVER_URL}projects/project-new-path-parameters`);
   }
   // 读取指定目录下文件、文件夹(并且排序)
   getFileListPage(path: string, sortName: string, sortOrder: string) {
@@ -42,6 +42,12 @@ export class ProjectService {
       path: path,
       sortName: sortName,
       sortOrder: sortOrder,
+    });
+  }
+  // 读取指定目录是否存在
+  postCheckFolder(path: string) {
+    return this.http.post(`${environment.SERVER_URL}file/check-directory`, {
+      path: path,
     });
   }
   // 创建文件夹
@@ -53,6 +59,11 @@ export class ProjectService {
   }
   // 项目立项提交
   postNewProject(formValue: ProjectFormValue) {
-    return this.http.post(`${environment.SERVER_URL}project`, formValue);
+    return this.http.post(`${environment.SERVER_URL}projects`, formValue);
+  }
+  // 项目列表页 project-list
+  // 获得立项依据
+  getProjectLists() {
+    return this.http.get(`${environment.SERVER_URL}projects`);
   }
 }

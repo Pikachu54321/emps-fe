@@ -1,15 +1,21 @@
 <page-header [title]="'分步表单'">
   将一个冗长或用户不熟悉的表单任务分成多个步骤，指导用户完成。
 </page-header>
-<div class="stepBar">
-  <nz-steps [nzCurrent]="projectStepService.step" nzSize="small" (nzIndexChange)="onStepIndexChange($event)">
-    <nz-step *ngFor="let item of projectStepService.stepTitles" [nzTitle]="item"></nz-step>
-  </nz-steps>
-</div>
+<ng-container *ngIf="!projectStepService.isShowResult">
+  <div class="stepBar">
+    <nz-steps [nzCurrent]="projectStepService.step" nzSize="small" (nzIndexChange)="onStepIndexChange($event)">
+      <nz-step *ngFor="let item of projectStepService.stepTitles" [nzTitle]="item"></nz-step>
+    </nz-steps>
+  </div>
 
-<app-project-new-basic-info [inputSize]="inputSize" *ngIf="projectStepService.step == 0"></app-project-new-basic-info>
-<app-project-new-contract-info [inputSize]="inputSize" *ngIf="projectStepService.step == 1"></app-project-new-contract-info>
-<app-project-new-manage-info [inputSize]="inputSize" *ngIf="projectStepService.step == 2"></app-project-new-manage-info>
-<app-project-new-subcontract-info [inputSize]="inputSize" *ngIf="projectStepService.step == 3"></app-project-new-subcontract-info>
-<app-project-new-data-info [inputSize]="inputSize" *ngIf="projectStepService.step == 4"></app-project-new-data-info>
-<app-project-new-confirmation-info [inputSize]="inputSize" *ngIf="projectStepService.step == 5"></app-project-new-confirmation-info>
+  <app-project-new-basic-info [inputSize]="inputSize" *ngIf="projectStepService.step == 0"></app-project-new-basic-info>
+  <app-project-new-contract-info [inputSize]="inputSize" *ngIf="projectStepService.step == 1"></app-project-new-contract-info>
+  <app-project-new-manage-info [inputSize]="inputSize" *ngIf="projectStepService.step == 2"></app-project-new-manage-info>
+  <app-project-new-subcontract-info [inputSize]="inputSize" *ngIf="projectStepService.step == 3"></app-project-new-subcontract-info>
+  <app-project-new-data-info [inputSize]="inputSize" *ngIf="projectStepService.step == 4"></app-project-new-data-info>
+  <app-project-new-confirmation-info [inputSize]="inputSize" *ngIf="projectStepService.step == 5"></app-project-new-confirmation-info>
+</ng-container>
+<!-- 结果页 -->
+<ng-container *ngIf="projectStepService.isShowResult">
+  <app-project-new-success></app-project-new-success>
+</ng-container>

@@ -23,7 +23,7 @@
           <span>{{ item.linkmanName }}</span>
         </td>
         <td>
-          <span>{{ item.linkmanType.name }}</span>
+          <span>{{ item.linkmanType?.name }}</span>
         </td>
         <td>
           <span>{{ item.linkmanCompanyName }}</span>
@@ -66,6 +66,7 @@
     [linkmanEditIndex]="params.linkmanEditIndex"
     [linkmanInfo]="params.linkmanInfo"
     (linkmanForm)="linkmanFormSubmit($event)"
+    (cancelFn)="cancelSubmit()"
   ></app-project-linkman-form>
 </ng-template>
 

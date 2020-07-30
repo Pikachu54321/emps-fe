@@ -32,6 +32,8 @@ export class ProjectLinkmanFormComponent implements OnInit {
   @Input() modalRef: NzModalRef;
   // 输出表单
   @Output() linkmanForm = new EventEmitter<FormGroup>();
+  // 取消输出
+  @Output() cancelFn = new EventEmitter();
   form: FormGroup;
 
   projectRelevanceObj: Project = { id: undefined, name: null };
@@ -96,12 +98,13 @@ export class ProjectLinkmanFormComponent implements OnInit {
   compareFn = (o1: any, o2: any) => (o1 && o2 ? o1.id === o2.id : o1 === o2);
   cancel() {
     this.modalRef.destroy();
+    this.cancelFn.emit();
   }
   _submitForm() {
     // 如果验证成功，向父组件输出
     if (this.verificationSave()) {
-      this.linkmanForm.emit(this.form);
       this.modalRef.destroy();
+      this.linkmanForm.emit(this.form);
     }
   }
 

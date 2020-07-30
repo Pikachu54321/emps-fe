@@ -38,6 +38,8 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { NzUploadModule } from 'ng-zorro-antd/upload';
 import { NzTreeModule } from 'ng-zorro-antd/tree';
 import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
+import { NzResultModule } from 'ng-zorro-antd/result';
+import { NzResizableModule } from 'ng-zorro-antd/resizable';
 
 export const SHARED_ZORRO_MODULES = [
   NzButtonModule,
@@ -80,4 +82,6 @@ export const SHARED_ZORRO_MODULES = [
   NzUploadModule,
   NzTreeModule,
   NzDescriptionsModule,
+  NzResultModule,
+  NzResizableModule,
 ];

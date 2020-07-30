@@ -81,7 +81,7 @@
           <span>{{ item.linkmanName }}</span>
         </td>
         <td>
-          <span>{{ item.linkmanType.name }}</span>
+          <span>{{ item.linkmanType?.name }}</span>
         </td>
         <td>
           <span>{{ item.linkmanCompanyName }}</span>
@@ -198,7 +198,7 @@
   <button nz-button (click)="prev()" [nzSize]="inputSize">
     <span>上一步：{{ projectStepService.stepTitles[projectStepService.step - 1] }}</span>
   </button>
-  <button nz-button (click)="submitForm()" nzType="primary" [nzSize]="inputSize">
+  <button nz-button (click)="submitForm()" nzType="primary" [nzSize]="inputSize" [nzLoading]="projectStepService.submitButtonIsLoading">
     <span>提交</span>
   </button>
 </footer-toolbar>
